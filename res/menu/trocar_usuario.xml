@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.consigazandroid.EditarProspectActivity" >
+
+    <item
+        android:id="@+id/trocar_usuario"
+        android:showAsAction="ifRoom"
+        android:title="Trocar Usuário"/>
+ 
+</menu>

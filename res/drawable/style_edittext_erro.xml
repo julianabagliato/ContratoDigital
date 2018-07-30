@@ -1,0 +1,24 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+       
+       <item android:state_enabled="true">
+           <shape>
+               <gradient android:startColor="@color/azul_claro_consigaz"
+                   		 android:centerColor="@color/azul_claro_consigaz" 
+                   		 android:endColor="@color/azul_claro_consigaz"
+                   		 android:angle="270" 
+                   		 android:centerX="0.5" 
+                   		 android:centerY="0.5" />
+               <stroke 
+                   android:width="5dp" 
+                   android:color="@color/vermelho" />
+               <corners 
+                   android:radius="7dp" />
+               
+               <padding android:left="10dp" 
+                   		android:top="6dp" 
+                   		android:right="10dp"
+                   		android:bottom="6dp" />
+           </shape>
+       </item>
+        
+</selector>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   
+    <item type="id" name="tres" />
+    <item type="id" name="dez" />
+
+    <item type="id" name="progr" />
+    <item type="id" name="layout" />
+    <item type="id" name="mov" />
+    
+    <item type="id" name="razaoSocial" />
+    
+    
+    
+</resources>
+

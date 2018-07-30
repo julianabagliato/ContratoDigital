@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableLayout_dashboard"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fundogaz12"     
+    >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.45" >
+              
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.50" >
+
+        <TextView
+            android:id="@+id/textView_visitas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.50"
+            android:clickable="true"
+            android:drawableTop="@drawable/cadastrar2"
+            android:gravity="center"
+            android:onClick="selecionarOpcao"
+            android:text="Clientes"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/textView_comunicar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.50"
+            android:clickable="true"
+            android:drawableTop="@drawable/sync256"
+            android:gravity="center"
+            android:onClick="selecionarOpcao"
+            android:text="Comunicar"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+    
+        
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05" >
+
+        <TextView
+            android:id="@+id/textView_versao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="versao123123123213"
+            android:textColor="#000"
+            android:textSize="10sp" />
+    </TableRow>
+
+</TableLayout>

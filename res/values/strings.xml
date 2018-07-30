@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Contrato Digital</string>
+    <string name="enviar">Enviar</string>
+    <string name="salvar">Salvar</string>
+    <string name="sincronizeSeusDadosParaAtualizar">Existe uma atualização pendente, sincronize seus dados para atualizar!</string>
+    <string name="desejaAtualizar">Existe uma atualização pendente, deseja atualizar?</string>
+    <string name="mesageTrocaUsuario">Existem dados na memória deste aplicativo que devem ser sincronizados antes de trocar o usuario.</string>
+    <string name="existeDadosMemoria">Operação não permitida, existem dados na memória do aparelho de devem ser EXPORTADOS para a base</string>
+    
+</resources>
