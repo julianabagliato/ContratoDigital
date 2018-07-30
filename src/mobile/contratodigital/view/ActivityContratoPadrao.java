@@ -94,14 +94,6 @@ public class ActivityContratoPadrao extends Activity {
 		
 		criaAssinaturasEbotao(ll_principal, ll_rubrica);
 		
-	
-		
-		//horizontalScrollView.addView(ll_telaHolder);
-		   	   
-		   	   
-		   	   
-		
-		
 		scrollView.addView(ll_telaHolder);
 		
 		return scrollView;
@@ -157,8 +149,6 @@ public class ActivityContratoPadrao extends Activity {
 	
 	private void criaAssinaturasEbotao(final LinearLayout ll_principal, final LinearLayout ll_rubrica){
 		
-		//int ID_CRIACAO = 1;
-		
 		//cria assinaturas:
 		LinearLayout ll_assinatura_coluna_holder = contratoAct.cria_ll_assinatura_coluna_holder(context);
 		final LinearLayout ll_assinatura_coluna_esquerda = contratoAct.cria_ll_assinatura_coluna_esquerd(context);				       
@@ -170,11 +160,10 @@ public class ActivityContratoPadrao extends Activity {
 		
 		Movimento mov_informacoesDoCliente = listaComMovimentos.get(1);
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", "Nome:", "2","3", telaBuilder,"","","","");
-		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "", "Testemunha: ", "3","3", telaBuilder,Cliente,cCargo ,cRG,cCpf);
+		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "", "Testemunha:", "3","3", telaBuilder,Cliente,cCargo ,cRG,cCpf);
 
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, mov_informacoesDoCliente.getInformacao_1(), "Cliente: ", "4","3", telaBuilder,Testemunha1,t1Cargo ,t1RG,t1Cpf);
-		
-		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "", "Testemunha: ", "5","3", telaBuilder,Testemunha2,t2Cargo ,t2RG,t2Cpf);
+		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "", "Testemunha:", "5","3", telaBuilder,Testemunha2,t2Cargo ,t2RG,t2Cpf);
 		//cria assinaturas:
 
 		

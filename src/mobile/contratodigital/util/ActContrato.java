@@ -166,23 +166,33 @@ public class ActContrato {
 		ll_principal.addView(devolve_IV_cabecalho());
 	}
 
-	public void criaEadicionaFormularioDeAssinatura(LinearLayout ll_assinatura_coluna, String razaoSocial,
-			String nomeDoTextView, String qtd, String act_tela, TelaBuilder telaBuilder, String nome, String cargo,
-			String rg, String cpf) {
+	public void criaEadicionaFormularioDeAssinatura(LinearLayout ll_assinatura_coluna, 
+													String razaoSocial,
+													String nomeDoTextView, 
+													String qtd, 
+													String act_tela, 
+													TelaBuilder telaBuilder, 
+													String nome, String cargo, String rg, String cpf) {
 
 		final LinearLayout ll_assinaturaHolderTudo = new LinearLayout(context);
 		// ll_assinaturaHolderTudo.setTag("ll_assinatura"+qtd);
 		ll_assinaturaHolderTudo.setOrientation(LinearLayout.VERTICAL);
 		ll_assinaturaHolderTudo.setLayoutParams(new LinearLayout.LayoutParams(500, LayoutParams.WRAP_CONTENT));
+		
 		if (qtd.equals("4") && act_tela.equals("1")) {
+			
 			ll_assinaturaHolderTudo.addView(telaBuilder.cria_TV_conteudo40(""));
-		} else if (qtd.equals("0") && act_tela.equals("2")) {
+		} 
+		else if (qtd.equals("0") && act_tela.equals("2")) {
 			ll_assinaturaHolderTudo.addView(telaBuilder.cria_TV_conteudo40(""));
-		} else if (qtd.equals("2") && act_tela.equals("3")) {
+		} 
+		else if (qtd.equals("2") && act_tela.equals("3")) {
 			ll_assinaturaHolderTudo.addView(telaBuilder.cria_TV_conteudo40(""));
-		} else if (qtd.equals("0") && act_tela.equals("4")) {
+		} 
+		else if (qtd.equals("0") && act_tela.equals("4")) {
 			ll_assinaturaHolderTudo.addView(telaBuilder.cria_TV_conteudo40(""));
-		} else {
+		} 
+		else {
 			ll_assinaturaHolderTudo.addView(devolve_ll_imgAssinaturaHolder(qtd));
 			TextView tv_assRazaoSocial = telaBuilder.cria_TV_assinatura(razaoSocial);
 			// tv_assRazaoSocial.setTag(qtd + razaoSocial);
@@ -205,21 +215,25 @@ public class ActContrato {
 			ll_nomeHolder.addView(et_assNome);
 			ll_assinaturaHolderTudo.addView(ll_nomeHolder);
 
-			LinearLayout ll_cargoHolder = new LinearLayout(context);
-			// ll_cargoHolder.setTag("ll_cargoHolder"+qtd);
-
-			TextView tv_assCargo = telaBuilder.cria_TV_assinatura("Cargo:");
-			EditText et_assCargo = telaBuilder.cria_ET_assinatura();
-			et_assCargo.setText(cargo);
-			if (!et_assCargo.getText().toString().equals("")) {
-				et_assCargo.setEnabled(false);
+			if(!nomeDoTextView.contains("Testemunha")) {
+							
+				LinearLayout ll_cargoHolder = new LinearLayout(context);
+				// ll_cargoHolder.setTag("ll_cargoHolder"+qtd);
+	
+				TextView tv_assCargo = telaBuilder.cria_TV_assinatura("Cargo:");
+				EditText et_assCargo = telaBuilder.cria_ET_assinatura();
+				et_assCargo.setText(cargo);
+				if (!et_assCargo.getText().toString().equals("")) {
+					et_assCargo.setEnabled(false);
+				}
+				et_assCargo.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
+				et_assCargo.setTag("et_assCargo" + qtd);
+	
+				ll_cargoHolder.addView(tv_assCargo);
+				ll_cargoHolder.addView(et_assCargo);
+				ll_assinaturaHolderTudo.addView(ll_cargoHolder);
+				
 			}
-			et_assCargo.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-			et_assCargo.setTag("et_assCargo" + qtd);
-
-			ll_cargoHolder.addView(tv_assCargo);
-			ll_cargoHolder.addView(et_assCargo);
-			ll_assinaturaHolderTudo.addView(ll_cargoHolder);
 
 			LinearLayout ll_rgHolder = new LinearLayout(context);
 			// ll_rgHolder.setTag("ll_rgHolder"+qtd);
@@ -324,21 +338,7 @@ public class ActContrato {
 			ll_assinaturaHolderTudo.addView(ll_cpfHolder);
 
 		}
-
-		// LinearLayout ll_cpfHolder = new LinearLayout(context);
-		// ll_cpfHolder.setTag("ll_cpfHolder"+qtd);
-
-		// TextView tv_assCpf = telaBuilder.criaTextViewAssinatura("CPF:");
-		// EditText et_assCpf = telaBuilder.criaEditTextAssinatura();
-		// et_assCpf.setTag("et_assCpf"+qtd);
-		// et_assCpf.setInputType(InputType.TYPE_CLASS_NUMBER);
-		// et_assCpf.setFilters(new InputFilter[] {new
-		// InputFilter.LengthFilter(11)});
-
-		// ll_cpfHolder.addView(tv_assCpf);
-		// ll_cpfHolder.addView(et_assCpf);
-		// ll_assinaturaHolderTudo.addView(ll_cpfHolder);
-
+		
 		ll_assinatura_coluna.addView(ll_assinaturaHolderTudo);
 	}
 
@@ -411,8 +411,8 @@ public class ActContrato {
 		return ll_imgAssinaturaHolder;
 	}
 
-	public boolean temCamposVazios(LinearLayout ll_rubrica, LinearLayout ll_principal, int TOTAL_ASSIGN_GLOBAL,
-			String nomeActivity, String act_tela) {
+	public boolean temCamposVazios(LinearLayout ll_rubrica, LinearLayout ll_principal, 
+								   int TOTAL_ASSIGN_GLOBAL, String nomeActivity, String act_tela) {
 
 		boolean campoVazio = false;
 		int comecaCom = 1;
@@ -422,15 +422,11 @@ public class ActContrato {
 			ImageView iv_recebeRublica_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
 			if (iv_recebeRublica_0.getDrawable() == null) {
 
-				iv_recebeRublica_0
-						.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				iv_recebeRublica_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
 				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
-				//				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
 				campoVazio = true;
-
 			} else {
 				iv_recebeRublica_0.setBackgroundDrawable(null);
 			}
@@ -438,14 +434,11 @@ public class ActContrato {
 			ImageView iv_recebeRublica_1 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica1");
 			if (iv_recebeRublica_1.getDrawable() == null) {
 
-				iv_recebeRublica_1
-						.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				iv_recebeRublica_1.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				
 				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
-				//				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
 				campoVazio = true;
-
 			} else {
 				iv_recebeRublica_1.setBackgroundDrawable(null);
 			}
@@ -457,14 +450,11 @@ public class ActContrato {
 				ImageView iv_recebeRublica_2 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica2");
 				if (iv_recebeRublica_2.getDrawable() == null) {
 
-					iv_recebeRublica_2
-							.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					iv_recebeRublica_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					
 					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
-				//					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
 					campoVazio = true;
-
 				} else {
 					iv_recebeRublica_2.setBackgroundDrawable(null);
 				}
@@ -472,13 +462,11 @@ public class ActContrato {
 				ImageView iv_recebeRublica_3 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica3");
 				if (iv_recebeRublica_3.getDrawable() == null) {
 
-					iv_recebeRublica_3
-							.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					iv_recebeRublica_3.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-									new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
 					campoVazio = true;
-
 				} else {
 					iv_recebeRublica_3.setBackgroundDrawable(null);
 				}
@@ -488,29 +476,28 @@ public class ActContrato {
 		}
 
 		for (int numeroAssinatura = comecaCom; numeroAssinatura < TOTAL_ASSIGN_GLOBAL; numeroAssinatura++) {
+			
 			if (numeroAssinatura != 4 && act_tela.equals("1")) {
 
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
+				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
 				if (iv_recebeAssinatura_0.getDrawable() == null) {
 
-					iv_recebeAssinatura_0
-							.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-									new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
 				} else {
 					iv_recebeAssinatura_0.setBackgroundDrawable(null);
 				}
+				
 				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
 				if (et_assNome_0.getText().toString().isEmpty()) {
 
 					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
-				
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -523,8 +510,7 @@ public class ActContrato {
 
 					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-						//	.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -537,8 +523,7 @@ public class ActContrato {
 
 					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -546,42 +531,42 @@ public class ActContrato {
 					et_assRg_0.setBackgroundDrawable(null);
 				}
 		
-			EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-			if (et_asscpf_0.getText().toString().isEmpty()) {
-
-				et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-									new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-						//.show();
-
-				campoVazio = true;
-				break;
-			} else {
-				et_asscpf_0.setBackgroundDrawable(null);
+				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
+				if (et_asscpf_0.getText().toString().isEmpty()) {
+	
+					et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+	
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+	
+					campoVazio = true;
+					break;
+				} else {
+					et_asscpf_0.setBackgroundDrawable(null);
+				}
+				
 			}
-			}
+			
 			if (numeroAssinatura != 0 && act_tela.equals("2")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
+				
+				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
 				if (iv_recebeAssinatura_0.getDrawable() == null) {
 
-					iv_recebeAssinatura_0
-							.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-									new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
 				} else {
 					iv_recebeAssinatura_0.setBackgroundDrawable(null);
 				}
+				
 				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
 				if (et_assNome_0.getText().toString().isEmpty()) {
 
 					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -594,8 +579,7 @@ public class ActContrato {
 
 					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -608,22 +592,21 @@ public class ActContrato {
 
 					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
 				} else {
 					et_assRg_0.setBackgroundDrawable(null);
 				}
+				
 				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
 
 				if (et_asscpf_0.getText().toString().isEmpty()) {
 
 					et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -633,27 +616,26 @@ public class ActContrato {
 			}
 
 			if (numeroAssinatura != 2 && act_tela.equals("3")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
+				
+				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
 				if (iv_recebeAssinatura_0.getDrawable() == null) {
 
-					iv_recebeAssinatura_0
-							.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-									new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
 				} else {
 					iv_recebeAssinatura_0.setBackgroundDrawable(null);
 				}
+				
 				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
 				if (et_assNome_0.getText().toString().isEmpty()) {
 
 					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -666,8 +648,7 @@ public class ActContrato {
 
 					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -680,8 +661,7 @@ public class ActContrato {
 
 					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -689,28 +669,28 @@ public class ActContrato {
 					et_assRg_0.setBackgroundDrawable(null);
 				}
 			}
+			
 			if (numeroAssinatura != 0 && act_tela.equals("4")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
+				
+				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
 				if (iv_recebeAssinatura_0.getDrawable() == null) {
 
-					iv_recebeAssinatura_0
-							.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-									new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
 				} else {
 					iv_recebeAssinatura_0.setBackgroundDrawable(null);
 				}
+				
 				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
 				if (et_assNome_0.getText().toString().isEmpty()) {
 
 					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -723,8 +703,7 @@ public class ActContrato {
 
 					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -737,22 +716,21 @@ public class ActContrato {
 
 					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
 				} else {
 					et_assRg_0.setBackgroundDrawable(null);
 				}
+				
 				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
 
 				if (et_asscpf_0.getText().toString().isEmpty()) {
 
 					et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
 
-										new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-							//.show();
+					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
 
 					campoVazio = true;
 					break;
@@ -760,23 +738,6 @@ public class ActContrato {
 					et_asscpf_0.setBackgroundDrawable(null);
 				}
 			}
-		
-
-			/*
-			 * EditText et_assCpf_0 = (EditText)
-			 * ll_principal.findViewWithTag("et_assCpf"+numeroAssinatura); if
-			 * (et_assCpf_0.getText().toString().isEmpty()) {
-			 * 
-			 * et_assCpf_0.setBackgroundDrawable(context.getResources().
-			 * getDrawable(R.drawable.style_edittext_erro));
-			 * 
-			 * Toast.makeText(context,
-			 * "Campos em vermelho são de preenchimento obrigatório",
-			 * Toast.LENGTH_SHORT)//.show();
-			 * 
-			 * campoVazio = true; break; } else{
-			 * et_assCpf_0.setBackgroundDrawable(null); }
-			 */
 
 		}
 

@@ -25,13 +25,6 @@ import mobile.contratodigital.util.TelaBuilder;
 import mobile.contratodigital.util.TextoContratos;
 import sharedlib.contratodigital.model.Movimento;
 
-/**
- * Classe do tipo activity  usada para trabalhar o contrato contaSIM
- * @author Edição - Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Criação- Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ActivityContratoContaSIM extends Activity {
 
 	private Context context;
@@ -224,10 +217,10 @@ public class ActivityContratoContaSIM extends Activity {
 		ll_principal.addView(ll_assinatura_coluna_holder);
 		
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", "Nome:", "4","1", telaBuilder,"","","","");
-		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "Testemunha", "Nome:", "5","1", telaBuilder,Testemunha1,t1Cargo ,t1RG,t1Cpf);
+		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "", "Testemunha:", "5","1", telaBuilder,Testemunha1,t1Cargo ,t1RG,t1Cpf);
 		
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "CONDOMÍNIO", "Nome:", "6","1", telaBuilder,Cliente,cCargo ,cRG,cCpf);
-		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "Testemunha", "Nome:", "7","1", telaBuilder,Testemunha2,t2Cargo ,t2RG,t2Cpf);
+		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "", "Testemunha:", "7","1", telaBuilder,Testemunha2,t2Cargo ,t2RG,t2Cpf);
 		//cria assinaturas:
 		
 
