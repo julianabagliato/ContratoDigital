@@ -229,12 +229,11 @@ public class ActivityContratoContaSIM extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				if(!contratoAct.temCamposVazios(ll_rubrica, ll_principal, TOTAL_ASSIGN_GLOBAL, "ContratoContaSIM","1")){
+				if(!contratoAct.temCamposVaziosContratoPadrao(ll_rubrica, ll_principal, "ContratoContaSIM")){
 							
 					boolean ehContratoContaSIM = true;
 
-					List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaLista(ll_rubrica, ll_principal, 
-																											 TOTAL_ASSIGN_GLOBAL, ehContratoContaSIM, "1");
+					List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(ll_rubrica, ll_principal, ehContratoContaSIM);
 							
 					criaArquivoWord(listaComAssinaturas);
 					criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);	

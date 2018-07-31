@@ -3,6 +3,10 @@ package mobile.contratodigital.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.ColumnText;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -33,7 +37,6 @@ public class ActivityContratoPadrao extends Activity {
 	private String srcContrato;
 	private TelaBuilder telaBuilder;
 	private ActContrato contratoAct;
-	private static final int TOTAL_ASSIGN_GLOBAL = 6;
 	private ArrayList<Movimento> listaComMovimentos;
 	private String nr_contrato;
 	private String Cliente ="";
@@ -160,10 +163,10 @@ public class ActivityContratoPadrao extends Activity {
 		
 		Movimento mov_informacoesDoCliente = listaComMovimentos.get(1);
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", "Nome:", "2","3", telaBuilder,"","","","");
-		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "", "Testemunha:", "3","3", telaBuilder,Cliente,cCargo ,cRG,cCpf);
+		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "", "Testemunha:", "3","3", telaBuilder, Cliente, cCargo, cRG, cCpf);
 
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, mov_informacoesDoCliente.getInformacao_1(), "Cliente: ", "4","3", telaBuilder,Testemunha1,t1Cargo ,t1RG,t1Cpf);
-		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "", "Testemunha:", "5","3", telaBuilder,Testemunha2,t2Cargo ,t2RG,t2Cpf);
+		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "", "Testemunha:", "5","3", telaBuilder, Testemunha2, t2Cargo, t2RG, t2Cpf);
 		//cria assinaturas:
 
 		
@@ -173,20 +176,18 @@ public class ActivityContratoPadrao extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				if(!contratoAct.temCamposVazios(ll_rubrica, ll_principal, TOTAL_ASSIGN_GLOBAL, "ContratoPadrao","3")){
+				if(!contratoAct.temCamposVaziosContratoPadrao(ll_rubrica, ll_principal, "ContratoPadrao")){
 					
 					boolean ehContratoContaSIM = false;
 
-						List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaLista(ll_rubrica, ll_principal, 
-																												 TOTAL_ASSIGN_GLOBAL, ehContratoContaSIM,"3");
-							
+						List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(ll_rubrica, ll_principal, 
+																						ehContratoContaSIM);
+					
 						criaArquivoWord(listaComAssinaturas);
 						criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);
 						
 						chamaActivityAnexo(listaComAssinaturas);
 						//metodosContratoAct.chamaVisualizadorBaseadoExtensao(context, srcContrato, "pdf");
-					//}
-					
 				}
 			}
 		});			
@@ -219,31 +220,28 @@ public class ActivityContratoPadrao extends Activity {
 		Movimento mov_informacoesDoCliente = listaComMovimentos.get(SequenciaMovAddedEmLista.mov_informacoesCliente.getPosicao());
 		
 	   		   Intent intent = new Intent(context, ActivityAnexoPadrao.class);
-	   		   	
-	   			      intent = contratoAct.preencheIntent(intent, srcContrato, listaComMovimentos);	 	   
-	   			  	Bundle bundle = new Bundle();	
+	   			      intent = contratoAct.preencheIntent(intent, srcContrato, listaComMovimentos);	 
+	   			      
+	   			Bundle bundle = new Bundle();	
 					   bundle.putSerializable("movimento", mov_informacoesDoCliente);	
 					   bundle.putString("Numero", nr_contrato);
-					   bundle.putString("Cliente",listaComAssinaturas.get(4).getNome());
-					   bundle.putString("cCargo", listaComAssinaturas.get(4).getCargo());
-					   bundle.putString("cRG", listaComAssinaturas.get(4).getRg());
-					   bundle.putString("cCpf", listaComAssinaturas.get(4).getCpf());
-					   bundle.putString("Testemunha1", listaComAssinaturas.get(3).getNome());
-					   bundle.putString("t1Cargo", listaComAssinaturas.get(3).getCargo());
-					   bundle.putString("t1RG", listaComAssinaturas.get(3).getRg());
-					   bundle.putString("t1Cpf", listaComAssinaturas.get(3).getCpf());
-					   bundle.putString("Testemunha2", listaComAssinaturas.get(5).getNome());
-					   bundle.putString("t2Cargo", listaComAssinaturas.get(5).getCargo());
-					   bundle.putString("t2RG", listaComAssinaturas.get(5).getRg());
-					   bundle.putString("t2Cpf", listaComAssinaturas.get(5).getCpf());
-					
 
-					   bundle.putString("Numero", nr_contrato);
+					   bundle.putString("Testemunha1", listaComAssinaturas.get(2).getNome());
+					   bundle.putString("t1RG", listaComAssinaturas.get(2).getRg());
+					   bundle.putString("t1Cpf", listaComAssinaturas.get(2).getCpf());
+					   
+					   bundle.putString("Cliente",listaComAssinaturas.get(3).getNome());
+					   bundle.putString("cCargo", listaComAssinaturas.get(3).getCargo());
+					   bundle.putString("cRG", listaComAssinaturas.get(3).getRg());
+					   bundle.putString("cCpf", listaComAssinaturas.get(3).getCpf());
 
+					   bundle.putString("Testemunha2", listaComAssinaturas.get(4).getNome());
+					   bundle.putString("t2RG", listaComAssinaturas.get(4).getRg());
+					   bundle.putString("t2Cpf", listaComAssinaturas.get(4).getCpf());
 
 	  intent.putExtras(bundle);  
-	   			      startActivity(intent);					   
-	   	finish(); 		
+	  startActivity(intent);					   
+	  finish(); 		
 	}
 
 }

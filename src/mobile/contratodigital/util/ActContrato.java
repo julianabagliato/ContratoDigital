@@ -411,12 +411,22 @@ public class ActContrato {
 		return ll_imgAssinaturaHolder;
 	}
 
-	public boolean temCamposVazios(LinearLayout ll_rubrica, LinearLayout ll_principal, 
-								   int TOTAL_ASSIGN_GLOBAL, String nomeActivity, String act_tela) {
+	public boolean temCamposVaziosAnexoPadrao(LinearLayout ll_principal) {
+	
+		ImageView iv_recebeAssinatura_2 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura2");
+		if (iv_recebeAssinatura_2.getDrawable() == null) {
+			iv_recebeAssinatura_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+			new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+			return true;
+		} else {
+			iv_recebeAssinatura_2.setBackgroundDrawable(null);
+		}
 
-		boolean campoVazio = false;
-		int comecaCom = 1;
-
+		return false;
+	}
+	
+	public boolean temCamposVaziosContratoPadrao(LinearLayout ll_rubrica, LinearLayout ll_principal, String nomeActivity) {
+		
 		if (ll_rubrica != null) {
 
 			ImageView iv_recebeRublica_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
@@ -426,7 +436,7 @@ public class ActContrato {
 
 				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
-				campoVazio = true;
+				return true;
 			} else {
 				iv_recebeRublica_0.setBackgroundDrawable(null);
 			}
@@ -438,332 +448,103 @@ public class ActContrato {
 				
 				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
 
-				campoVazio = true;
+				return true;
 			} else {
 				iv_recebeRublica_1.setBackgroundDrawable(null);
 			}
 
-			comecaCom = 2;
+			
+			
+			
+			ImageView iv_recebeAssinatura_4 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura4");
+			if (iv_recebeAssinatura_4.getDrawable() == null) {
+				iv_recebeAssinatura_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+				return true;
+			} else {
+				iv_recebeAssinatura_4.setBackgroundDrawable(null);
+			}
+		
+			EditText et_assNome_4 = (EditText) ll_principal.findViewWithTag("et_assNome4");
+			if (et_assNome_4.getText().toString().isEmpty()) {
+				et_assNome_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_assNome_4.setBackgroundDrawable(null);
+			}
+
+			EditText et_assCargo_4 = (EditText) ll_principal.findViewWithTag("et_assCargo4");
+			if (et_assCargo_4.getText().toString().isEmpty()) {
+				et_assCargo_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_assCargo_4.setBackgroundDrawable(null);
+			}
+
+			EditText et_assRg_4 = (EditText) ll_principal.findViewWithTag("et_assRg4");
+			if (et_assRg_4.getText().toString().isEmpty()) {
+				et_assRg_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_assRg_4.setBackgroundDrawable(null);
+			}
+	
+			EditText et_asscpf_4 = (EditText) ll_principal.findViewWithTag("et_asscpf4");
+			if (et_asscpf_4.getText().toString().isEmpty()) {
+				et_asscpf_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_asscpf_4.setBackgroundDrawable(null);
+			}
+			
 
 			if (nomeActivity.equals("ContratoContaSIM")) {
 
 				ImageView iv_recebeRublica_2 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica2");
 				if (iv_recebeRublica_2.getDrawable() == null) {
-
 					iv_recebeRublica_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-					
 					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
-					campoVazio = true;
+					return true;
 				} else {
 					iv_recebeRublica_2.setBackgroundDrawable(null);
 				}
 
 				ImageView iv_recebeRublica_3 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica3");
 				if (iv_recebeRublica_3.getDrawable() == null) {
-
 					iv_recebeRublica_3.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
 					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
-					campoVazio = true;
+					return true;
 				} else {
 					iv_recebeRublica_3.setBackgroundDrawable(null);
 				}
 
-				comecaCom = 4;
+				
 			}
 		}
 
-		for (int numeroAssinatura = comecaCom; numeroAssinatura < TOTAL_ASSIGN_GLOBAL; numeroAssinatura++) {
-			
-			if (numeroAssinatura != 4 && act_tela.equals("1")) {
-
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				if (iv_recebeAssinatura_0.getDrawable() == null) {
-
-					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					iv_recebeAssinatura_0.setBackgroundDrawable(null);
-				}
-				
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				if (et_assNome_0.getText().toString().isEmpty()) {
-
-					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assNome_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				if (et_assCargo_0.getText().toString().isEmpty()) {
-
-					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assCargo_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				if (et_assRg_0.getText().toString().isEmpty()) {
-
-					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assRg_0.setBackgroundDrawable(null);
-				}
-		
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-				if (et_asscpf_0.getText().toString().isEmpty()) {
-	
-					et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-	
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-	
-					campoVazio = true;
-					break;
-				} else {
-					et_asscpf_0.setBackgroundDrawable(null);
-				}
-				
-			}
-			
-			if (numeroAssinatura != 0 && act_tela.equals("2")) {
-				
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				if (iv_recebeAssinatura_0.getDrawable() == null) {
-
-					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					iv_recebeAssinatura_0.setBackgroundDrawable(null);
-				}
-				
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				if (et_assNome_0.getText().toString().isEmpty()) {
-
-					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assNome_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				if (et_assCargo_0.getText().toString().isEmpty()) {
-
-					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assCargo_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				if (et_assRg_0.getText().toString().isEmpty()) {
-
-					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assRg_0.setBackgroundDrawable(null);
-				}
-				
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-
-				if (et_asscpf_0.getText().toString().isEmpty()) {
-
-					et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_asscpf_0.setBackgroundDrawable(null);
-				}
-			}
-
-			if (numeroAssinatura != 2 && act_tela.equals("3")) {
-				
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				if (iv_recebeAssinatura_0.getDrawable() == null) {
-
-					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					iv_recebeAssinatura_0.setBackgroundDrawable(null);
-				}
-				
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				if (et_assNome_0.getText().toString().isEmpty()) {
-
-					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assNome_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				if (et_assCargo_0.getText().toString().isEmpty()) {
-
-					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assCargo_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				if (et_assRg_0.getText().toString().isEmpty()) {
-
-					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assRg_0.setBackgroundDrawable(null);
-				}
-			}
-			
-			if (numeroAssinatura != 0 && act_tela.equals("4")) {
-				
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				if (iv_recebeAssinatura_0.getDrawable() == null) {
-
-					iv_recebeAssinatura_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					iv_recebeAssinatura_0.setBackgroundDrawable(null);
-				}
-				
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				if (et_assNome_0.getText().toString().isEmpty()) {
-
-					et_assNome_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assNome_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				if (et_assCargo_0.getText().toString().isEmpty()) {
-
-					et_assCargo_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assCargo_0.setBackgroundDrawable(null);
-				}
-
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				if (et_assRg_0.getText().toString().isEmpty()) {
-
-					et_assRg_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_assRg_0.setBackgroundDrawable(null);
-				}
-				
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-
-				if (et_asscpf_0.getText().toString().isEmpty()) {
-
-					et_asscpf_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-
-					new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
-
-					campoVazio = true;
-					break;
-				} else {
-					et_asscpf_0.setBackgroundDrawable(null);
-				}
-			}
-
-		}
-
-		return campoVazio;
+		return false;
 	}
 
-	public List<Assinatura> procuraAssinaturasEpopulaLista(LinearLayout ll_rubrica, LinearLayout ll_principal,
-			int TOTAL_ASSIGN_GLOBAL, boolean ehContratoContaSIM, String act_telas) {
-
-		int comecaCom = 0;
+	public List<Assinatura> procuraAssinaturasEpopulaListaContratoPadrao(LinearLayout ll_rubrica, LinearLayout ll_principal, boolean ehContratoContaSIM) {
 
 		List<Assinatura> listaComAssinaturas = new ArrayList<Assinatura>();
 
 		if (ll_rubrica != null) {
 
 			ImageView iv_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
-			Assinatura ass_0 = new Assinatura();
-			ass_0.setRecebeAssinatura(iv_0.getDrawable());
-			listaComAssinaturas.add(ass_0);
+			Assinatura assinatura_0 = new Assinatura();
+					   assinatura_0.setRecebeAssinatura(iv_0.getDrawable());
+			listaComAssinaturas.add(assinatura_0);
 
 			ImageView iv_1 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica1");
-			Assinatura ass_1 = new Assinatura();
-			ass_1.setRecebeAssinatura(iv_1.getDrawable());
-			listaComAssinaturas.add(ass_1);
+			Assinatura assinatura_1 = new Assinatura();
+					   assinatura_1.setRecebeAssinatura(iv_1.getDrawable());
+			listaComAssinaturas.add(assinatura_1);
 
-			comecaCom = 2;
 
 			if (ehContratoContaSIM) {
 
@@ -776,121 +557,164 @@ public class ActContrato {
 				Assinatura ass_3 = new Assinatura();
 				ass_3.setRecebeAssinatura(iv_3.getDrawable());
 				listaComAssinaturas.add(ass_3);
-
-				comecaCom = 4;
+	
 			}
 		}
 
-		for (int numeroAssinatura = comecaCom; numeroAssinatura < TOTAL_ASSIGN_GLOBAL; numeroAssinatura++) {
 
-			Assinatura assinatura_0 = new Assinatura();
-			if (numeroAssinatura != 4 && act_telas.equals("1")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				assinatura_0.setRecebeAssinatura(iv_recebeAssinatura_0.getDrawable());
-				TextView tv_assRazaoSocial = (TextView) ll_principal
-						.findViewWithTag("tv_assRazaoSocial" + numeroAssinatura);
-				assinatura_0.setRazaoSocial(tv_assRazaoSocial.getText().toString());
+			Assinatura assinatura_3 = new Assinatura();
+				
+				ImageView iv_recebeAssinatura_3 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura3");
+				if(iv_recebeAssinatura_3 != null) {					
+					assinatura_3.setRecebeAssinatura(iv_recebeAssinatura_3.getDrawable());
+				}
+	
+				EditText et_assNome_3 = (EditText) ll_principal.findViewWithTag("et_assNome3");
+				if(et_assNome_3 != null) {					
+					assinatura_3.setNome(et_assNome_3.getText().toString());
+				}
 
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				assinatura_0.setNome(et_assNome_0.getText().toString());
+				EditText et_assRg_3 = (EditText) ll_principal.findViewWithTag("et_assRg3");
+				if(et_assRg_3 != null) {					
+					assinatura_3.setRg(et_assRg_3.getText().toString());
+				}	
 
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				assinatura_0.setCargo(et_assCargo_0.getText().toString());
+				EditText et_asscpf_3 = (EditText) ll_principal.findViewWithTag("et_asscpf3");
+				if(et_asscpf_3 != null) {					
+					assinatura_3.setCpf(et_asscpf_3.getText().toString());
+				}
 
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				assinatura_0.setRg(et_assRg_0.getText().toString());
+			listaComAssinaturas.add(assinatura_3);
 
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-				assinatura_0.setCpf(et_asscpf_0.getText().toString());
+			
+			Assinatura assinatura_4 = new Assinatura();
+			
+			ImageView iv_recebeAssinatura_4 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura4");
+			assinatura_4.setRecebeAssinatura(iv_recebeAssinatura_4.getDrawable());
+			
+			TextView tv_assRazaoSocial_4 = (TextView) ll_principal.findViewWithTag("tv_assRazaoSocial4");
+			assinatura_4.setRazaoSocial(tv_assRazaoSocial_4.getText().toString());
 
-				// EditText et_assCpf_0 = (EditText)
-				// ll_principal.findViewWithTag("et_assCpf"+numeroAssinatura);
-				// assinatura_0.setCpf(et_assCpf_0.getText().toString());
+			EditText et_assNome_4 = (EditText) ll_principal.findViewWithTag("et_assNome4");
+			assinatura_4.setNome(et_assNome_4.getText().toString());
 
-			}
-			if (numeroAssinatura != 0 && act_telas.equals("2")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				assinatura_0.setRecebeAssinatura(iv_recebeAssinatura_0.getDrawable());
-				TextView tv_assRazaoSocial = (TextView) ll_principal
-						.findViewWithTag("tv_assRazaoSocial" + numeroAssinatura);
-				assinatura_0.setRazaoSocial(tv_assRazaoSocial.getText().toString());
+			EditText et_assCargo_4 = (EditText) ll_principal.findViewWithTag("et_assCargo4");
+			assinatura_4.setCargo(et_assCargo_4.getText().toString());
 
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				assinatura_0.setNome(et_assNome_0.getText().toString());
+			EditText et_assRg_4 = (EditText) ll_principal.findViewWithTag("et_assRg4");
+			assinatura_4.setRg(et_assRg_4.getText().toString());
 
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				assinatura_0.setCargo(et_assCargo_0.getText().toString());
+			EditText et_asscpf_4 = (EditText) ll_principal.findViewWithTag("et_asscpf4");
+			assinatura_4.setCpf(et_asscpf_4.getText().toString());
 
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				assinatura_0.setRg(et_assRg_0.getText().toString());
+		listaComAssinaturas.add(assinatura_4);
 
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-				assinatura_0.setCpf(et_asscpf_0.getText().toString());
-
-				// EditText et_assCpf_0 = (EditText)
-				// ll_principal.findViewWithTag("et_assCpf"+numeroAssinatura);
-				// assinatura_0.setCpf(et_assCpf_0.getText().toString());
-
-			}
-			if (numeroAssinatura != 2 && act_telas.equals("3")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				assinatura_0.setRecebeAssinatura(iv_recebeAssinatura_0.getDrawable());
-				TextView tv_assRazaoSocial = (TextView) ll_principal
-						.findViewWithTag("tv_assRazaoSocial" + numeroAssinatura);
-				assinatura_0.setRazaoSocial(tv_assRazaoSocial.getText().toString());
-
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				assinatura_0.setNome(et_assNome_0.getText().toString());
-
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				assinatura_0.setCargo(et_assCargo_0.getText().toString());
-
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				assinatura_0.setRg(et_assRg_0.getText().toString());
-
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-				assinatura_0.setCpf(et_asscpf_0.getText().toString());
-
-				// EditText et_assCpf_0 = (EditText)
-				// ll_principal.findViewWithTag("et_assCpf"+numeroAssinatura);
-				// assinatura_0.setCpf(et_assCpf_0.getText().toString());
-
-			}
-			if (numeroAssinatura != 0 && act_telas.equals("4")) {
-				ImageView iv_recebeAssinatura_0 = (ImageView) ll_principal
-						.findViewWithTag("iv_recebeAssinatura" + numeroAssinatura);
-				assinatura_0.setRecebeAssinatura(iv_recebeAssinatura_0.getDrawable());
-				TextView tv_assRazaoSocial = (TextView) ll_principal
-						.findViewWithTag("tv_assRazaoSocial" + numeroAssinatura);
-				assinatura_0.setRazaoSocial(tv_assRazaoSocial.getText().toString());
-
-				EditText et_assNome_0 = (EditText) ll_principal.findViewWithTag("et_assNome" + numeroAssinatura);
-				assinatura_0.setNome(et_assNome_0.getText().toString());
-
-				EditText et_assCargo_0 = (EditText) ll_principal.findViewWithTag("et_assCargo" + numeroAssinatura);
-				assinatura_0.setCargo(et_assCargo_0.getText().toString());
-
-				EditText et_assRg_0 = (EditText) ll_principal.findViewWithTag("et_assRg" + numeroAssinatura);
-				assinatura_0.setRg(et_assRg_0.getText().toString());
-
-				EditText et_asscpf_0 = (EditText) ll_principal.findViewWithTag("et_asscpf" + numeroAssinatura);
-				assinatura_0.setCpf(et_asscpf_0.getText().toString());
-
-				// EditText et_assCpf_0 = (EditText)
-				// ll_principal.findViewWithTag("et_assCpf"+numeroAssinatura);
-				// assinatura_0.setCpf(et_assCpf_0.getText().toString());
-
-			}
-
-			listaComAssinaturas.add(assinatura_0);
-
+		Assinatura assinatura_5 = new Assinatura();
+		
+		ImageView iv_recebeAssinatura_5 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura5");
+		if(iv_recebeAssinatura_5 != null) {					
+			assinatura_5.setRecebeAssinatura(iv_recebeAssinatura_5.getDrawable());
 		}
+
+		EditText et_assNome_5 = (EditText) ll_principal.findViewWithTag("et_assNome5");
+		if(et_assNome_5 != null) {					
+			assinatura_5.setNome(et_assNome_5.getText().toString());
+		}
+
+		EditText et_assRg_5 = (EditText) ll_principal.findViewWithTag("et_assRg5");
+		if(et_assRg_5 != null) {					
+			assinatura_5.setRg(et_assRg_5.getText().toString());
+		}	
+
+		EditText et_asscpf_5 = (EditText) ll_principal.findViewWithTag("et_asscpf5");
+		if(et_asscpf_5 != null) {					
+			assinatura_5.setCpf(et_asscpf_5.getText().toString());
+		}
+
+		listaComAssinaturas.add(assinatura_5);
 
 		return listaComAssinaturas;
 	}
+	
+	public List<Assinatura> procuraAssinaturasEpopulaListaAnexoPadrao(LinearLayout ll_principal) {
+
+		List<Assinatura> listaComAssinaturas = new ArrayList<Assinatura>();
+
+			Assinatura assinatura_1 = new Assinatura();
+				
+				ImageView iv_recebeAssinatura_1 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura1");
+				//if(iv_recebeAssinatura_1 != null) {					
+					assinatura_1.setRecebeAssinatura(iv_recebeAssinatura_1.getDrawable());
+				//}
+	
+				EditText et_assNome_1 = (EditText) ll_principal.findViewWithTag("et_assNome1");
+				//if(et_assNome_1 != null) {					
+					assinatura_1.setNome(et_assNome_1.getText().toString());
+				//}
+
+				EditText et_assRg_1 = (EditText) ll_principal.findViewWithTag("et_assRg1");
+				//if(et_assRg_1 != null) {					
+					assinatura_1.setRg(et_assRg_1.getText().toString());
+				//}	
+
+				EditText et_asscpf_1 = (EditText) ll_principal.findViewWithTag("et_asscpf1");
+				//if(et_asscpf_1 != null) {					
+					assinatura_1.setCpf(et_asscpf_1.getText().toString());
+				//}
+
+			listaComAssinaturas.add(assinatura_1);
+
+			
+			Assinatura assinatura_2 = new Assinatura();
+			
+			ImageView iv_recebeAssinatura_2 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura2");
+			assinatura_2.setRecebeAssinatura(iv_recebeAssinatura_2.getDrawable());
+			
+			TextView tv_assRazaoSocial_2 = (TextView) ll_principal.findViewWithTag("tv_assRazaoSocial2");
+			assinatura_2.setRazaoSocial(tv_assRazaoSocial_2.getText().toString());
+
+			EditText et_assNome_2 = (EditText) ll_principal.findViewWithTag("et_assNome2");
+			assinatura_2.setNome(et_assNome_2.getText().toString());
+
+			EditText et_assCargo_2 = (EditText) ll_principal.findViewWithTag("et_assCargo2");
+			assinatura_2.setCargo(et_assCargo_2.getText().toString());
+
+			EditText et_assRg_2 = (EditText) ll_principal.findViewWithTag("et_assRg2");
+			assinatura_2.setRg(et_assRg_2.getText().toString());
+
+			EditText et_asscpf_2 = (EditText) ll_principal.findViewWithTag("et_asscpf2");
+			assinatura_2.setCpf(et_asscpf_2.getText().toString());
+
+		listaComAssinaturas.add(assinatura_2);
+
+		Assinatura assinatura_3 = new Assinatura();
+		
+		ImageView iv_recebeAssinatura_3 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura3");
+		//if(iv_recebeAssinatura_3 != null) {					
+			assinatura_3.setRecebeAssinatura(iv_recebeAssinatura_3.getDrawable());
+		//}
+
+		EditText et_assNome_3 = (EditText) ll_principal.findViewWithTag("et_assNome3");
+		//if(et_assNome_3 != null) {					
+			assinatura_3.setNome(et_assNome_3.getText().toString());
+		//}
+
+		EditText et_assRg_3 = (EditText) ll_principal.findViewWithTag("et_assRg3");
+		//if(et_assRg_3 != null) {					
+			assinatura_3.setRg(et_assRg_3.getText().toString());
+		//}	
+
+		EditText et_asscpf_3 = (EditText) ll_principal.findViewWithTag("et_asscpf3");
+		//if(et_asscpf_3 != null) {					
+			assinatura_3.setCpf(et_asscpf_3.getText().toString());
+		//}
+
+		listaComAssinaturas.add(assinatura_3);
+
+		return listaComAssinaturas;
+	}
+
+	
 	  public static boolean isASign(char c) {
 	        if (c == '.' || c == '-' || c == '/' || c == '(' || c == ')' || c == ',' || c == ' ') {
 	            return true;

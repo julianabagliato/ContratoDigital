@@ -31,14 +31,6 @@ import mobile.contratodigital.util.ActContrato;
 import mobile.contratodigital.util.TelaBuilder;
 import sharedlib.contratodigital.model.Movimento;
 
-/**
- * Classe do tipo activity usada para trabalhar o anexo contaSIM
- * 
- * @author Edição- Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 &
- *         Criação- Fernando Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ActivityAnexoContaSIM extends Activity {
 
 	private Context context;
@@ -158,7 +150,8 @@ public class ActivityAnexoContaSIM extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				if (!contratoAct.temCamposVazios(null, ll_principal, TOTAL_ASSIGN_GLOBAL, "AnexoContaSIM", "2")) {
+				if (!contratoAct.temCamposVaziosContratoPadrao(null, ll_principal, "AnexoContaSIM")) {
+					
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 					alertDialog.setMessage("Deseja Realmente Gerar Contrato?")
 							.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
@@ -169,8 +162,8 @@ public class ActivityAnexoContaSIM extends Activity {
 
 									boolean ehContratoContaSIM = false;
 
-									List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaLista(
-											null, ll_principal, TOTAL_ASSIGN_GLOBAL, ehContratoContaSIM, "2");
+									List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(
+											null, ll_principal, ehContratoContaSIM);
 
 									criaArquivoWord(listaComAssinaturas);
 									criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);
@@ -240,61 +233,20 @@ public class ActivityAnexoContaSIM extends Activity {
 			insereMovimento(dao, movimento2);
 			}
 		}
-		/*
-		 * Movimento movimento2 = new Movimento(); movimento2
-		 * =listaComMovimentos.get(0) ;
-		 * movimento2.setNr_contrato(Numero_contrato); movimento2.setStatus(0);
-		 * 
-		 * Movimento movimento3 = new Movimento(); movimento3 =
-		 * listaComMovimentos.get(1);
-		 * movimento3.setNr_contrato(Numero_contrato);
-		 * 
-		 * Movimento movimento4 = new Movimento(); movimento4 =
-		 * listaComMovimentos.get(2);
-		 * movimento4.setNr_contrato(Numero_contrato);
-		 * 
-		 * Movimento movimento5 = new Movimento(); movimento5 =
-		 * listaComMovimentos.get(3);
-		 * movimento5.setNr_contrato(Numero_contrato);
-		 * 
-		 * Movimento movimento6 = new Movimento(); movimento6 =
-		 * listaComMovimentos.get(4);
-		 * movimento6.setNr_contrato(Numero_contrato);
-		 * 
-		 * Movimento movimento7 = new Movimento(); movimento7 =
-		 * listaComMovimentos.get(5);
-		 * movimento7.setNr_contrato(Numero_contrato);
-		 * 
-		 * 
-		 * preencheNoObjetoOcampoInformacao(movimento2, Numero_contrato);
-		 * preencheNoObjetoOcampoInformacao(movimento3, Numero_contrato);
-		 * preencheNoObjetoOcampoInformacao(movimento4, Numero_contrato);
-		 * preencheNoObjetoOcampoInformacao(movimento5, Numero_contrato);
-		 * preencheNoObjetoOcampoInformacao(movimento6, Numero_contrato);
-		 * preencheNoObjetoOcampoInformacao(movimento7, Numero_contrato);
-		 * 
-		 * 
-		 * insereMovimento(dao, movimento2); insereMovimento(dao, movimento3);
-		 * insereMovimento(dao, movimento4); insereMovimento(dao, movimento5);
-		 * insereMovimento(dao, movimento6); insereMovimento(dao, movimento7);
-		 */
 
 		try {
 			Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			Runtime.getRuntime().exec("cmd /c rd k:\\" + deletar + " /s /q");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

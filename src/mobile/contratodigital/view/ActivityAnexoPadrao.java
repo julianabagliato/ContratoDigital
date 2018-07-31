@@ -42,7 +42,6 @@ public class ActivityAnexoPadrao extends Activity {
 	private String Caminho;
 	//private Movimento movimento1;
 	private String Numero_contrato;
-	private static final int TOTAL_ASSIGN_GLOBAL = 4;
 	private ArrayList<Movimento> listaComMovimentos;
 	private String Cliente ="";
 	private String cCargo ="";
@@ -65,16 +64,17 @@ public class ActivityAnexoPadrao extends Activity {
 
 		//movimento1 = (Movimento) bundle.getSerializable("movimento");
 		Numero_contrato= bundle.getString("Numero");
+		
 		 Cliente = bundle.getString("Cliente");
 		 cCargo  = bundle.getString("cCargo");
 		 cRG  = bundle.getString("cRG");
 		 cCpf  = bundle.getString("cCpf");
+		 
 		 Testemunha1  = bundle.getString("Testemunha1");
-		 t1Cargo  = bundle.getString("t1Cargo");
 		 t1RG  = bundle.getString("t1RG");
 		 t1Cpf  = bundle.getString("t1Cpf");
+		 
 		 Testemunha2  = bundle.getString("Testemunha2");
-		 t2Cargo  = bundle.getString("t2Cargo");
 		 t2RG  = bundle.getString("t2RG");
 		 t2Cpf  = bundle.getString("t2Cpf");
 		
@@ -152,7 +152,8 @@ public class ActivityAnexoPadrao extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				if(!contratoAct.temCamposVazios(null, ll_principal, TOTAL_ASSIGN_GLOBAL, "AnexoPadrao","4")){
+				if(!contratoAct.temCamposVaziosAnexoPadrao(ll_principal)){
+					
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 					alertDialog.setMessage("Deseja Realmente Gerar Contrato?")
 							.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
@@ -163,16 +164,14 @@ public class ActivityAnexoPadrao extends Activity {
 									
 									boolean ehContratoContaSIM = false;
 
-									List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaLista(null, ll_principal, TOTAL_ASSIGN_GLOBAL, ehContratoContaSIM,"4");
+									List<Assinatura> listaComAssinaturas = contratoAct
+																			.procuraAssinaturasEpopulaListaAnexoPadrao(ll_principal);
 									
 									criaArquivoWord(listaComAssinaturas);
 									criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);
 									
 									fechaActivity();
 									//metodosContratoAct.chamaVisualizadorBaseadoExtensao(context, srcContrato, "pdf");
-
-
-						
 								}
 							})
 							.setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -237,66 +236,21 @@ public class ActivityAnexoPadrao extends Activity {
 
 			insereMovimento(dao, movimento2);
 				}
-			}/*
-			
-			Movimento movimento2 = new Movimento();
-			movimento2 =listaComMovimentos.get(0) ;					
-			movimento2.setNr_contrato(Numero_contrato);
-			movimento2.setStatus(0);
-			
-			Movimento movimento3 = new Movimento();
-			movimento3 = listaComMovimentos.get(1);
-			movimento3.setNr_contrato(Numero_contrato);
-
-			Movimento movimento4 = new Movimento();
-			movimento4 = listaComMovimentos.get(2);
-			movimento4.setNr_contrato(Numero_contrato);
-
-			Movimento movimento5 = new Movimento();
-			movimento5 = listaComMovimentos.get(3);
-			movimento5.setNr_contrato(Numero_contrato);
-
-			Movimento movimento6 = new Movimento();
-			movimento6 = listaComMovimentos.get(4);
-			movimento6.setNr_contrato(Numero_contrato);
-
-			Movimento movimento7 = new Movimento();
-			movimento7 = listaComMovimentos.get(5);
-			movimento7.setNr_contrato(Numero_contrato);
-			  
-		
-			preencheNoObjetoOcampoInformacao(movimento2, Numero_contrato);
-			preencheNoObjetoOcampoInformacao(movimento3, Numero_contrato);
-			preencheNoObjetoOcampoInformacao(movimento4, Numero_contrato);
-			preencheNoObjetoOcampoInformacao(movimento5, Numero_contrato);
-			preencheNoObjetoOcampoInformacao(movimento6, Numero_contrato);
-			preencheNoObjetoOcampoInformacao(movimento7, Numero_contrato);
-
-			
-			insereMovimento(dao, movimento2);
-			insereMovimento(dao, movimento3);
-			insereMovimento(dao, movimento4);
-			insereMovimento(dao, movimento5);
-			insereMovimento(dao, movimento6);
-			insereMovimento(dao, movimento7);
-*/
+			}
 
 		  try {
 			Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		  try {
 			Runtime.getRuntime().exec("cmd /c rd k:\\"+ deletar +" /s /q");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		  try {
 			Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
