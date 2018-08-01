@@ -180,8 +180,7 @@ public class ActivityContratoPadrao extends Activity {
 					
 					boolean ehContratoContaSIM = false;
 
-						List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(ll_rubrica, ll_principal, 
-																						ehContratoContaSIM);
+						List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(ll_rubrica, ll_principal);
 					
 						criaArquivoWord(listaComAssinaturas);
 						criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);
@@ -217,13 +216,13 @@ public class ActivityContratoPadrao extends Activity {
 	
 	private void chamaActivityAnexo(List<Assinatura> listaComAssinaturas) {
 		
-		Movimento mov_informacoesDoCliente = listaComMovimentos.get(SequenciaMovAddedEmLista.mov_informacoesCliente.getPosicao());
+		//Movimento mov_informacoesDoCliente = listaComMovimentos.get(SequenciaMovAddedEmLista.mov_informacoesCliente.getPosicao());
 		
-	   		   Intent intent = new Intent(context, ActivityAnexoPadrao.class);
-	   			      intent = contratoAct.preencheIntent(intent, srcContrato, listaComMovimentos);	 
-	   			      
+	   		   Intent intent = new Intent(context, ActivityAnexoPadrao.class);	   			      
+						intent.putExtra("" + Tag.srcContrato, srcContrato);
+						intent.putExtra("" + Tag.listaComMovimentos, listaComMovimentos);
+
 	   			Bundle bundle = new Bundle();	
-					   bundle.putSerializable("movimento", mov_informacoesDoCliente);	
 					   bundle.putString("Numero", nr_contrato);
 
 					   bundle.putString("Testemunha1", listaComAssinaturas.get(2).getNome());

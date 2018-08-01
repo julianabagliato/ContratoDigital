@@ -37,61 +37,32 @@ public class ActivityAnexoContaSIM extends Activity {
 	private TelaBuilder telaBuilder;
 	private ActContrato contratoAct;
 	private ActAnexo anexoAct;
-	private String src;
-	private static final int TOTAL_ASSIGN_GLOBAL = 4;
+	private String srcContratoReplaceParaAnexoContaSIM;
 	private ArrayList<Movimento> listaComMovimentos;
-	private String Caminho;
-	private Movimento movimento1;
-	private String Numero_contrato;
-	private String Cliente = "";
-	private String cCargo = "";
-	private String cRG = "";
-	private String cCpf = "";
-	private String Testemunha1 = "";
-	private String t1Cargo = "";
-	private String t1RG = "";
-	private String t1Cpf = "";
-	private String Testemunha2 = "";
-	private String t2Cargo = "";
-	private String t2RG = "";
-	private String t2Cpf = "";
+	private ArrayList<Assinatura> listaComAssinaturas;
+	private String srcContratoReplaceRetiradoContratoContaSIM;
+	private String numeroContrato;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Bundle bundle = getIntent().getExtras();
+		Intent intent = getIntent();
 
-		movimento1 = (Movimento) bundle.getSerializable("movimento");
-		Numero_contrato = bundle.getString("Numero");
-		Cliente = bundle.getString("Cliente");
-		cCargo = bundle.getString("cCargo");
-		cRG = bundle.getString("cRG");
-		cCpf = bundle.getString("cCpf");
-		Testemunha1 = bundle.getString("Testemunha1");
-		t1Cargo = bundle.getString("t1Cargo");
-		t1RG = bundle.getString("t1RG");
-		t1Cpf = bundle.getString("t1Cpf");
-		Testemunha2 = bundle.getString("Testemunha2");
-		t2Cargo = bundle.getString("t2Cargo");
-		t2RG = bundle.getString("t2RG");
-		t2Cpf = bundle.getString("t2Cpf");
+		numeroContrato = intent.getStringExtra("Numero");
+		String srcContrato = intent.getStringExtra(""+Tag.srcContrato);
+		srcContratoReplaceRetiradoContratoContaSIM = srcContrato.replace("/ContratoContaSIM", "");
+		srcContratoReplaceParaAnexoContaSIM = srcContrato.replace("ContratoContaSIM", "AnexoContaSIM");
 
+		listaComMovimentos = (ArrayList<Movimento>) intent.getSerializableExtra("" + Tag.listaComMovimentos);
+		listaComAssinaturas = (ArrayList<Assinatura>) intent.getSerializableExtra("listaComAssinaturas");
+		
 		context = ActivityAnexoContaSIM.this;
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
 		actionBar.setTitle("Conta SIM Anexo I");
-
-		Intent intent = getIntent();
-
-		String srcContrato = intent.getStringExtra("" + Tag.srcContrato);
-
-		Caminho = srcContrato.replace("/ContratoContaSIM", "");
-		src = srcContrato.replace("ContratoContaSIM", "AnexoContaSIM");
-
-		listaComMovimentos = (ArrayList<Movimento>) intent.getSerializableExtra("" + Tag.listaComMovimentos);
-
+		
 		telaBuilder = new TelaBuilder(context);
 		contratoAct = new ActContrato(context);
 		anexoAct = new ActAnexo();
@@ -122,6 +93,19 @@ public class ActivityAnexoContaSIM extends Activity {
 
 	private void criaAssinaturasBotaoRodape(final LinearLayout ll_principal, String numeroPagina) {
 
+		String testemunha1 = listaComAssinaturas.get(4).getNome();
+		String t1RG = listaComAssinaturas.get(4).getRg();
+		String t1Cpf = listaComAssinaturas.get(4).getCpf();
+   		
+		String nomeCliente = listaComAssinaturas.get(5).getNome();
+		String cCargo = listaComAssinaturas.get(5).getCargo();
+		String cRG = listaComAssinaturas.get(5).getRg();
+		String cCpf = listaComAssinaturas.get(5).getCpf();
+	   
+		String testemunha2 = listaComAssinaturas.get(6).getNome();
+		String t2RG = listaComAssinaturas.get(6).getRg();
+		String t2Cpf = listaComAssinaturas.get(6).getCpf();
+
 		// cria assinaturas:
 		LinearLayout ll_assinatura_coluna_holder = contratoAct.cria_ll_assinatura_coluna_holder(context);
 		final LinearLayout ll_assinatura_coluna_esquerda = contratoAct.cria_ll_assinatura_coluna_esquerd(context);
@@ -134,12 +118,12 @@ public class ActivityAnexoContaSIM extends Activity {
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda,
 				"FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", "Nome:", "0", "2", telaBuilder, "", "", "", "");
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_esquerda, "Testemunha", "Nome:", "1", "2",
-				telaBuilder, Testemunha1, t1Cargo, t1RG, t1Cpf);
+				telaBuilder, testemunha1, "", t1RG, t1Cpf);
 
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "CONDOMÍNIO", "Nome:", "2", "2",
-				telaBuilder, Cliente, cCargo, cRG, cCpf);
+				telaBuilder, nomeCliente, cCargo, cRG, cCpf);
 		contratoAct.criaEadicionaFormularioDeAssinatura(ll_assinatura_coluna_direita, "Testemunha", "Nome:", "3", "2",
-				telaBuilder, Testemunha2, t2Cargo, t2RG, t2Cpf);
+				telaBuilder, testemunha2, "", t2RG, t2Cpf);
 		// cria assinaturas:
 
 		ll_principal.addView(contratoAct.devolve_TV_numeroPagina(numeroPagina));
@@ -150,7 +134,7 @@ public class ActivityAnexoContaSIM extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				if (!contratoAct.temCamposVaziosContratoPadrao(null, ll_principal, "AnexoContaSIM")) {
+				if (!contratoAct.temCamposVaziosAnexo(ll_principal)) {
 					
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 					alertDialog.setMessage("Deseja Realmente Gerar Contrato?")
@@ -162,8 +146,7 @@ public class ActivityAnexoContaSIM extends Activity {
 
 									boolean ehContratoContaSIM = false;
 
-									List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(
-											null, ll_principal, ehContratoContaSIM);
+									List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaAnexo(ll_principal);
 
 									criaArquivoWord(listaComAssinaturas);
 									criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);
@@ -190,7 +173,7 @@ public class ActivityAnexoContaSIM extends Activity {
 
 	private void criaArquivoWord(List<Assinatura> listaComAssinaturas) {
 
-		String novoSource = src + ".doc";
+		String novoSource = srcContratoReplaceParaAnexoContaSIM + ".doc";
 
 		GeraWord_anexoContaSIM geraWord_anexoContaSIM = new GeraWord_anexoContaSIM(context);
 		geraWord_anexoContaSIM.criaWord(novoSource, listaComMovimentos, listaComAssinaturas);
@@ -199,7 +182,7 @@ public class ActivityAnexoContaSIM extends Activity {
 
 	private void criaArquivoPDF(List<Assinatura> listaComAssinaturas, boolean ehContratoContaSIM) {
 
-		String novoSource = src + ".pdf";
+		String novoSource = srcContratoReplaceParaAnexoContaSIM + ".pdf";
 
 		try {
 
@@ -213,9 +196,9 @@ public class ActivityAnexoContaSIM extends Activity {
 		}
 		String Num = String.valueOf(listaComMovimentos.get(SequenciaMovAddedEmLista.mov_informacoesCliente.getPosicao()).getInformacao_1() + "_"
 								  + listaComMovimentos.get(SequenciaMovAddedEmLista.mov_informacoesCliente.getPosicao()).getInformacao_4().replace("/", "-"));
-		File Antigo_caminho = new File(Caminho);
-		File novoCaminho = new File(Caminho.replace(Num, "_" + Numero_contrato));
-		String deletar = Caminho.replace("_" + Numero_contrato, Num);
+		File Antigo_caminho = new File(srcContratoReplaceRetiradoContratoContaSIM);
+		File novoCaminho = new File(srcContratoReplaceRetiradoContratoContaSIM.replace(Num, "_" + numeroContrato));
+		String deletar = srcContratoReplaceRetiradoContratoContaSIM.replace("_" + numeroContrato, Num);
 
 		Antigo_caminho.renameTo(novoCaminho);
 
@@ -226,9 +209,9 @@ public class ActivityAnexoContaSIM extends Activity {
 			if (listaComMovimentos.get(i) != null){
 			Movimento movimento2 = new Movimento();
 			movimento2 = listaComMovimentos.get(i);
-			movimento2.setNr_contrato(Numero_contrato);
+			movimento2.setNr_contrato(numeroContrato);
 			movimento2.setStatus(0);
-			preencheNoObjetoOcampoInformacao(movimento2, Numero_contrato);
+			preencheNoObjetoOcampoInformacao(movimento2, numeroContrato);
 
 			insereMovimento(dao, movimento2);
 			}

@@ -63,14 +63,6 @@ public class ActContrato {
 		return botao;
 	}
 
-	public Intent preencheIntent(Intent intent, String srcContrato, ArrayList<Movimento> listaComMovimentos) {
-
-		intent.putExtra("" + Tag.srcContrato, srcContrato);
-		intent.putExtra("" + Tag.listaComMovimentos, listaComMovimentos);
-
-		return intent;
-	}
-
 	public LinearLayout cria_ll_assinatura_coluna_holder(Context context) {
 
 		LinearLayout ll_assinatura_coluna_holder = new LinearLayout(context);
@@ -411,23 +403,7 @@ public class ActContrato {
 		return ll_imgAssinaturaHolder;
 	}
 
-	public boolean temCamposVaziosAnexoPadrao(LinearLayout ll_principal) {
-	
-		ImageView iv_recebeAssinatura_2 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura2");
-		if (iv_recebeAssinatura_2.getDrawable() == null) {
-			iv_recebeAssinatura_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-			new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-			return true;
-		} else {
-			iv_recebeAssinatura_2.setBackgroundDrawable(null);
-		}
-
-		return false;
-	}
-	
 	public boolean temCamposVaziosContratoPadrao(LinearLayout ll_rubrica, LinearLayout ll_principal, String nomeActivity) {
-		
-		if (ll_rubrica != null) {
 
 			ImageView iv_recebeRublica_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
 			if (iv_recebeRublica_0.getDrawable() == null) {
@@ -500,40 +476,101 @@ public class ActContrato {
 			} else {
 				et_asscpf_4.setBackgroundDrawable(null);
 			}
-			
-
-			if (nomeActivity.equals("ContratoContaSIM")) {
-
-				ImageView iv_recebeRublica_2 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica2");
-				if (iv_recebeRublica_2.getDrawable() == null) {
-					iv_recebeRublica_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-					return true;
-				} else {
-					iv_recebeRublica_2.setBackgroundDrawable(null);
-				}
-
-				ImageView iv_recebeRublica_3 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica3");
-				if (iv_recebeRublica_3.getDrawable() == null) {
-					iv_recebeRublica_3.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
-					new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
-					return true;
-				} else {
-					iv_recebeRublica_3.setBackgroundDrawable(null);
-				}
-
-				
-			}
-		}
 
 		return false;
 	}
 
-	public List<Assinatura> procuraAssinaturasEpopulaListaContratoPadrao(LinearLayout ll_rubrica, LinearLayout ll_principal, boolean ehContratoContaSIM) {
+	public boolean temCamposVaziosContratoContaSIM(LinearLayout ll_rubrica, LinearLayout ll_principal) {
+		
+			ImageView iv_recebeRublica_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
+			if (iv_recebeRublica_0.getDrawable() == null) {
+				iv_recebeRublica_0.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+				return true;
+			} else {
+				iv_recebeRublica_0.setBackgroundDrawable(null);
+			}
+
+			ImageView iv_recebeRublica_1 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica1");
+			if (iv_recebeRublica_1.getDrawable() == null) {
+				iv_recebeRublica_1.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+				return true;
+			} else {
+				iv_recebeRublica_1.setBackgroundDrawable(null);
+			}
+
+			ImageView iv_recebeRublica_2 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica2");
+			if (iv_recebeRublica_2.getDrawable() == null) {
+				iv_recebeRublica_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+				return true;
+			} else {
+				iv_recebeRublica_2.setBackgroundDrawable(null);
+			}
+
+			ImageView iv_recebeRublica_3 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica3");
+			if (iv_recebeRublica_3.getDrawable() == null) {
+				iv_recebeRublica_3.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+				return true;
+			} else {
+				iv_recebeRublica_3.setBackgroundDrawable(null);
+			}
+
+			
+			
+			ImageView iv_recebeAssinatura_4 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura6");
+			if (iv_recebeAssinatura_4.getDrawable() == null) {
+				iv_recebeAssinatura_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+				return true;
+			} else {
+				iv_recebeAssinatura_4.setBackgroundDrawable(null);
+			}
+		
+			EditText et_assNome_4 = (EditText) ll_principal.findViewWithTag("et_assNome6");
+			if (et_assNome_4.getText().toString().isEmpty()) {
+				et_assNome_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_assNome_4.setBackgroundDrawable(null);
+			}
+
+			EditText et_assCargo_4 = (EditText) ll_principal.findViewWithTag("et_assCargo6");
+			if (et_assCargo_4.getText().toString().isEmpty()) {
+				et_assCargo_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_assCargo_4.setBackgroundDrawable(null);
+			}
+
+			EditText et_assRg_4 = (EditText) ll_principal.findViewWithTag("et_assRg6");
+			if (et_assRg_4.getText().toString().isEmpty()) {
+				et_assRg_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_assRg_4.setBackgroundDrawable(null);
+			}
+	
+			EditText et_asscpf_4 = (EditText) ll_principal.findViewWithTag("et_asscpf6");
+			if (et_asscpf_4.getText().toString().isEmpty()) {
+				et_asscpf_4.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+				new MeuAlerta("Campos em vermelho são de preenchimento obrigatório", null, context).meuAlertaOk();
+				return true;
+			} else {
+				et_asscpf_4.setBackgroundDrawable(null);
+			}
+
+		return false;
+	}
+
+	public List<Assinatura> procuraAssinaturasEpopulaListaContratoPadrao(LinearLayout ll_rubrica, LinearLayout ll_principal) {
 
 		List<Assinatura> listaComAssinaturas = new ArrayList<Assinatura>();
-
-		if (ll_rubrica != null) {
 
 			ImageView iv_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
 			Assinatura assinatura_0 = new Assinatura();
@@ -544,45 +581,30 @@ public class ActContrato {
 			Assinatura assinatura_1 = new Assinatura();
 					   assinatura_1.setRecebeAssinatura(iv_1.getDrawable());
 			listaComAssinaturas.add(assinatura_1);
-
-
-			if (ehContratoContaSIM) {
-
-				ImageView iv_2 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica2");
-				Assinatura ass_2 = new Assinatura();
-				ass_2.setRecebeAssinatura(iv_2.getDrawable());
-				listaComAssinaturas.add(ass_2);
-
-				ImageView iv_3 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica3");
-				Assinatura ass_3 = new Assinatura();
-				ass_3.setRecebeAssinatura(iv_3.getDrawable());
-				listaComAssinaturas.add(ass_3);
 	
-			}
-		}
 
 
 			Assinatura assinatura_3 = new Assinatura();
 				
 				ImageView iv_recebeAssinatura_3 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura3");
-				if(iv_recebeAssinatura_3 != null) {					
+				//if(iv_recebeAssinatura_3 != null) {					
 					assinatura_3.setRecebeAssinatura(iv_recebeAssinatura_3.getDrawable());
-				}
+				//}
 	
 				EditText et_assNome_3 = (EditText) ll_principal.findViewWithTag("et_assNome3");
-				if(et_assNome_3 != null) {					
+			//	if(et_assNome_3 != null) {					
 					assinatura_3.setNome(et_assNome_3.getText().toString());
-				}
+			//	}
 
 				EditText et_assRg_3 = (EditText) ll_principal.findViewWithTag("et_assRg3");
-				if(et_assRg_3 != null) {					
+				//if(et_assRg_3 != null) {					
 					assinatura_3.setRg(et_assRg_3.getText().toString());
-				}	
+				//}	
 
 				EditText et_asscpf_3 = (EditText) ll_principal.findViewWithTag("et_asscpf3");
-				if(et_asscpf_3 != null) {					
+				//if(et_asscpf_3 != null) {					
 					assinatura_3.setCpf(et_asscpf_3.getText().toString());
-				}
+				//}
 
 			listaComAssinaturas.add(assinatura_3);
 
@@ -612,55 +634,161 @@ public class ActContrato {
 		Assinatura assinatura_5 = new Assinatura();
 		
 		ImageView iv_recebeAssinatura_5 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura5");
-		if(iv_recebeAssinatura_5 != null) {					
+		//if(iv_recebeAssinatura_5 != null) {					
 			assinatura_5.setRecebeAssinatura(iv_recebeAssinatura_5.getDrawable());
-		}
+		//}
 
 		EditText et_assNome_5 = (EditText) ll_principal.findViewWithTag("et_assNome5");
-		if(et_assNome_5 != null) {					
+		//if(et_assNome_5 != null) {					
 			assinatura_5.setNome(et_assNome_5.getText().toString());
-		}
+		//}
 
 		EditText et_assRg_5 = (EditText) ll_principal.findViewWithTag("et_assRg5");
-		if(et_assRg_5 != null) {					
+		//if(et_assRg_5 != null) {					
 			assinatura_5.setRg(et_assRg_5.getText().toString());
-		}	
+		//}	
 
 		EditText et_asscpf_5 = (EditText) ll_principal.findViewWithTag("et_asscpf5");
-		if(et_asscpf_5 != null) {					
+		//if(et_asscpf_5 != null) {					
 			assinatura_5.setCpf(et_asscpf_5.getText().toString());
-		}
+		//}
 
 		listaComAssinaturas.add(assinatura_5);
 
 		return listaComAssinaturas;
 	}
+
+	public ArrayList<Assinatura> procuraAssinaturasEpopulaListaContratoContaSIM(LinearLayout ll_rubrica, LinearLayout ll_principal) {
+
+		ArrayList<Assinatura> listaComAssinaturas = new ArrayList<Assinatura>();
+
+			ImageView iv_0 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica0");
+			Assinatura assinatura_0 = new Assinatura();
+					   assinatura_0.setRecebeAssinatura(iv_0.getDrawable());
+			listaComAssinaturas.add(assinatura_0);
+
+			ImageView iv_1 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica1");
+			Assinatura assinatura_1 = new Assinatura();
+					   assinatura_1.setRecebeAssinatura(iv_1.getDrawable());
+			listaComAssinaturas.add(assinatura_1);
+
+
+				ImageView iv_2 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica2");
+				Assinatura assinatura_2 = new Assinatura();
+				assinatura_2.setRecebeAssinatura(iv_2.getDrawable());
+				listaComAssinaturas.add(assinatura_2);
+
+				ImageView iv_3 = (ImageView) ll_rubrica.findViewWithTag("iv_recebeRubrica3");
+				Assinatura assinatura_3 = new Assinatura();
+				assinatura_3.setRecebeAssinatura(iv_3.getDrawable());
+				listaComAssinaturas.add(assinatura_3);
 	
-	public List<Assinatura> procuraAssinaturasEpopulaListaAnexoPadrao(LinearLayout ll_principal) {
+			
+
+
+			Assinatura assinatura_5 = new Assinatura();
+				
+				ImageView iv_recebeAssinatura_5 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura5");
+				assinatura_5.setRecebeAssinatura(iv_recebeAssinatura_5.getDrawable());
+	
+				EditText et_assNome_5 = (EditText) ll_principal.findViewWithTag("et_assNome5");
+				//if(et_assNome_3 != null) {					
+					assinatura_5.setNome(et_assNome_5.getText().toString());
+				//}
+
+				EditText et_assRg_5 = (EditText) ll_principal.findViewWithTag("et_assRg5");
+				//if(et_assRg_3 != null) {					
+					assinatura_5.setRg(et_assRg_5.getText().toString());
+				//}	
+
+				EditText et_asscpf_5 = (EditText) ll_principal.findViewWithTag("et_asscpf5");
+				//if(et_asscpf_3 != null) {					
+					assinatura_5.setCpf(et_asscpf_5.getText().toString());
+				//}
+
+			listaComAssinaturas.add(assinatura_5);
+
+			
+			Assinatura assinatura_6 = new Assinatura();
+			
+			ImageView iv_recebeAssinatura_6 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura6");
+			assinatura_6.setRecebeAssinatura(iv_recebeAssinatura_6.getDrawable());
+			
+			TextView tv_assRazaoSocial_6 = (TextView) ll_principal.findViewWithTag("tv_assRazaoSocial6");
+			assinatura_6.setRazaoSocial(tv_assRazaoSocial_6.getText().toString());
+
+			EditText et_assNome_6 = (EditText) ll_principal.findViewWithTag("et_assNome6");
+			assinatura_6.setNome(et_assNome_6.getText().toString());
+
+			EditText et_assCargo_6 = (EditText) ll_principal.findViewWithTag("et_assCargo6");
+			assinatura_6.setCargo(et_assCargo_6.getText().toString());
+
+			EditText et_assRg_6 = (EditText) ll_principal.findViewWithTag("et_assRg6");
+			assinatura_6.setRg(et_assRg_6.getText().toString());
+
+			EditText et_asscpf_6 = (EditText) ll_principal.findViewWithTag("et_asscpf6");
+			assinatura_6.setCpf(et_asscpf_6.getText().toString());
+
+		listaComAssinaturas.add(assinatura_6);
+
+		Assinatura assinatura_7 = new Assinatura();
+		
+		ImageView iv_recebeAssinatura_7 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura7");
+		//if(iv_recebeAssinatura_7 != null) {					
+			assinatura_7.setRecebeAssinatura(iv_recebeAssinatura_7.getDrawable());
+		//}
+
+		EditText et_assNome_7 = (EditText) ll_principal.findViewWithTag("et_assNome7");
+		//if(et_assNome_7 != null) {					
+			assinatura_7.setNome(et_assNome_7.getText().toString());
+		//}
+
+		EditText et_assRg_7 = (EditText) ll_principal.findViewWithTag("et_assRg7");
+		//if(et_assRg_7 != null) {					
+			assinatura_7.setRg(et_assRg_7.getText().toString());
+		//}	
+
+		EditText et_asscpf_7 = (EditText) ll_principal.findViewWithTag("et_asscpf7");
+		//if(et_asscpf_7 != null) {					
+			assinatura_7.setCpf(et_asscpf_7.getText().toString());
+		//}
+
+		listaComAssinaturas.add(assinatura_7);
+
+		return listaComAssinaturas;
+	}
+
+	public boolean temCamposVaziosAnexo(LinearLayout ll_principal) {
+		
+		ImageView iv_recebeAssinatura_2 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura2");
+		if (iv_recebeAssinatura_2.getDrawable() == null) {
+			iv_recebeAssinatura_2.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.style_edittext_erro));
+			new MeuAlerta("Favor assinar o contrato", null, context).meuAlertaOk();
+			return true;
+		} else {
+			iv_recebeAssinatura_2.setBackgroundDrawable(null);
+		}
+
+		return false;
+	}
+
+	public List<Assinatura> procuraAssinaturasEpopulaListaAnexo(LinearLayout ll_principal) {
 
 		List<Assinatura> listaComAssinaturas = new ArrayList<Assinatura>();
 
 			Assinatura assinatura_1 = new Assinatura();
 				
 				ImageView iv_recebeAssinatura_1 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura1");
-				//if(iv_recebeAssinatura_1 != null) {					
 					assinatura_1.setRecebeAssinatura(iv_recebeAssinatura_1.getDrawable());
-				//}
 	
 				EditText et_assNome_1 = (EditText) ll_principal.findViewWithTag("et_assNome1");
-				//if(et_assNome_1 != null) {					
 					assinatura_1.setNome(et_assNome_1.getText().toString());
-				//}
 
 				EditText et_assRg_1 = (EditText) ll_principal.findViewWithTag("et_assRg1");
-				//if(et_assRg_1 != null) {					
 					assinatura_1.setRg(et_assRg_1.getText().toString());
-				//}	
 
 				EditText et_asscpf_1 = (EditText) ll_principal.findViewWithTag("et_asscpf1");
-				//if(et_asscpf_1 != null) {					
 					assinatura_1.setCpf(et_asscpf_1.getText().toString());
-				//}
 
 			listaComAssinaturas.add(assinatura_1);
 
@@ -690,30 +818,21 @@ public class ActContrato {
 		Assinatura assinatura_3 = new Assinatura();
 		
 		ImageView iv_recebeAssinatura_3 = (ImageView) ll_principal.findViewWithTag("iv_recebeAssinatura3");
-		//if(iv_recebeAssinatura_3 != null) {					
 			assinatura_3.setRecebeAssinatura(iv_recebeAssinatura_3.getDrawable());
-		//}
 
 		EditText et_assNome_3 = (EditText) ll_principal.findViewWithTag("et_assNome3");
-		//if(et_assNome_3 != null) {					
 			assinatura_3.setNome(et_assNome_3.getText().toString());
-		//}
 
 		EditText et_assRg_3 = (EditText) ll_principal.findViewWithTag("et_assRg3");
-		//if(et_assRg_3 != null) {					
 			assinatura_3.setRg(et_assRg_3.getText().toString());
-		//}	
 
 		EditText et_asscpf_3 = (EditText) ll_principal.findViewWithTag("et_asscpf3");
-		//if(et_asscpf_3 != null) {					
 			assinatura_3.setCpf(et_asscpf_3.getText().toString());
-		//}
 
 		listaComAssinaturas.add(assinatura_3);
 
 		return listaComAssinaturas;
 	}
-
 	
 	  public static boolean isASign(char c) {
 	        if (c == '.' || c == '-' || c == '/' || c == '(' || c == ')' || c == ',' || c == ' ') {

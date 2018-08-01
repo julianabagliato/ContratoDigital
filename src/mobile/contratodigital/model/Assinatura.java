@@ -1,11 +1,12 @@
 package mobile.contratodigital.model;
 
+import java.io.Serializable;
 import android.graphics.drawable.Drawable;
 
-public class Assinatura {
-
-	private Drawable recebeAssinatura;
-	private Drawable caneta; 
+public class Assinatura implements Serializable{
+	
+	private transient Drawable recebeAssinatura;
+	private transient Drawable caneta; 
 	private String nome; 
 	private String cargo; 
 	private String rg;

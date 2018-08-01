@@ -54,17 +54,34 @@ public class GeraWord_anexoPadrao extends GeraWord {
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cargo: "+assinatura_1.getCargo()));   
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_1.getRg()));   
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_1.getCpf()));   
-    	    
-	    tbl.addTableEle(TableEle.TD, devolveImagem(assinatura_0.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));      
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("Testemunha: "+assinatura_0.getNome()), escreveConteudoEmTabela(""));
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("RG: "+assinatura_0.getRg()), escreveConteudoEmTabela(""));   
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("CPF: "+assinatura_0.getCpf()), escreveConteudoEmTabela(""));   
 
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(assinatura_2.getRecebeAssinatura(), height_img, width_img));      
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Testemunha: "+assinatura_2.getNome()));
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_2.getRg()));   
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_2.getCpf()));   
+	    if(assinatura_0.getRecebeAssinatura() != null) { 	
+	    	tbl.addTableEle(TableEle.TD, devolveImagem(assinatura_0.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));      
+	    }
+	    if(assinatura_0.getNome() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("Testemunha: "+assinatura_0.getNome()), escreveConteudoEmTabela(""));
+	    }
+	    if(assinatura_0.getRg() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("RG: "+assinatura_0.getRg()), escreveConteudoEmTabela(""));   
+	    }
+	    if(assinatura_0.getCpf() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("CPF: "+assinatura_0.getCpf()), escreveConteudoEmTabela(""));   
+	    }
 
+
+	    if(assinatura_2.getRecebeAssinatura() != null) { 	
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(assinatura_2.getRecebeAssinatura(), height_img, width_img));      
+	    }
+	    if(assinatura_2.getNome() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Testemunha: "+assinatura_2.getNome()));
+	    }
+	    if(assinatura_2.getRg() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_2.getRg()));   
+	    }
+	    if(assinatura_2.getCpf() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_2.getCpf()));   
+	    }
+	    
 	    iDocument.addEle(tbl);
 	}
 	

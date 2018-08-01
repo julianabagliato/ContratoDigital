@@ -31,7 +31,6 @@ public class ActivityContratoContaSIM extends Activity {
 	private String srcContrato;
 	private TelaBuilder telaBuilder;
 	private ActContrato contratoAct;
-	private static final int TOTAL_ASSIGN_GLOBAL = 8;
 	private ArrayList<Movimento> listaComMovimentos;
 	private String nr_contrato;
 	private String Cliente ="";
@@ -229,11 +228,11 @@ public class ActivityContratoContaSIM extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				if(!contratoAct.temCamposVaziosContratoPadrao(ll_rubrica, ll_principal, "ContratoContaSIM")){
+				if(!contratoAct.temCamposVaziosContratoContaSIM(ll_rubrica, ll_principal)){
 							
 					boolean ehContratoContaSIM = true;
 
-					List<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoPadrao(ll_rubrica, ll_principal, ehContratoContaSIM);
+					ArrayList<Assinatura> listaComAssinaturas = contratoAct.procuraAssinaturasEpopulaListaContratoContaSIM(ll_rubrica, ll_principal);
 							
 					criaArquivoWord(listaComAssinaturas);
 					criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);	
@@ -268,29 +267,32 @@ public class ActivityContratoContaSIM extends Activity {
 		}
 	}
 	
-	private void chamaActivityAnexo(List<Assinatura> listaComAssinaturas) {
-		Movimento mov_informacoesDoCliente = listaComMovimentos.get(0);
-
-	    
+	private void chamaActivityAnexo(ArrayList<Assinatura> listaComAssinaturas) {
 		 					
 			   Intent intent = new Intent(context, ActivityAnexoContaSIM.class);
-				   	  intent = contratoAct.preencheIntent(intent, srcContrato, listaComMovimentos);
+						intent.putExtra(""+Tag.srcContrato, srcContrato);
+						intent.putExtra("Numero", nr_contrato );
+						intent.putExtra(""+Tag.listaComMovimentos, listaComMovimentos);
+						intent.putExtra("listaComAssinaturas", listaComAssinaturas);
+
+					/*	
 				   	Bundle bundle = new Bundle();	
-				   		bundle.putString("Numero",nr_contrato );
-				   	  bundle.putString("Cliente",listaComAssinaturas.get(6).getNome());
-					   bundle.putString("cCargo", listaComAssinaturas.get(6).getCargo());
-					   bundle.putString("cRG", listaComAssinaturas.get(6).getRg());
-					   bundle.putString("cCpf", listaComAssinaturas.get(6).getCpf());
-					   bundle.putString("Testemunha1", listaComAssinaturas.get(5).getNome());
-					   bundle.putString("t1Cargo", listaComAssinaturas.get(5).getCargo());
-					   bundle.putString("t1RG", listaComAssinaturas.get(5).getRg());
-					   bundle.putString("t1Cpf", listaComAssinaturas.get(5).getCpf());
-					   bundle.putString("Testemunha2", listaComAssinaturas.get(7).getNome());
-					   bundle.putString("t2Cargo", listaComAssinaturas.get(7).getCargo());
-					   bundle.putString("t2RG", listaComAssinaturas.get(7).getRg());
-					   bundle.putString("t2Cpf", listaComAssinaturas.get(7).getCpf());
-					   bundle.putSerializable("movimento", mov_informacoesDoCliente);	    
+				   		
+				   		bundle.putString("Testemunha1", listaComAssinaturas.get(4).getNome());
+				   		bundle.putString("t1RG", listaComAssinaturas.get(4).getRg());
+				   		bundle.putString("t1Cpf", listaComAssinaturas.get(4).getCpf());
+				   		
+				   	  bundle.putString("Cliente",listaComAssinaturas.get(5).getNome());
+					   bundle.putString("cCargo", listaComAssinaturas.get(5).getCargo());
+					   bundle.putString("cRG", listaComAssinaturas.get(5).getRg());
+					   bundle.putString("cCpf", listaComAssinaturas.get(5).getCpf());
+					   
+					   bundle.putString("Testemunha2", listaComAssinaturas.get(6).getNome());
+					   bundle.putString("t2RG", listaComAssinaturas.get(6).getRg());
+					   bundle.putString("t2Cpf", listaComAssinaturas.get(6).getCpf());
+					   
 	  intent.putExtras(bundle);
+	  */
 		startActivity(intent);	
 		finish(); 		
 	}

@@ -91,12 +91,8 @@ public class ActivityAnexoPadrao extends Activity {
 	    Caminho = srcContrato.replace("/ContratoPadrao" , "");
 
 	    src = srcContrato.replace("ContratoPadrao", "AnexoPadrao");
-		
-	    //Dao dao = new Dao(context);
 
 	    listaComMovimentos = (ArrayList<Movimento>) intent.getSerializableExtra(""+Tag.listaComMovimentos);
-	
-	    //	ArrayList<Movimento> listaComMovimentos = dao.devolveListaComMovimentosPopulados(movimento1);
 
 		telaBuilder = new TelaBuilder(context);
 		contratoAct = new ActContrato(context);
@@ -152,7 +148,7 @@ public class ActivityAnexoPadrao extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				if(!contratoAct.temCamposVaziosAnexoPadrao(ll_principal)){
+				if(!contratoAct.temCamposVaziosAnexo(ll_principal)){
 					
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 					alertDialog.setMessage("Deseja Realmente Gerar Contrato?")
@@ -165,7 +161,7 @@ public class ActivityAnexoPadrao extends Activity {
 									boolean ehContratoContaSIM = false;
 
 									List<Assinatura> listaComAssinaturas = contratoAct
-																			.procuraAssinaturasEpopulaListaAnexoPadrao(ll_principal);
+																			.procuraAssinaturasEpopulaListaAnexo(ll_principal);
 									
 									criaArquivoWord(listaComAssinaturas);
 									criaArquivoPDF(listaComAssinaturas, ehContratoContaSIM);

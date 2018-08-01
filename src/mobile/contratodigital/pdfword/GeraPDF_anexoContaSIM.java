@@ -36,7 +36,6 @@ public class GeraPDF_anexoContaSIM extends GeraPDF{
 	    Assinatura assinatura_0 = listaComAssinaturas.get(0);
 	    Assinatura assinatura_1 = listaComAssinaturas.get(1);
 	    Assinatura assinatura_2 = listaComAssinaturas.get(2);
-	    Assinatura assinatura_3 = listaComAssinaturas.get(3);
 	           	
 	    float rotacao = 0;
 	    float height = TamanhoAssinatura.ALTURA.getTamanho(); 	      
@@ -62,35 +61,49 @@ public class GeraPDF_anexoContaSIM extends GeraPDF{
 	    float posicaoLinha10 = posicaoLinha07 - (espacoEntreLinhas * 3);
 	    float posicaoLinha11 = posicaoLinha07 - (espacoEntreLinhas * 4);
 	    float posicaoLinha12 = posicaoLinha07 - (espacoEntreLinhas * 5);
-	    
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Assinatura_empresa>", font_conteudo), posicaoInicialColuna1, posicaoLinha1, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", font_conteudo), posicaoInicialColuna1, posicaoLinha2, rotacao);
+		
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Assinatura_empresa>", font_conteudo), posicaoInicialColuna1, posicaoLinha1, rotacao);
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", font_conteudo), posicaoInicialColuna1, posicaoLinha2, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha3, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha4, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha5, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha6, rotacao);
         
 
-		geraImagem(pdfContentByte, assinatura_1.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna1, posicaoLinha07);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase(assinatura_1.getRazaoSocial(), font_conteudo), posicaoInicialColuna1, posicaoLinha08, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Nome: "+assinatura_1.getNome(), font_conteudo), posicaoInicialColuna1, posicaoLinha09, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cargo: "+assinatura_1.getCargo(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_1.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha11, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_1.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha12, rotacao);
+		geraImagem(pdfContentByte, assinatura_1.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha1);        
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase(assinatura_1.getRazaoSocial(), font_conteudo), posicaoInicialColuna2, posicaoLinha2, rotacao);
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cliente: "+assinatura_1.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha3, rotacao);
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cargo: "+assinatura_1.getCargo(), font_conteudo), posicaoInicialColuna2, posicaoLinha4, rotacao);
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_1.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha5, rotacao);
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_1.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha6, rotacao);
+ 
+        
+        if(assinatura_0.getRecebeAssinatura() != null) { 	
+        	geraImagem(pdfContentByte, assinatura_0.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha07);
+        }
+        if(assinatura_0.getNome() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_0.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha08, rotacao);
+        }
+        if(assinatura_0.getRg() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_0.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha10, rotacao);
+        }
+        if(assinatura_0.getCpf() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_0.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha11, rotacao);
+        }
 
-	    geraImagem(pdfContentByte, assinatura_2.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha1);	    
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase(assinatura_2.getRazaoSocial(), font_conteudo), posicaoInicialColuna2, posicaoLinha2, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Nome: "+assinatura_2.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha3, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cargo: "+assinatura_2.getCargo(), font_conteudo), posicaoInicialColuna2, posicaoLinha4, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_2.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha5, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_2.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha6, rotacao);
 
-		geraImagem(pdfContentByte, assinatura_3.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha07);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase(assinatura_3.getRazaoSocial(), font_conteudo), posicaoInicialColuna2, posicaoLinha08, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Nome: "+assinatura_3.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha09, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cargo: "+assinatura_3.getCargo(), font_conteudo), posicaoInicialColuna2, posicaoLinha10, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_3.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha11, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_3.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha12, rotacao);
+        if(assinatura_2.getRecebeAssinatura() != null) { 	
+        	geraImagem(pdfContentByte, assinatura_2.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna1, posicaoLinha07);
+        }
+        if(assinatura_2.getNome() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_2.getNome(), font_conteudo), posicaoInicialColuna1, posicaoLinha08, rotacao);
+        }
+        if(assinatura_2.getRg() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_2.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);	
+        }
+        if(assinatura_2.getCpf() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_2.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha11, rotacao);	
+        }
 
 	}
 
