@@ -153,52 +153,13 @@ public class GeraWord_contratoPadrao extends GeraWord {
 	}
 
 	@Override	
-	protected void desenhaAssinaturas(IDocument iDocument, List<Assinatura> listaComAssinaturas) {
+	protected void organizaSequencia(IDocument iDocument, List<Assinatura> listaComAssinaturas) {
 		
 	    Assinatura assinatura_2 = listaComAssinaturas.get(2);
 	    Assinatura assinatura_3 = listaComAssinaturas.get(3);
 	    Assinatura assinatura_4 = listaComAssinaturas.get(4);
 	
-	    String height_img = String.valueOf(TamanhoAssinatura.ALTURA.getTamanho());
-	    String width_img = String.valueOf(TamanhoAssinatura.LARGURA.getTamanho());
-
-	    Table tbl = new Table(); 
-
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("#Assinatura_empresa#"), devolveImagem(assinatura_3.getRecebeAssinatura(), height_img, width_img));    
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(""+assinatura_3.getRazaoSocial()));
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("cliente: "+assinatura_3.getNome()));
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cargo: "+assinatura_3.getCargo()));   
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_3.getRg()));   
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_3.getCpf()));   
-    
-	    if(assinatura_2.getRecebeAssinatura() != null) { 	
-	    	tbl.addTableEle(TableEle.TD, devolveImagem(assinatura_2.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));  
-	    }
-	    if(assinatura_2.getNome() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("Testemunha: "+assinatura_2.getNome()), escreveConteudoEmTabela(""));
-	    }
-	    if(assinatura_2.getRg() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("RG: "+assinatura_2.getRg()), escreveConteudoEmTabela(""));   
-	    }
-	    if(assinatura_2.getCpf() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("CPF: "+assinatura_2.getCpf()), escreveConteudoEmTabela(""));   
-	    }
-	 
-	    
-	    if(assinatura_4.getRecebeAssinatura() != null) { 	
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(assinatura_4.getRecebeAssinatura(), height_img, width_img));  
-	    }
-	    if(assinatura_4.getNome() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Testemunha: "+assinatura_4.getNome()));
-	    }
-	    if(assinatura_4.getRg() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_4.getRg()));   
-	    }
-	    if(assinatura_4.getCpf() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_4.getCpf()));   
-	    }
-	    
-	    iDocument.addEle(tbl);
+	    desenhaAssinaturas(iDocument, assinatura_2, assinatura_3, assinatura_4);
 	}
 	
 }

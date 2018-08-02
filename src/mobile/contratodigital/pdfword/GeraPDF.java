@@ -19,28 +19,17 @@ import com.itextpdf.text.pdf.PdfWriter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.LinearLayout;
 import mobile.contratodigital.R;
-import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.SequenciaMovAddedEmLista;
 import mobile.contratodigital.enums.TamanhoAssinatura;
 import mobile.contratodigital.model.Assinatura;
 import mobile.contratodigital.model.PrecoPrazoConsumoPagamento;
 import mobile.contratodigital.util.MoedaRS;
 import mobile.contratodigital.util.Reflexao;
-import mobile.contratodigital.util.TelaBuilder;
 import mobile.contratodigital.util.TextoContratos;
 import mobile.contratodigital.util.TrabalhaComImagens;
 import sharedlib.contratodigital.model.Movimento;
-import word.w2004.elements.tableElements.TableEle;
 
-/**
- * Classe criada para gerar o pdf geral
- * 
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public abstract class GeraPDF {
 	
 	private Context context;
@@ -86,8 +75,8 @@ public abstract class GeraPDF {
         desenhaCorpo(pdfWriter, document, textoContratos, listaComMovimentos, listaComAssinaturas);   
               
         //implementar:
-        criaEadicionaAssinatura(pdfWriter, listaComAssinaturas);
-        
+        organizaSequenciaAssinaturas(pdfWriter, listaComAssinaturas);
+          
         document.close();        
     }
 			
@@ -284,16 +273,12 @@ public abstract class GeraPDF {
 	abstract void desenhaCorpo(PdfWriter pdfWriter, Document document, TextoContratos textoContratos, 
 							   ArrayList<Movimento> listaComMovimentos, List<Assinatura> listaComAssinaturas) throws DocumentException;
 	
-    abstract void criaEadicionaAssinatura(PdfWriter pdfWriter, List<Assinatura> listaComAssinaturas);
-
-    private void criaEadicionaAssinaturaAnexo(PdfWriter pdfWriter, List<Assinatura> listaComAssinaturas) {
+    abstract void organizaSequenciaAssinaturas(PdfWriter pdfWriter, List<Assinatura> listaComAssinaturas);
+	
+    protected void criaEadicionaAssinaturas(PdfWriter pdfWriter, Assinatura assinatura_0, Assinatura assinatura_1, Assinatura assinatura_2) {
     	
 	    PdfContentByte pdfContentByte = pdfWriter.getDirectContentUnder();
-	    
-	    Assinatura assinatura_0 = listaComAssinaturas.get(0);
-	    Assinatura assinatura_1 = listaComAssinaturas.get(1);
-	    Assinatura assinatura_2 = listaComAssinaturas.get(2);
-	           	
+	    	           	
 	    float rotacao = 0;
 	    float height = TamanhoAssinatura.ALTURA.getTamanho(); 	      
 	    float width = TamanhoAssinatura.LARGURA.getTamanho();

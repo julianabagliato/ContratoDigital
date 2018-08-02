@@ -6,6 +6,7 @@ import android.util.Log;
 import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.SequenciaMovAddedEmLista;
+import mobile.contratodigital.enums.TamanhoAssinatura;
 import mobile.contratodigital.model.Assinatura;
 import mobile.contratodigital.model.PrecoPrazoConsumoPagamento;
 import mobile.contratodigital.util.MoedaRS;
@@ -35,23 +36,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-/**
- * Classe criada para tratar imagens e movimentos para gerar word
- * 
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
-
 public abstract class GeraWord {
 
-	private TrabalhaComImagens trabalhaComImagens = new TrabalhaComImagens();
+	//private TrabalhaComImagens trabalhaComImagens = new TrabalhaComImagens();
 	private final String FONTSIZE_TITULO = "9";
 	private final String FONTSIZE_CONTEUDO = "9";
 	private TextoContratos textoContratos;
 	private Context context;
-	private Movimento movimento3;
+	//private Movimento movimento3;
 
 	public GeraWord(Context _context) {
 		this.context = _context;
@@ -82,7 +74,7 @@ public abstract class GeraWord {
 		desenhaCorpo(iDocument, listaComMovimentos, listaComAssinaturas);
 
 		// implementar:
-		desenhaAssinaturas(iDocument, listaComAssinaturas);
+		organizaSequencia(iDocument, listaComAssinaturas);
 
 		desenhaRodape(iDocument);
 
@@ -321,7 +313,51 @@ public abstract class GeraWord {
 	protected abstract void desenhaCorpo(IDocument iDocument, ArrayList<Movimento> listaComMovimentos,
 			List<Assinatura> listaComAssinaturas);
 
-	protected abstract void desenhaAssinaturas(IDocument iDocument, List<Assinatura> listaComAssinaturas);
+	protected abstract void organizaSequencia(IDocument iDocument, List<Assinatura> listaComAssinaturas);
+	
+	protected void desenhaAssinaturas(IDocument iDocument, Assinatura assinatura_0, Assinatura assinatura_1, Assinatura assinatura_2) {
+				 
+	    String height_img = String.valueOf(TamanhoAssinatura.ALTURA.getTamanho());
+	    String width_img = String.valueOf(TamanhoAssinatura.LARGURA.getTamanho());
+	    
+	    Table tbl = new Table(); 
+	    
+	    tbl.addTableEle(TableEle.TD,  escreveConteudoEmTabela("#Assinatura_empresa#"),devolveImagem(assinatura_1.getRecebeAssinatura(), height_img, width_img));    
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(assinatura_1.getRazaoSocial()));
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cliente: "+assinatura_1.getNome()));
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cargo: "+assinatura_1.getCargo()));   
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_1.getRg()));   
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_1.getCpf()));   
+
+	    if(assinatura_0.getRecebeAssinatura() != null) { 	
+	    	tbl.addTableEle(TableEle.TD, devolveImagem(assinatura_0.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));      
+	    }
+	    if(assinatura_0.getNome() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("Testemunha: "+assinatura_0.getNome()), escreveConteudoEmTabela(""));
+	    }
+	    if(assinatura_0.getRg() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("RG: "+assinatura_0.getRg()), escreveConteudoEmTabela(""));   
+	    }
+	    if(assinatura_0.getCpf() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("CPF: "+assinatura_0.getCpf()), escreveConteudoEmTabela(""));   
+	    }
+
+
+	    if(assinatura_2.getRecebeAssinatura() != null) { 	
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(assinatura_2.getRecebeAssinatura(), height_img, width_img));      
+	    }
+	    if(assinatura_2.getNome() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Testemunha: "+assinatura_2.getNome()));
+	    }
+	    if(assinatura_2.getRg() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_2.getRg()));   
+	    }
+	    if(assinatura_2.getCpf() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_2.getCpf()));   
+	    }
+
+	    iDocument.addEle(tbl);
+	}
 
 	private void desenhaRodape(IDocument iDocument) {
 

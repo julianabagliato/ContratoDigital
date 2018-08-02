@@ -93,76 +93,13 @@ public class GeraPDF_contratoContaSIM extends GeraPDF{
 	}
 
 	@Override	
-	void criaEadicionaAssinatura(PdfWriter pdfWriter, List<Assinatura> listaComAssinaturas) {
-		
-	    PdfContentByte pdfContentByte = pdfWriter.getDirectContentUnder();
+	void organizaSequenciaAssinaturas(PdfWriter pdfWriter, List<Assinatura> listaComAssinaturas) {
 		
 	    Assinatura assinatura_4 = listaComAssinaturas.get(4);
 	    Assinatura assinatura_5 = listaComAssinaturas.get(5);
 	    Assinatura assinatura_6 = listaComAssinaturas.get(6);
 	    
-	    float rotacao = 0;
-	    float height = TamanhoAssinatura.ALTURA.getTamanho(); 	      
-	    float width = TamanhoAssinatura.LARGURA.getTamanho();
-	    	    
-	    float posicaoInicialColuna1 = 30;	  
-	    float posicaoInicialColuna2 = 300;	  
-
-	    float posicaoUltimaLinhaEscrita = pdfWriter.getVerticalPosition(true);
-	    float espacoEntreLinhas = 10;
-
-	    float posicaoLinha1 = posicaoUltimaLinhaEscrita - (espacoEntreLinhas * 1);
-	    float posicaoLinha2 = posicaoUltimaLinhaEscrita - (espacoEntreLinhas * 2);
-	    float posicaoLinha3 = posicaoUltimaLinhaEscrita - (espacoEntreLinhas * 3);
-	    float posicaoLinha4 = posicaoUltimaLinhaEscrita - (espacoEntreLinhas * 4);
-	    float posicaoLinha5 = posicaoUltimaLinhaEscrita - (espacoEntreLinhas * 5);
-	    float posicaoLinha6 = posicaoUltimaLinhaEscrita - (espacoEntreLinhas * 6);
-
-	    float espacoImagemAssinatura = 60;	    
-	    float posicaoLinha07 = posicaoLinha5 - espacoImagemAssinatura;  
-	    float posicaoLinha08 = posicaoLinha07 - (espacoEntreLinhas * 1);
-	    float posicaoLinha09 = posicaoLinha07 - (espacoEntreLinhas * 2);
-	    float posicaoLinha10 = posicaoLinha07 - (espacoEntreLinhas * 3);
-	    float posicaoLinha11 = posicaoLinha07 - (espacoEntreLinhas * 4);
-	    float posicaoLinha12 = posicaoLinha07 - (espacoEntreLinhas * 5);
-	    
-	    ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Assinatura_empresa>",font_conteudo), posicaoInicialColuna1, posicaoLinha1, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", font_conteudo), posicaoInicialColuna1, posicaoLinha2, rotacao);
-		
-		geraImagem(pdfContentByte, assinatura_5.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna1, posicaoLinha07);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Nome: "+assinatura_5.getNome(), font_conteudo), posicaoInicialColuna1, posicaoLinha08, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cargo: "+assinatura_5.getCargo(), font_conteudo), posicaoInicialColuna1, posicaoLinha09, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_5.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);
-		ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_5.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha11, rotacao);
-		 
-		if(assinatura_4.getRecebeAssinatura() != null) {
-			geraImagem(pdfContentByte, assinatura_4.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha1);	    			
-		}
-		if(assinatura_4.getNome() != null) {			
-			ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_4.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha3, rotacao);
-		}
-		if(assinatura_4.getRg() != null) {
-			ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_4.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha5, rotacao);			
-		}
-		if(assinatura_4.getCpf() != null){			
-			ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_4.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha6, rotacao);
-		}
-    		
-		
-
-		if(assinatura_6.getRecebeAssinatura() != null) {
-			geraImagem(pdfContentByte, assinatura_6.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha07);
-		}
-		if(assinatura_6.getNome() != null) {			
-			ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_6.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha08, rotacao);
-		}
-		if(assinatura_6.getRg() != null) {
-			ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_6.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha10, rotacao);
-		}
-		if(assinatura_6.getCpf() != null){			
-			ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_6.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha11, rotacao);
-		}
-
+	    criaEadicionaAssinaturas(pdfWriter, assinatura_4, assinatura_5, assinatura_6);	    
 	}
 	
 }
