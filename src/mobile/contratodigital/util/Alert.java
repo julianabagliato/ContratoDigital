@@ -133,6 +133,7 @@ import android.widget.EditText;
 	    public static void showYesNoDialog(String message, Context context,
 	            OnClickListener yesButton, OnClickListener noButton,
 	            AlertType alertType) {
+	    	
 	        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 	        alertDialog.setMessage(message);
 	        alertDialog.setPositiveButton("Sim", yesButton);
@@ -145,6 +146,7 @@ import android.widget.EditText;
 	            alertDialog.setTitle(alertType.getTitle());
 	        }
 	        alertDialog.show();
+	        
 	    }
 	 
 	    /**

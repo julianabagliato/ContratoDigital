@@ -5,7 +5,6 @@ public class ItemPeca {
 	private String nome;
 	private String codigo;
 	
-	
 	public ItemPeca(String nome,  String codigo) {
 		this.nome = nome;
 		this.codigo = codigo;

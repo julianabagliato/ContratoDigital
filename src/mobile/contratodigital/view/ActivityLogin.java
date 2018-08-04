@@ -1,17 +1,12 @@
 package mobile.contratodigital.view;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,7 +18,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +25,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
@@ -41,12 +34,10 @@ import mobile.contratodigital.enums.IpRS;
 import mobile.contratodigital.util.DetectaConexao;
 import mobile.contratodigital.util.Mascara;
 import mobile.contratodigital.util.MeuAlerta;
-import mobile.contratodigital.util.RecebeJSONObjectLogin;
-import mobile.contratodigital.util.TelaBuilder;
+import mobile.contratodigital.util.RecebeJSON;
 import mobile.contratodigital.ws.BotaoExportarWS;
 import mobile.contratodigital.ws.VolleySingleton;
 import mobile.contratodigital.ws.VolleyTimeout;
-import sharedlib.contratodigital.model.Cad_eqpto;
 import sharedlib.contratodigital.model.Movimento;
 import sharedlib.contratodigital.model.Representante;
 import sharedlib.contratodigital.util.Generico;
@@ -56,9 +47,6 @@ public class ActivityLogin extends Activity {
 	private static final String RESOURCE_REST_AUTENTICAR = "/Autenticacao/Login/";
 	private Context context;
 	private ActionBar actionBar;
-	//private LinearLayout relativeLayout_login_usuario;
-	//private EditText editText_idPda;
-	//private Button button_entrar;
 	private RequestQueue requestQueue;
 	private ProgressDialog progressDialog;
 	private AlertDialog alertDialog;
@@ -68,13 +56,9 @@ public class ActivityLogin extends Activity {
 	private Menu menu;
 	public static final int REQUISICAO_PERMISSAO_TIRAR_FOTO = 111;
 
-	//private ImageView w;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-		//setContentView(R.layout.activity_login);
 
 		context = ActivityLogin.this;
 		
@@ -83,8 +67,6 @@ public class ActivityLogin extends Activity {
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
 		actionBar.setTitle(R.string.app_name);
-		
-		
 
 		
 		LinearLayout llTela = new LinearLayout(context);
@@ -169,7 +151,7 @@ public class ActivityLogin extends Activity {
 			JSONObject jSONObject_params = new JSONObject();
 			jSONObject_params.put("cod_rep", cod_rep);
 
-			String url =URLescolhida + RESOURCE_REST_AUTENTICAR;
+			String url = URLescolhida + RESOURCE_REST_AUTENTICAR;
 
 			progressDialog = new ProgressDialog(context);
 			progressDialog.setCanceledOnTouchOutside(false);
@@ -187,15 +169,16 @@ public class ActivityLogin extends Activity {
 							try {
 								if (resposta.getInt("achou_cod_rep") == Generico.ENCONTROU_REPRESENTANTE.getValor()) {
 
-									RecebeJSONObjectLogin recebeJSONObjectImportar = new RecebeJSONObjectLogin(context);
+									boolean deuErro = new RecebeJSON().recebeDados(context, resposta);
 									
-									boolean deuErro = recebeJSONObjectImportar.inserePdaComTodasTabelas(resposta);
-
-									
-									if (!deuErro) {
+									if(deuErro) {
 
 										encerraProgressDialog();
 
+										new MeuAlerta("Erro no serviço, contate a equipe de TI", null, context).meuAlertaOk();
+									}else {
+
+										encerraProgressDialog();
 										
 										abrirSistema(etCodigoRepresentante);
 									}
@@ -234,8 +217,6 @@ public class ActivityLogin extends Activity {
 
 							new MeuAlerta("Favor tentar acessar com outro link \n" + error, null, context).meuAlertaOk();
 							
-							
-							
 						}
 					});
 
@@ -246,100 +227,7 @@ public class ActivityLogin extends Activity {
 			e.printStackTrace();
 		}
 	}
-//private boolean permitiuTirarFoto(){
-//		
-//        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-//        	ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUISICAO_PERMISSAO_TIRAR_FOTO);		      
-//        	//context.checkPermission(Manifest.permission.CAMERA, 0, REQUISICAO_PERMISSAO_TIRAR_FOTO) != PackageManager.PERMISSION_GRANTED){
-//
-//            return false;
-//        }
-//
-//        return true;
-//    }
 	
-	private void buscarNoWebService2(final int cod_rep, final EditText etCodigoRepresentante) {
-
-		try {
-			JSONObject jSONObject_params = new JSONObject();
-			jSONObject_params.put("cod_rep", cod_rep);
-
-			String url =URLescolhida + RESOURCE_REST_AUTENTICAR;
-
-			progressDialog = new ProgressDialog(context);
-			progressDialog.setCanceledOnTouchOutside(false);
-			progressDialog.setMessage("Autenticando PDA...");
-			progressDialog.show();
-
-			JsonObjectRequest jsonObjRequest = new JsonObjectRequest(
-
-					Request.Method.POST, url, jSONObject_params,
-
-					new Response.Listener<JSONObject>() {
-						@Override
-						public void onResponse(JSONObject resposta) {
-
-							try {
-								if (resposta.getInt("achou_cod_rep") == Generico.ENCONTROU_REPRESENTANTE.getValor()) {
-
-									RecebeJSONObjectLogin recebeJSONObjectImportar = new RecebeJSONObjectLogin(context);
-
-									String teste = resposta.toString();
-
-									boolean deuErro = recebeJSONObjectImportar.inserePdaComTodasTabelas(resposta);
-
-									if (!deuErro) {
-
-										encerraProgressDialog();
-									//	Permitir();
-										abrirSistema(etCodigoRepresentante);
-									}
-								} else if (resposta.getInt("achou_cod_rep") == Generico.NAO_ENCONTROU_REPRESENTANTE
-										.getValor()) {
-
-//									editText_idPda.setText("");
-
-									encerraProgressDialog();
-									new MeuAlerta( "Não encontrou o representante informado" , null, context).meuAlertaOk();
-
-								//	Toast.makeText(context, "Não encontrou o representante informado",
-									//		Toast.LENGTH_LONG).show();
-								} else if (resposta.getInt("achou_cod_rep") == Generico.OCORREU_ERRO.getValor()) {
-
-									encerraProgressDialog();
-									new MeuAlerta( "Caiu na @ Exceção @ do webservice" , null, context).meuAlertaOk();
-
-								//	Toast.makeText(context, "Caiu na @ Exceção @ do webservice", Toast.LENGTH_LONG)
-									//		.show();
-								} else {
-									encerraProgressDialog();
-									new MeuAlerta( "Erro desconhecido :(", null, context).meuAlertaOk();
-
-									//Toast.makeText(context, "Erro desconhecido :(", Toast.LENGTH_LONG).show();
-								}
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
-					}, new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-
-							encerraProgressDialog();
-							new MeuAlerta( "VolleyError", null, context).meuAlertaOk();
-
-							//Toast.makeText(context, "VolleyError" + error, Toast.LENGTH_SHORT).show();
-						}
-					});
-
-			jsonObjRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
-
-			requestQueue.add(jsonObjRequest);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menuinterno) {
 		menu = menuinterno;
@@ -350,13 +238,7 @@ public class ActivityLogin extends Activity {
 		menu.add(0,3,0,"Local");
 		menu.add(0,4,0, "Trocar Usuário");
 		menu.getItem(0).setEnabled(false);
-		return true;
-		
-		
-
-//		getMenuInflater().inflate(R.menu.trocar_usuario, menu);
-
-	//	return true;
+		return true;		
 	}
 
 	@Override
@@ -388,23 +270,7 @@ public class ActivityLogin extends Activity {
 		//}
 		return super.onOptionsItemSelected(item);
 	}
-
-	private void permitir(){
-	//	permitiuTirarFoto();
-	}
-
-//private boolean permitiuTirarFoto(){
-		
-       // if (context.( Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-
-        	
-     //   FragActivityOcorrencia.this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUISICAO_PERMISSAO_TIRAR_FOTO);		      
-     
-        //    return false;
-       // }
-
-      //  return true;
-  //  }
+	
 	private void trocarUsuario() {
 
 		DetectaConexao connectionDetector = new DetectaConexao(context);

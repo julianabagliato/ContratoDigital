@@ -33,6 +33,7 @@ import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.IpRS;
 import mobile.contratodigital.enums.VersaoApp;
+import mobile.contratodigital.util.RecebeJSON;
 import mobile.contratodigital.util.RecebeJSONObjectimportar;
 import mobile.contratodigital.ws.VolleySingleton;
 import mobile.contratodigital.ws.VolleyTimeout;
@@ -40,25 +41,18 @@ import sharedlib.contratodigital.model.Layout;
 import sharedlib.contratodigital.model.Representante;
 import sharedlib.contratodigital.util.Generico;
 
-/**
- * Classe do tipo activity usada para determinar se haverá insersão ou exportação
- * @author Edição - Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Criação - Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ActivityDashboard extends Activity {
 
 	private Context context;
 	private ActionBar actionBar;
 	//private static int SPLASH_TIME_OUT = 2000;
-	private TableLayout tableLayout_dashboard;	
+	//private TableLayout tableLayout_dashboard;	
 	private Representante representante;
-	private static final int MENU_ITEM_ITEM1 = 1;
+	//private static final int MENU_ITEM_ITEM1 = 1;
 	private LayoutParams layoutParams_MATCH_WRAP;
 	private LayoutParams layoutParams_WRAP_WRAP;
 	private Dao dao;	
-	private boolean temInformacao = false;
+	//private boolean temInformacao = false;
 	public static  String repres;
 	private static String URLescolhida = IpRS.URL_SIVA_REST;
 	private ProgressDialog progressDialog;
@@ -101,7 +95,7 @@ public class ActivityDashboard extends Activity {
 			
 			if(layout != null){
 
-				temInformacao = true;
+				//temInformacao = true;
 			
 				actionBar = getActionBar();
 				actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
@@ -112,7 +106,7 @@ public class ActivityDashboard extends Activity {
 		TextView versao = (TextView) findViewById(R.id.textView_versao);
 				 versao.setText("Versão: "+ VersaoApp.VERSAO_NUMERO.getNumero() );
 		
-		tableLayout_dashboard = (TableLayout) findViewById(R.id.tableLayout_dashboard);				
+		//tableLayout_dashboard = (TableLayout) findViewById(R.id.tableLayout_dashboard);				
 	}
 
 	public void selecionarOpcao(View view) {
@@ -309,16 +303,14 @@ public class ActivityDashboard extends Activity {
 							try {
 								if (resposta.getInt("achou_cod_rep") == Generico.ENCONTROU_REPRESENTANTE.getValor()) {
 
-									RecebeJSONObjectimportar recebeJSONObjectImportar = new RecebeJSONObjectimportar(context);
-
-									String teste = resposta.toString();
-
-									boolean deuErro = recebeJSONObjectImportar.inserePdaComTodasTabelas(resposta);
-
+									//RecebeJSONObjectimportar recebeJSONObjectImportar = new RecebeJSONObjectimportar(context);
+									//String teste = resposta.toString();
+									//boolean deuErro = recebeJSONObjectImportar.inserePdaComTodasTabelas(resposta);
+									boolean deuErro = new RecebeJSON().recebeDados(context, resposta);
+									
 									if (!deuErro) {
 
 										encerraProgressDialog();
-
 									//	abrirSistema();
 									}
 								} else if (resposta.getInt("achou_cod_rep") == Generico.NAO_ENCONTROU_REPRESENTANTE

@@ -57,13 +57,6 @@ public class Query {
 		return query;
 	}
 
-	/**
-	 * Metodo criado para criar query Condição where tabelas de acordo com os valores da classe
-	 * 
-	 * @author Fernando Pereira Santos - Consigaz -2017
-	 * 
-	 * @param criaCondicaoWhereComParametrosString
-	 */
 	public static String criaCondicaoWhereComParametrosString(Object... parametros) {
 
 		StringBuilder sb = new StringBuilder();
@@ -146,40 +139,8 @@ public class Query {
 		return "DROP TABLE IF EXISTS " + classe.getSimpleName().toLowerCase();
 	}
 
-	/**
-	 * Metodo criado para criar query Condição where tabelas de acordo com os valores de parametros
-	 * 
-	 * @author Fernando Pereira Santos - Consigaz -2017
-	 * 
-	 * @param criaCondicaoWhere_final 
-	 */
+	/*
 	public static String criaCondicaoWhere_final(Object... parametros) {
-		//
-		// StringBuilder sb = new StringBuilder();
-		//
-		// sb.append(" where ");
-		//
-		// for (int i = 0; i < parametros.length; i++) {
-		//
-		// String parImpar = "";
-		//
-		// if (i % 2 == 0) {
-		//
-		// parImpar = "par";
-		//
-		// sb.append(parametros[i].toString() + "=");
-		// } else {
-		// sb.append(parametros[i].toString() + " ");
-		// }
-		//
-		// if (parImpar != "par") {
-		//
-		// sb.append("and ");
-		// }
-		// }
-		// sb.delete(sb.length() - 5, sb.length());
-		//
-		// return sb.toString();
 
 		StringBuilder sb = new StringBuilder();
 		if (parametros.length > 0) {
@@ -200,15 +161,8 @@ public class Query {
 		}
 		return sb.toString();
 	}
-
-	/**
-	 * Metodo criado para criar query Condição update das tabelas de acordo com os valores de parametros
-	 * 
-	 * @author Fernando Pereira Santos - Consigaz -2017
-	 * 
-	 * @param criaUpdate_final 
-	 */
-
+	*/
+	
 	public static String criaUpdate_final(Object objeto, String condicaoWhere) {
 
 		StringBuilder stringBuilder = new StringBuilder();

@@ -9,13 +9,7 @@ import android.widget.TextView;
 import mobile.contratodigital.R;
 import mobile.contratodigital.model.ItemPeca;
 import mobile.contratodigital.util.TelaBuilder;
-/**
- * Classe para tratar a tela a lista de itens
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
+
 public class ViewItemLista {
 
 	private Context context;
@@ -45,6 +39,8 @@ public class ViewItemLista {
 		
 						   imageView = new ImageView(context);		  
 						   imageView.setAdjustViewBounds(true);
+						   imageView.setMaxWidth(100);
+						   imageView.setMaxHeight(100);
 		llQuadrado.addView(imageView);
 
 		LinearLayout llretangulo = new LinearLayout(context);

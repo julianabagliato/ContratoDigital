@@ -106,7 +106,10 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	private static final int SimularPrecos = 4;
 	private static final int ConsultarCNPJ = 5;
 	private static final int ConsultarInscricaoEstadual = 6;
+	
 	private static final int InformarPecas = 7;
+	private static final int InformarPecasNew = 27;
+	
 	private static final int FotoCNPJ = 8;
 	private static final int FotoCPF = 9;
 	private static final int FotoRG = 10;
@@ -190,6 +193,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		menu.add(0, 14, 0, "Anexar pdf");
 		menu.add(0, 15, 0, "Visualizar Arquivos Gerados");
 		menu.add(0, 16, 0, "Gerar Nº de Contrato");
+		menu.add(0, 27, 0, "Informar Peças New");
 
 		return true;
 	}
@@ -222,6 +226,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 						
 		case InformarPecas: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(InformarPecas);	
 			return true;
+		case InformarPecasNew: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(InformarPecasNew);	
+		return true;
 
 		case FotoCNPJ: verificaPermissaoLeituraEFazAlgumaAcao(FotoCNPJ);
 			return true;
@@ -417,7 +423,11 @@ public class FragActivityOcorrencia extends FragmentActivity {
 							case InformarPecas: 		                 		
 								irParaActivityPecas();
 								break;
-								
+						
+							case InformarPecasNew: 		                 		
+								irParaActivityPecasNew();
+								break;
+						
 							case ConsultarInscricaoEstadual:
 								abrirWebview_InscricaoEstadual();
 								break;
@@ -769,6 +779,23 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		//}
 	}
 
+	private void irParaActivityPecasNew() {
+			
+			Dao dao = new Dao(context);
+
+			Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
+														Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
+														Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
+
+			Intent intent = new Intent(context, ActivityPecasNew.class);
+							 Bundle bundle = new Bundle();
+									bundle.putSerializable("mov_informacoesCliente", mov_informacoesCliente);
+				   intent.putExtras(bundle);
+				   
+			startActivityForResult(intent, 444);		
+	}
+
+	
 	private ScrollView constroiTela() {
 
 		layoutParams_MATCH_MATCH = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);

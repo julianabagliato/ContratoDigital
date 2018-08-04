@@ -6,6 +6,7 @@ import sharedlib.contratodigital.model.Cad_atividade;
 
 public class ListaComTodasAtividadesEconomica {
 
+	/*
 	public static ArrayList<Cad_atividade> devolveLista() {
 
 		ArrayList<Cad_atividade> listaAtividadeEconomica = new ArrayList<Cad_atividade>();
@@ -511,7 +512,7 @@ public class ListaComTodasAtividadesEconomica {
 		
 		return listaAtividadeEconomica;
 	}
-	
+	*/
 	
 	
 }

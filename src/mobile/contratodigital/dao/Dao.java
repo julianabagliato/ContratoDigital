@@ -6,6 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import mobile.contratodigital.enums.NomeLayout;
+import mobile.contratodigital.view.ActivityLogin;
+import sharedlib.contratodigital.model.Cad_atividade;
 import sharedlib.contratodigital.model.Cad_canal_venda;
 import sharedlib.contratodigital.model.Cad_eqpto;
 import sharedlib.contratodigital.model.Cad_pecas;
@@ -19,12 +21,14 @@ import sharedlib.contratodigital.model.Retorno;
 
 public class Dao extends BancoSQLiteOpenHelper {
 
+	private Context context;
+	
 	public Dao(Context context) {
-
 		super(context);
+		this.context = context;
 	}
 
-	public void insereTabelas(Pda pda) {
+	public void insereOuAtualizaTabelas(Pda pda) {
 
 		for (Representante representante : pda.getListaRepresentante()) {
 
@@ -32,13 +36,11 @@ public class Dao extends BancoSQLiteOpenHelper {
 							 Representante.COLUMN_INTEGER_COD_REP, representante.getCod_rep());
 		}
 
-
 		for (Layout layout : pda.getListaLayout()) {
 
 			insereOUatualiza(layout, 
 							 Layout.COLUMN_INTEGER_NR_LAYOUT, layout.getNr_layout());
 		}
-
 
 		for (Item_layout item_layout : pda.getListaItem_layout()) {
 
@@ -46,7 +48,6 @@ public class Dao extends BancoSQLiteOpenHelper {
 							 Item_layout.COLUMN_INTEGER_NR_LAYOUT, item_layout.getNr_layout(),
 							 Item_layout.COLUMN_INTEGER_NR_ORDEM, item_layout.getNr_ordem());
 		}
-
 
 		for (Movimento movimento : pda.getListaMovimento()) {
 
@@ -59,32 +60,43 @@ public class Dao extends BancoSQLiteOpenHelper {
 		for (Cad_eqpto cad_eqpto : pda.getListaCad_eqpto()) {
 			
 			insereOUatualiza(cad_eqpto, 
-							 Cad_eqpto.COLUMN_TEXT_it_codigo, String.valueOf('"' + cad_eqpto.getIt_codigo() + '"'));
+							 Cad_eqpto.COLUMN_TEXT_it_codigo, cad_eqpto.getIt_codigo());
 		}
 		
 		for (Cad_pecas cad_pecas : pda.getListaCad_pecas()) {
 			
 			insereOUatualiza(cad_pecas, 
-							 Cad_pecas.COLUMN_TEXT_desc_item, String.valueOf('"' + cad_pecas.getDesc_item() + '"'));
+							 Cad_pecas.COLUMN_TEXT_desc_item, cad_pecas.getDesc_item());
 		}
 		
 		for (Cad_precos cad_precos : pda.getListaCad_precos()) {
 			
 			insereOUatualiza(cad_precos, 
-							 Cad_precos.COLUMN_TEXT_Cod_estab, String.valueOf('"' + cad_precos.getCod_estab() + '"'));
+							 Cad_precos.COLUMN_TEXT_Cod_estab, cad_precos.getCod_estab());
 		}
 		
-		for (Retorno retorno : pda.getListaRetorno()) {
-			
-			insereOUatualiza(retorno, 
-							 Retorno.COLUMN_TEXT_nr_contrato, String.valueOf('"' + retorno.getNr_contrato() + '"'));
-		}
-
 		for (Cad_canal_venda cad_canal_venda : pda.getListaCad_canal_venda()) {
 			
 			insereOUatualiza(cad_canal_venda, 
-							 Cad_canal_venda.COLUMN_TEXT_cod_canal_venda, '"' + cad_canal_venda.getCod_canal_venda() + '"');
+							 Cad_canal_venda.COLUMN_TEXT_cod_canal_venda, cad_canal_venda.getCod_canal_venda());
 		}
+
+		//se nao entrar aqui eh porque quem esta chamando eh ActivityDashboard, entao NAO vou deletar tudo
+		if(context instanceof ActivityLogin) {
+		
+			for(Cad_atividade cadAtividade : pda.getListaCad_atividade()) {
+				this.insereOUatualiza(cadAtividade, 
+									  Cad_atividade.COLUMN_TEXT_ATIVIDADE, cadAtividade.getAtividade());
+			}
+		}
+
+		//nao tenho certeza se esta tabela irah provocar algum problema em alguma condicao especifica:
+		for (Retorno retorno : pda.getListaRetorno()) {
+			
+			insereOUatualiza(retorno, 
+							 Retorno.COLUMN_TEXT_nr_contrato, retorno.getNr_contrato());
+		}//nao tenho certeza se esta tabela irah provocar algum problema em alguma condicao especifica.
+		
 
 	}
 
@@ -94,7 +106,7 @@ public class Dao extends BancoSQLiteOpenHelper {
 
 		String select = "select * from " + classe.getSimpleName();
 
-		String condicaoWhere = Query.criaCondicaoWhere_final(parametros);
+		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
 
 		String querySelect = select + condicaoWhere;
 
@@ -141,7 +153,7 @@ public class Dao extends BancoSQLiteOpenHelper {
 
 		String select = "select * from " + classe.getSimpleName();
 
-		String condicaoWhere = Query.criaCondicaoWhere_final(parametros);
+		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
 
 		String querySelect = select + condicaoWhere;
 
@@ -152,7 +164,7 @@ public class Dao extends BancoSQLiteOpenHelper {
 
 		String select = "select * from " + classe.getSimpleName();
 
-		String condicaoWhere = Query.criaCondicaoWhere_final(parametros);
+		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
 
 		String querySelect = select + condicaoWhere;
 
@@ -174,7 +186,7 @@ public class Dao extends BancoSQLiteOpenHelper {
 
 		String delete = "delete from " + classe.getSimpleName();
 
-		String condicaoWhere = Query.criaCondicaoWhere_final(parametros);
+		String condicaoWhere = Query.criaCondicaoWhereComParametrosString(parametros);
 
 		String queryDelete = delete + condicaoWhere ;
 

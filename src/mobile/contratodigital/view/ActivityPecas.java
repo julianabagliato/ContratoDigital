@@ -43,19 +43,14 @@ public class ActivityPecas extends Activity {
 	private ArrayAdapterItemPeca baseAdapterPecas;
 	private List<ItemPeca> listaDeItemPecas;
 	private List<Cad_pecas> listaComCad_pecas;
-	//private String codigoDaPeca;
 	private Movimento movimento1;
-	private Dao dao2;
+	private Dao dao;
 	private Movimento movimento;
-	//private int i;
-	//private List<Movimento> valor;
 	private ArrayList<String> listaComValores = new ArrayList<String>();
 	private ArrayList<String> listaComValores2 = new ArrayList<String>();
 	private EditText editText3;
-	//private ArrayAdapter arrayAdapter;
 	private ListView listView;
 	private EditText editText_pesquiza;
-	//private EditText edite;
 	private String atual ;
 	private  String item2 ;
 	private int j;
@@ -64,31 +59,31 @@ public class ActivityPecas extends Activity {
 	private LinearLayout linearLayoutTela ;
 	private TelaBuilder telaBuilder;
 	private LinearLayout linearLayout_holderEditText;
-	//private ArrayList<ItemPeca> listaDeItemPecas2 ;
 	private String validando;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		context = ActivityPecas.this;
+		
 		Bundle bundle = getIntent().getExtras();
 		validando =  bundle.getString("prova");
 		if (validando.equals("1")){
-		movimento1 = (Movimento) bundle.getSerializable("movimento2");
+			movimento1 = (Movimento) bundle.getSerializable("movimento2");
 		}else{
-		movimento1 = (Movimento) bundle.getSerializable("movimento");
+			movimento1 = (Movimento) bundle.getSerializable("movimento");
 		}
-		final EditText edt = new EditText(context);
-		edt.setInputType(InputType.TYPE_CLASS_NUMBER);
-		dao2 = new Dao(context);
-		if(validando.equals("1")){
-		movimento = new Movimento();
-		movimento = movimento1;
-		movimento.setNr_layout(NomeLayout.PECAS.getNumero());
-		movimento.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());
 		
-
-
+		//final EditText edt = new EditText(context);
+		//edt.setInputType(InputType.TYPE_CLASS_NUMBER);
+		
+		if(validando.equals("1")){
+		
+			movimento = new Movimento();
+			movimento = movimento1;
+			movimento.setNr_layout(NomeLayout.PECAS.getNumero());
+			movimento.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());
 		}else{
 			movimento = new Movimento();
 			movimento.setCod_rep( movimento1.getCod_rep());
@@ -99,18 +94,17 @@ public class ActivityPecas extends Activity {
 			movimento.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());
 		}
 		
-		//i = 1;
-
-		context = ActivityPecas.this;
-
 
 		listaDeItemPecas = new ArrayList<ItemPeca>();
 		
-		Dao dao = new Dao(context);
+		dao = new Dao(context);
+		
 		listaComCad_pecas = dao.listaTodaTabela(Cad_pecas.class);
 
 		valorado = 0;
+		
 		for (Cad_pecas cad_pecas : listaComCad_pecas) {
+			
 			valorado = 0;
 
 			Valida(movimento,1,cad_pecas.getIt_codigo());
@@ -996,7 +990,7 @@ return (Movimento) objeto;
 	private void Finalizar() {
 		//insereItemLayout(dao2,NomeLayout.PECAS.getNumero(),i, "|");
 
-		insereMovimento(dao2, movimento);
+		insereMovimento(dao, movimento);
 		
 		
 		listaComValores = new ArrayList<String>();
@@ -1345,22 +1339,15 @@ return (Movimento) objeto;
 	@Override
 	public void onBackPressed() {
 	
-	insereMovimento(dao2, movimento);
+	insereMovimento(dao, movimento);
 	
 	listaComValores = new ArrayList<String>();
 	listaComValores = listaComValores_getLista2();
-	//int nr_ordem = 2;
-	//int tamanho = 0;
 	
-	new MeuAlerta(  "Ação efetuda", null, context).meuAlertaOk();
-
-	//	Toast.makeText(context, "Ação efetuda", Toast.LENGTH_SHORT).show();
+	new MeuAlerta("Ação efetuda", null, context).meuAlertaOk();
 		
-		
-		setResult(444, new Intent());
-	 	finish();
-	 	
-
+	setResult(444, new Intent());
+	finish();
 	}
 }
 

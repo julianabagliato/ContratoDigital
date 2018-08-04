@@ -13,13 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import mobile.contratodigital.R;
 import mobile.contratodigital.model.ItemPeca;
-/**
- * Classe do tipo ArrayAdapter  usada para tratar os dados das peças dos itens no banco
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 
 public class ArrayAdapterItemPeca extends ArrayAdapter<String> {
 
@@ -40,12 +33,11 @@ public class ArrayAdapterItemPeca extends ArrayAdapter<String> {
 		
 		ItemPeca itemPeca = listaDeItemPecas.get(position);
 		
-		view = viewItemLista.criaTelaDoItem(itemPeca);
+			   view = viewItemLista.criaTelaDoItem(itemPeca);
 			
 			   viewItemLista.imageView.setImageResource(R.drawable.signout);
-		
-		// Alterado por Igor - JOIT - 02/03/2018
-		view.setTag(itemPeca.getCodigo());
+
+			   view.setTag(itemPeca.getCodigo());
 	
 		return view;
 	}

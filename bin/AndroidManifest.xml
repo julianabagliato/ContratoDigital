@@ -149,6 +149,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/edite"/>
         </activity>
+      
+        <activity
+            android:name="mobile.contratodigital.view.ActivityPecasNew"
+            android:label="Pecas New" >
+        </activity>
+      
      
         <!-- 
          <activity

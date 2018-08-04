@@ -544,8 +544,11 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 		
 		AtividadeLista.clear();
 			
-		listaComCad_Atividade = ListaComTodasAtividadesEconomica.devolveLista();
+		Dao dao = new Dao(context);
 		
+		listaComCad_Atividade = dao.listaTodaTabela(Cad_atividade.class);
+		//listaComCad_Atividade = ListaComTodasAtividadesEconomica.devolveLista();
+
 		for (Cad_atividade cad_atividade : listaComCad_Atividade) {
 			
 			AtividadeLista.add(cad_atividade.getDescricao()+";"+cad_atividade.getAtividade());
@@ -1115,7 +1118,10 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 
 		AtividadeLista.clear();
 		
-		listaComCad_Atividade = ListaComTodasAtividadesEconomica.devolveLista();
+		Dao dao = new Dao(context);
+		
+		listaComCad_Atividade = dao.listaTodaTabela(Cad_atividade.class);
+		//listaComCad_Atividade = ListaComTodasAtividadesEconomica.devolveLista();
 
 		for (Cad_atividade cad_atividade : listaComCad_Atividade) {
 			
