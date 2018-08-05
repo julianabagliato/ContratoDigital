@@ -110,7 +110,7 @@ public class ActivityPecas extends Activity {
 			Valida(movimento,1,cad_pecas.getIt_codigo());
 			
 			if (valorado == 0){
-			listaDeItemPecas.add(new ItemPeca(cad_pecas.getDesc_item(), cad_pecas.getIt_codigo()));
+			listaDeItemPecas.add(new ItemPeca("",cad_pecas.getDesc_item(), cad_pecas.getIt_codigo()));
 			}
 			 Collections.sort(listaDeItemPecas, new OrdenaPorPecas());
 		baseAdapterPecas = new ArrayAdapterItemPeca(context, 0, listaDeItemPecas);

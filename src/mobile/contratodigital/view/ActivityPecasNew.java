@@ -15,18 +15,18 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.NomeLayout;
 import mobile.contratodigital.model.ItemPeca;
-import mobile.contratodigital.util.Alert;
-import mobile.contratodigital.util.Alert.AlertType;
+import mobile.contratodigital.util.Animacao;
 import mobile.contratodigital.util.DataPersonalizada;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.TelaBuilder;
@@ -39,9 +39,16 @@ public class ActivityPecasNew extends Activity {
 	private Movimento mov_informacoesCliente;
 	private Dao dao;
 	private Movimento mov_pecas;
-	private LinearLayout llHolderItensAdicionados;
 	private TelaBuilder telaBuilder;
+	private Animacao animacao;
+	private List<ItemPeca> listaDeItemPecas;
+	private List<ItemPeca> listaPecasAdicionadas;
+	private static final String LISTA_ADICIONAR_ITEM = "lista1";
+	private static final String LISTA_ALTERAR_REMOVER_ITEM = "lista2";
 	
+	private ArrayAdapterItemPeca arrayAdapterItemPeca;
+	private ArrayAdapterItemPeca arrayAdapterItemPecaAdicionadas;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,8 +68,9 @@ public class ActivityPecasNew extends Activity {
 			mov_pecas.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());
 
 		telaBuilder = new TelaBuilder(context);
-
-		List<ItemPeca> listaDeItemPecas = new ArrayList<ItemPeca>();
+		animacao = new Animacao();
+		
+		listaDeItemPecas = new ArrayList<ItemPeca>();
 		
 		dao = new Dao(context);
 		
@@ -70,36 +78,42 @@ public class ActivityPecasNew extends Activity {
 		
 		for (Cad_pecas cad_pecas : listaComCad_pecas) {
 			
-			listaDeItemPecas.add(new ItemPeca(cad_pecas.getDesc_item(), cad_pecas.getIt_codigo()));
+			listaDeItemPecas.add(new ItemPeca("", cad_pecas.getIt_codigo(), cad_pecas.getDesc_item()));
 		}
 
-		setContentView(constroiTela(listaDeItemPecas));
+		listaPecasAdicionadas = new ArrayList<ItemPeca>();			
+
+		setContentView(constroiTela(listaDeItemPecas, listaPecasAdicionadas));
 	}
 	
-	private LinearLayout constroiTela(List<ItemPeca> listaDeItemPecas) {
+	private LinearLayout constroiTela(List<ItemPeca> listaDeItemPecas, List<ItemPeca> listaPecasAdicionadas) {
 		
-		final ArrayAdapterItemPeca baseAdapterPecas = new ArrayAdapterItemPeca(context, 0, listaDeItemPecas);
+		arrayAdapterItemPeca = new ArrayAdapterItemPeca(context, 0, listaDeItemPecas);
+		arrayAdapterItemPecaAdicionadas = new ArrayAdapterItemPeca(context, 0, listaPecasAdicionadas);
 
 		LinearLayout llTela100 = telaBuilder.cria_LL_HOLDER(1f);
 		
 						  LinearLayout llTela90 = telaBuilder.cria_LL_HOLDER(0.90f);
 
 										   LinearLayout llHolderEditText = telaBuilder.cria_LL_HOLDER(1f);
-													    llHolderEditText.addView(criaEditTextPesquisa(baseAdapterPecas));
+													    llHolderEditText.addView(criaEditTextPesquisa(arrayAdapterItemPeca));
 									   llTela90.addView(llHolderEditText);
 					 llTela100.addView(llTela90);
 					 
 						  LinearLayout llTela10 = telaBuilder.cria_LL_HOLDER(0.10f);
 
 										   LinearLayout llHolderListView = telaBuilder.cria_LL_HOLDER(0.50f);
-					 									llHolderListView.addView(criaListViewPecas(baseAdapterPecas, listaDeItemPecas));
+							llHolderListView.addView(criaListViewPecas(arrayAdapterItemPeca, listaDeItemPecas, LISTA_ADICIONAR_ITEM));
 					 				   llTela10.addView(llHolderListView);
 					 				   
-					 					   				llHolderItensAdicionados = telaBuilder.cria_LL_HOLDER(0.50f);
-					 					   							TextView tvTitulo = telaBuilder.cria_TV_titulo("Peças Adicionadas");
-					 					   											tvTitulo.setTextColor(Color.BLUE);
-					 									llHolderItensAdicionados.addView(tvTitulo);	
-					 				   llTela10.addView(llHolderItensAdicionados);
+					 				   LinearLayout llHolderAdicionados = telaBuilder.cria_LL_HOLDER(0.50f);
+					 				   				llHolderAdicionados.setBackgroundColor(Color.LTGRAY);
+					 					   						TextView tvTitulo = telaBuilder.cria_TV_titulo("Peças Adicionadas");
+					 					   								 	tvTitulo.setTextSize(25);
+					 					   										tvTitulo.setTextColor(Color.BLUE);
+					 								llHolderAdicionados.addView(tvTitulo);	
+	llHolderAdicionados.addView(criaListViewPecas(arrayAdapterItemPecaAdicionadas, listaPecasAdicionadas, LISTA_ALTERAR_REMOVER_ITEM));
+	 								   llTela10.addView(llHolderAdicionados);
 					 llTela100.addView(llTela10);
 
 		return llTela100;
@@ -129,33 +143,78 @@ public class ActivityPecasNew extends Activity {
 		return etPesquisa;
 	} 
 	
-	private ListView criaListViewPecas(ArrayAdapterItemPeca baseAdapterPecas, final List<ItemPeca> listaDeItemPecas) {
+	private ListView criaListViewPecas(ArrayAdapterItemPeca arrayAdapterItemPeca, final List<ItemPeca> lista, final String nomeDaLista) {
 		
 		ListView listView = new ListView(context);
-		listView.setAdapter(baseAdapterPecas);
+		listView.setAdapter(arrayAdapterItemPeca);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				
-				acaoAposClickNaLista(view, listaDeItemPecas);				
+				acaoAposClickNaLista(view, lista, nomeDaLista);				
 			}
 		});
 		return listView;
 	}
-	
-	private void acaoAposClickNaLista(View view, List<ItemPeca> listaDeItemPecas) {
+
+	private void acaoAposClickNaLista(View view, List<ItemPeca> lista, String nomeDaLista) {
 		
-		for (ItemPeca itemPeca : listaDeItemPecas) {
+		for (ItemPeca itemPeca : lista) {
 
 			if (itemPeca.getCodigo() == view.getTag()) {
 		
-				solicitaConfirmacao(itemPeca);
+				if(nomeDaLista.equals(LISTA_ADICIONAR_ITEM)) {
+					
+					solicitaConfirmacaoAdicionarItem(itemPeca);
+				}else {					
+					solicitaAlterarOuRemoverItem(itemPeca);
+				}
+				
 				break;
 			}
 		}
 	}
+
+	private void solicitaAlterarOuRemoverItem(final ItemPeca itemPeca) {
 	
-	private void solicitaConfirmacao(final ItemPeca itemPeca) {
+		ArrayList<String> listaAlterarRemover = new ArrayList<String>();
+						  listaAlterarRemover.add("Alterar quantidade");
+						  listaAlterarRemover.add("Remover item");
+						
+		ArrayAdapter arrayAdapter = new ArrayAdapter(context, R.layout.item_menu_geral, listaAlterarRemover);
+
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+		builder1.setTitle("Alterar ou Remover Item?");
+		builder1.setSingleChoiceItems(arrayAdapter, 0, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int posicao) {
+
+				if (posicao == 0) {
+			
+					alterarItem(itemPeca);
+				}
+				
+				if(posicao == 1) {
+					
+					removerItem();
+				}
+				
+				dialogInterface.dismiss();
+			}
+		});
+		builder1.show();
+	}
+	
+	private void alterarItem(ItemPeca itemPeca) {
+		
+		solicitaQuantidade(itemPeca);
+	}
+	
+	private void removerItem() {
+		
+	}
+	
+	private void solicitaConfirmacaoAdicionarItem(final ItemPeca itemPeca) {
 		
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 		   alertDialog.setTitle("Atenção");
@@ -210,8 +269,12 @@ public class ActivityPecasNew extends Activity {
 	    					if(quantidade.isEmpty() || quantidade.equals("0")) {
 	    						
 	    						tvErro.setText("Quantidade inválida");
+	    						
+	    						animacao.piscaView(tvErro);
 	    					}else {
-	    						adicionaItemNaLista(itemPeca, quantidade);
+	    						itemPeca.setQuantidade(quantidade);
+			
+	    						adicionaOuAlteraItem(itemPeca);
 	    				
 	    						alertDialog.dismiss();
 	    					}
@@ -221,11 +284,32 @@ public class ActivityPecasNew extends Activity {
 	        });
 	        alertDialog.show();	        
 	}
-	
-	private void adicionaItemNaLista(ItemPeca itemPeca, String quantidade) {
 		
-		String descricao = "QTD: "+quantidade+" | "+itemPeca.getCodigo()+" | "+itemPeca.getNome();
-		llHolderItensAdicionados.addView(telaBuilder.cria_TV_conteudo13(descricao));		
+	private void adicionaOuAlteraItem(ItemPeca itemPecaInformado) {
+			
+		boolean achouItem = false;
+		
+		for(ItemPeca itemPecaDentroDaLista : listaPecasAdicionadas) {
+			
+			if(itemPecaDentroDaLista.equals(itemPecaInformado)) {
+				
+				listaPecasAdicionadas.remove(itemPecaDentroDaLista);				
+				listaPecasAdicionadas.add(new ItemPeca(itemPecaInformado.getQuantidade(), itemPecaInformado.getCodigo(), itemPecaInformado.getNome()));
+		
+				arrayAdapterItemPecaAdicionadas.notifyDataSetChanged();
+				
+				achouItem = true;
+				break;
+			}
+		}
+		
+		if(!achouItem) {
+			
+			listaDeItemPecas.remove(itemPecaInformado);				
+			arrayAdapterItemPeca.notifyDataSetChanged();
+			
+			listaPecasAdicionadas.add(new ItemPeca(itemPecaInformado.getQuantidade(), itemPecaInformado.getCodigo(), itemPecaInformado.getNome()));
+		}
 	}
 	
 	private void Finalizar() {

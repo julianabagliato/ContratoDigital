@@ -13,23 +13,24 @@ import mobile.contratodigital.util.TelaBuilder;
 public class ViewItemLista {
 
 	private Context context;
-	private TelaBuilder meusWidgetsBuilder;
+	private TelaBuilder telaBuilder;
 
-	protected ImageView imageView;
+	//protected ImageView imageView;
 	protected TextView tvDescMotivo;
 	protected TextView tvObservacao;
+	protected TextView tvQuantidade;
 
 	public ViewItemLista(Context _context){
 
 		context = _context;
-		meusWidgetsBuilder = new TelaBuilder(_context);
+		telaBuilder = new TelaBuilder(_context);
 	}
 		
 	public LinearLayout criaTelaDoItem(ItemPeca itemPeca){
 		
 		LinearLayout llTela = new LinearLayout(context);	
 		llTela.setOrientation(LinearLayout.HORIZONTAL);		
-		llTela.setBackground(meusWidgetsBuilder.cria_GradientDrawable2(context.getResources().getColor(R.color.azul_claro_consigaz)));
+		llTela.setBackground(telaBuilder.cria_GradientDrawable2(context.getResources().getColor(R.color.azul_claro_consigaz)));
 		
 		LinearLayout llQuadrado = new LinearLayout(context);
 		llQuadrado.setOrientation(LinearLayout.VERTICAL);		
@@ -37,11 +38,29 @@ public class ViewItemLista {
 								   lllp.setMargins(10, 10, 10, 10);
 		llQuadrado.setLayoutParams(lllp);
 		
-						   imageView = new ImageView(context);		  
-						   imageView.setAdjustViewBounds(true);
-						   imageView.setMaxWidth(100);
-						   imageView.setMaxHeight(100);
-		llQuadrado.addView(imageView);
+		if(!itemPeca.getQuantidade().isEmpty()) {
+			
+								tvQuantidade = telaBuilder.cria_TV_titulo(itemPeca.getQuantidade());
+								tvQuantidade.setTextSize(25);
+								tvQuantidade.setTextColor(Color.BLUE);
+			llQuadrado.addView(tvQuantidade);	
+		} 
+		else {		
+			ImageView imageView = new ImageView(context);		  
+								imageView.setAdjustViewBounds(true);
+								imageView.setMaxWidth(100);
+								imageView.setMaxHeight(100);
+			
+								//if(!itemPeca.getQuantidade().isEmpty()) {
+								
+									//viewItemLista.imageView.setImageResource(R.drawable.signout);
+								imageView.setImageResource(R.drawable.signout);
+									
+								//}
+
+			llQuadrado.addView(imageView);
+		}
+		
 
 		LinearLayout llretangulo = new LinearLayout(context);
 		LinearLayout.LayoutParams lllp2 = new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0.20f);			
@@ -50,15 +69,15 @@ public class ViewItemLista {
 		llretangulo.setOrientation(LinearLayout.VERTICAL);		
 			
 		
-		llretangulo.addView(meusWidgetsBuilder.cria_TV_titulo(""+itemPeca.getCodigo()));
-		llretangulo.addView(meusWidgetsBuilder.cria_TV_titulo(itemPeca.getNome()));			
+		llretangulo.addView(telaBuilder.cria_TV_titulo(""+itemPeca.getCodigo()));
+		llretangulo.addView(telaBuilder.cria_TV_titulo(itemPeca.getNome()));			
 	
-		tvDescMotivo = meusWidgetsBuilder.cria_TV_conteudo13("");
+		tvDescMotivo = telaBuilder.cria_TV_conteudo13("");
 		tvDescMotivo.setVisibility(View.GONE);
 		tvDescMotivo.setTextColor(Color.RED); 
 		
 		
-		tvObservacao = meusWidgetsBuilder.cria_TV_conteudo13("");
+		tvObservacao = telaBuilder.cria_TV_conteudo13("");
 		tvObservacao.setVisibility(View.GONE);
 			
 		llretangulo.addView(tvDescMotivo);			

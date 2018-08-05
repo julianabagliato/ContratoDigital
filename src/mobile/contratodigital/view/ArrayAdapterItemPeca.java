@@ -34,8 +34,6 @@ public class ArrayAdapterItemPeca extends ArrayAdapter<String> {
 		ItemPeca itemPeca = listaDeItemPecas.get(position);
 		
 			   view = viewItemLista.criaTelaDoItem(itemPeca);
-			
-			   viewItemLista.imageView.setImageResource(R.drawable.signout);
 
 			   view.setTag(itemPeca.getCodigo());
 	
