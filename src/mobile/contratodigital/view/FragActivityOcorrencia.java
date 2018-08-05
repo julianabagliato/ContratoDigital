@@ -667,11 +667,12 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			}
 			break;
 		}
-		if (resultCode == 444) {
-
-			finish();
-			startActivity(getIntent());
-		}
+		
+		//if (resultCode == 444) {
+			//finish();
+			//startActivity(getIntent());
+		//}
+		
 		if (resultCode != Activity.RESULT_CANCELED) {
 
 			if (requestCode == REQUISICAO_BUSCA_FOTO) {
@@ -792,7 +793,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 									bundle.putSerializable("mov_informacoesCliente", mov_informacoesCliente);
 				   intent.putExtras(bundle);
 				   
-			startActivityForResult(intent, 444);		
+			startActivity(intent);		
 	}
 
 	

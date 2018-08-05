@@ -2,6 +2,8 @@ package mobile.contratodigital.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,14 +52,7 @@ public class ViewItemLista {
 								imageView.setAdjustViewBounds(true);
 								imageView.setMaxWidth(100);
 								imageView.setMaxHeight(100);
-			
-								//if(!itemPeca.getQuantidade().isEmpty()) {
-								
-									//viewItemLista.imageView.setImageResource(R.drawable.signout);
 								imageView.setImageResource(R.drawable.signout);
-									
-								//}
-
 			llQuadrado.addView(imageView);
 		}
 		
@@ -68,9 +63,13 @@ public class ViewItemLista {
 		llretangulo.setLayoutParams(lllp2);
 		llretangulo.setOrientation(LinearLayout.VERTICAL);		
 			
+				   TextView tvCodigo = telaBuilder.cria_TV_titulo(""+Html.fromHtml("<b>"+itemPeca.getCodigo()+"</b>"));	
+				 			tvCodigo.setGravity(Gravity.LEFT);
+		llretangulo.addView(tvCodigo);
 		
-		llretangulo.addView(telaBuilder.cria_TV_titulo(""+itemPeca.getCodigo()));
-		llretangulo.addView(telaBuilder.cria_TV_titulo(itemPeca.getNome()));			
+		   		   TextView tvNomeDaPeca = telaBuilder.cria_TV_titulo(itemPeca.getNome());	
+		   					tvNomeDaPeca.setGravity(Gravity.LEFT);
+		llretangulo.addView(tvNomeDaPeca);			
 	
 		tvDescMotivo = telaBuilder.cria_TV_conteudo13("");
 		tvDescMotivo.setVisibility(View.GONE);

@@ -41,13 +41,12 @@ public class ActivityPecasNew extends Activity {
 	private Movimento mov_pecas;
 	private TelaBuilder telaBuilder;
 	private Animacao animacao;
-	private List<ItemPeca> listaDeItemPecas;
-	private List<ItemPeca> listaPecasAdicionadas;
+	private List<ItemPeca> listaDePecasDoCadPecas;
+	private List<ItemPeca> listaDePecasDoMovimento;
 	private static final String LISTA_ADICIONAR_ITEM = "lista1";
 	private static final String LISTA_ALTERAR_REMOVER_ITEM = "lista2";
-	
-	private ArrayAdapterItemPeca arrayAdapterItemPeca;
-	private ArrayAdapterItemPeca arrayAdapterItemPecaAdicionadas;
+	private ArrayAdapterItemPeca adapterPecasDoCadPecas;
+	private ArrayAdapterItemPeca adapterPecasDoMovimento;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,60 +58,133 @@ public class ActivityPecasNew extends Activity {
 			
 		mov_informacoesCliente = (Movimento) bundle.getSerializable("mov_informacoesCliente");
 
-			mov_pecas = new Movimento();
-			mov_pecas.setCod_rep( mov_informacoesCliente.getCod_rep());
-			mov_pecas.setNr_visita(mov_informacoesCliente.getNr_visita());
-			mov_pecas.setNr_contrato(mov_informacoesCliente.getNr_contrato());
-			mov_pecas.setNr_layout(NomeLayout.PECAS.getNumero());
-			mov_pecas.setNr_programacao(mov_informacoesCliente.getNr_programacao());
-			mov_pecas.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());
-
 		telaBuilder = new TelaBuilder(context);
 		animacao = new Animacao();
-		
-		listaDeItemPecas = new ArrayList<ItemPeca>();
-		
+				
 		dao = new Dao(context);
 		
-		List<Cad_pecas> listaComCad_pecas = dao.listaTodaTabela(Cad_pecas.class);
+		mov_pecas = (Movimento)dao.devolveObjeto(Movimento.class,
+												 Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.PECAS.getNumero(), 
+												 Movimento.COLUMN_INTEGER_NR_VISITA, mov_informacoesCliente.getNr_visita());
 		
-		for (Cad_pecas cad_pecas : listaComCad_pecas) {
-			
-			listaDeItemPecas.add(new ItemPeca("", cad_pecas.getIt_codigo(), cad_pecas.getDesc_item()));
+		if(mov_pecas == null) {
+		
+			mov_pecas = new Movimento();
+			mov_pecas.setNr_layout(NomeLayout.PECAS.getNumero());
+			mov_pecas.setNr_visita(mov_informacoesCliente.getNr_visita());
+			//talves status
+			mov_pecas.setCod_rep(mov_informacoesCliente.getCod_rep());
+			mov_pecas.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());
+			mov_pecas.setNr_contrato(mov_informacoesCliente.getNr_contrato());
 		}
+		
+		listaDePecasDoMovimento = new ArrayList<ItemPeca>();			
+	
+		adicionaListaPecasDoMovimento(dao, mov_pecas.getInformacao_1(), listaDePecasDoMovimento);
+		
+		listaDePecasDoCadPecas = new ArrayList<ItemPeca>();
 
-		listaPecasAdicionadas = new ArrayList<ItemPeca>();			
+		adicionaListaPecasDoCadPecas(dao, listaDePecasDoCadPecas);
+		
+		removeItemDoCadPecasSeExistirNoMovimento(listaDePecasDoCadPecas, listaDePecasDoMovimento);
 
-		setContentView(constroiTela(listaDeItemPecas, listaPecasAdicionadas));
+		setContentView(constroiTela(listaDePecasDoCadPecas, listaDePecasDoMovimento));
 	}
 	
-	private LinearLayout constroiTela(List<ItemPeca> listaDeItemPecas, List<ItemPeca> listaPecasAdicionadas) {
+	private void adicionaListaPecasDoMovimento(Dao dao, String info_1, List<ItemPeca> listaDePecasDoMovimento) {
 		
-		arrayAdapterItemPeca = new ArrayAdapterItemPeca(context, 0, listaDeItemPecas);
-		arrayAdapterItemPecaAdicionadas = new ArrayAdapterItemPeca(context, 0, listaPecasAdicionadas);
+		for(ItemPeca itemPeca : devolveCodigos(info_1)) {
+			
+			Cad_pecas cad_pecas = (Cad_pecas)dao.devolveObjeto(Cad_pecas.class, Cad_pecas.COLUMN_TEXT_it_codigo, itemPeca.getCodigo());
+			
+			if(cad_pecas != null) {
+				
+				listaDePecasDoMovimento.add(new ItemPeca(itemPeca.getQuantidade(), cad_pecas.getIt_codigo(), cad_pecas.getDesc_item()));
+			}
+		}	
+	}
+
+	private void adicionaListaPecasDoCadPecas(Dao dao, List<ItemPeca> listaDeItemPecasDoCadPecas){
+		
+		for (Cad_pecas cad_pecas : dao.listaTodaTabela(Cad_pecas.class)) {
+
+			listaDeItemPecasDoCadPecas.add(new ItemPeca("", cad_pecas.getIt_codigo(), cad_pecas.getDesc_item()));
+		}
+	}
+	
+	private void removeItemDoCadPecasSeExistirNoMovimento(List<ItemPeca> listaDePecasDoCadPecas, List<ItemPeca> listaDePecasDoMovimento) {
+		
+		for(ItemPeca itemPecaDoMovimento : listaDePecasDoMovimento) {
+			
+			for(ItemPeca itemPecaDoCadastroDePecas : listaDePecasDoCadPecas) {
+				
+				if(itemPecaDoMovimento.getCodigo().equals(itemPecaDoCadastroDePecas.getCodigo())) {
+					
+					listaDePecasDoCadPecas.remove(itemPecaDoCadastroDePecas);
+					break;			
+				}				
+			}
+		}					
+	}
+
+	private List<ItemPeca> devolveCodigos(String info1){
+		
+		List<ItemPeca> listaComCodigos = new ArrayList<ItemPeca>();
+
+		if(info1 == null || info1.isEmpty()) {
+			return listaComCodigos;
+		}
+
+		if(info1.contains(";")) {
+
+			String lista[] = info1.split(";");
+		
+			for(int i=0; i<lista.length; i++) {
+			
+				String qtdCodigo = lista[i];
+				
+				if(qtdCodigo.contains("#")) {
+	
+					String lista2[] = qtdCodigo.split("#");
+			
+					String quantidade = lista2[0];
+					String codigo = lista2[1];
+				
+					listaComCodigos.add(new ItemPeca(quantidade, codigo, ""));
+				}
+			}
+		}
+
+		return listaComCodigos;
+	}
+	
+	private LinearLayout constroiTela(List<ItemPeca> listaDeItemPecasDoCadPecas, List<ItemPeca> listaDePecasDoMovimento) {
+		
+		adapterPecasDoCadPecas = new ArrayAdapterItemPeca(context, 0, listaDeItemPecasDoCadPecas);
+		adapterPecasDoMovimento = new ArrayAdapterItemPeca(context, 0, listaDePecasDoMovimento);
 
 		LinearLayout llTela100 = telaBuilder.cria_LL_HOLDER(1f);
 		
 						  LinearLayout llTela90 = telaBuilder.cria_LL_HOLDER(0.90f);
 
 										   LinearLayout llHolderEditText = telaBuilder.cria_LL_HOLDER(1f);
-													    llHolderEditText.addView(criaEditTextPesquisa(arrayAdapterItemPeca));
+													    llHolderEditText.addView(criaEditTextPesquisa(adapterPecasDoCadPecas));
 									   llTela90.addView(llHolderEditText);
 					 llTela100.addView(llTela90);
 					 
 						  LinearLayout llTela10 = telaBuilder.cria_LL_HOLDER(0.10f);
 
 										   LinearLayout llHolderListView = telaBuilder.cria_LL_HOLDER(0.50f);
-							llHolderListView.addView(criaListViewPecas(arrayAdapterItemPeca, listaDeItemPecas, LISTA_ADICIONAR_ITEM));
+					llHolderListView.addView(criaListViewPecas(adapterPecasDoCadPecas, listaDeItemPecasDoCadPecas, LISTA_ADICIONAR_ITEM));
 					 				   llTela10.addView(llHolderListView);
 					 				   
 					 				   LinearLayout llHolderAdicionados = telaBuilder.cria_LL_HOLDER(0.50f);
 					 				   				llHolderAdicionados.setBackgroundColor(Color.LTGRAY);
-					 					   						TextView tvTitulo = telaBuilder.cria_TV_titulo("Peças Adicionadas");
+					 					   						TextView tvTitulo = telaBuilder.cria_TV_titulo("Peças Adicionadas:");
 					 					   								 	tvTitulo.setTextSize(25);
 					 					   										tvTitulo.setTextColor(Color.BLUE);
 					 								llHolderAdicionados.addView(tvTitulo);	
-	llHolderAdicionados.addView(criaListViewPecas(arrayAdapterItemPecaAdicionadas, listaPecasAdicionadas, LISTA_ALTERAR_REMOVER_ITEM));
+  llHolderAdicionados.addView(criaListViewPecas(adapterPecasDoMovimento, listaDePecasDoMovimento, LISTA_ALTERAR_REMOVER_ITEM));
 	 								   llTela10.addView(llHolderAdicionados);
 					 llTela100.addView(llTela10);
 
@@ -196,7 +268,7 @@ public class ActivityPecasNew extends Activity {
 				
 				if(posicao == 1) {
 					
-					removerItem();
+					removerItem(itemPeca);
 				}
 				
 				dialogInterface.dismiss();
@@ -210,8 +282,18 @@ public class ActivityPecasNew extends Activity {
 		solicitaQuantidade(itemPeca);
 	}
 	
-	private void removerItem() {
+	private void removerItem(ItemPeca itemPeca) {
 		
+		itemPeca.setQuantidade("");
+		
+		listaDePecasDoMovimento.remove(itemPeca);				
+		adapterPecasDoMovimento.notifyDataSetChanged();
+
+		listaDePecasDoCadPecas.add(itemPeca);				
+		adapterPecasDoCadPecas.notifyDataSetChanged();
+
+		
+		insereOUatualiza(dao, listaDePecasDoMovimento);
 	}
 	
 	private void solicitaConfirmacaoAdicionarItem(final ItemPeca itemPeca) {
@@ -289,15 +371,16 @@ public class ActivityPecasNew extends Activity {
 			
 		boolean achouItem = false;
 		
-		for(ItemPeca itemPecaDentroDaLista : listaPecasAdicionadas) {
+		for(ItemPeca itemPecaDentroDaLista : listaDePecasDoMovimento) {
 			
 			if(itemPecaDentroDaLista.equals(itemPecaInformado)) {
 				
-				listaPecasAdicionadas.remove(itemPecaDentroDaLista);				
-				listaPecasAdicionadas.add(new ItemPeca(itemPecaInformado.getQuantidade(), itemPecaInformado.getCodigo(), itemPecaInformado.getNome()));
+				listaDePecasDoMovimento.remove(itemPecaDentroDaLista);				
+				adapterPecasDoMovimento.notifyDataSetChanged();
+
+				listaDePecasDoMovimento.add(new ItemPeca(itemPecaInformado.getQuantidade(), itemPecaInformado.getCodigo(), itemPecaInformado.getNome()));
+				adapterPecasDoMovimento.notifyDataSetChanged();
 		
-				arrayAdapterItemPecaAdicionadas.notifyDataSetChanged();
-				
 				achouItem = true;
 				break;
 			}
@@ -305,31 +388,39 @@ public class ActivityPecasNew extends Activity {
 		
 		if(!achouItem) {
 			
-			listaDeItemPecas.remove(itemPecaInformado);				
-			arrayAdapterItemPeca.notifyDataSetChanged();
+			listaDePecasDoCadPecas.remove(itemPecaInformado);				
+			adapterPecasDoCadPecas.notifyDataSetChanged();
 			
-			listaPecasAdicionadas.add(new ItemPeca(itemPecaInformado.getQuantidade(), itemPecaInformado.getCodigo(), itemPecaInformado.getNome()));
+			listaDePecasDoMovimento.add(new ItemPeca(itemPecaInformado.getQuantidade(), itemPecaInformado.getCodigo(), itemPecaInformado.getNome()));
+			adapterPecasDoMovimento.notifyDataSetChanged();
+			
 		}
+		
+		insereOUatualiza(dao, listaDePecasDoMovimento);
 	}
 	
-	private void Finalizar() {
-		//insereItemLayout(dao2,NomeLayout.PECAS.getNumero(),i, "|");
+	private void insereOUatualiza(Dao dao, List<ItemPeca> listaDePecasDoMovimento) {
+
+		StringBuilder stringBuilderQtdECodigo = new StringBuilder();
+		
+		for(ItemPeca itemPeca : listaDePecasDoMovimento) {
+			
+			stringBuilderQtdECodigo.append(itemPeca.getQuantidade()+"#"+itemPeca.getCodigo()+";");
+		}
+		
+		mov_pecas.setInformacao_1(stringBuilderQtdECodigo.toString());
+		
+		//new MeuAlerta(""+mov_pecas.getInformacao_1(), null, context).meuAlertaOk();
 
 		dao.insereOUatualiza(mov_pecas,
-				Movimento.COLUMN_INTEGER_NR_LAYOUT, mov_pecas.getNr_layout(), 
-				Movimento.COLUMN_INTEGER_NR_VISITA, mov_pecas.getNr_visita());
-		
-		new MeuAlerta(  "Ação efetuda", null, context).meuAlertaOk();
-		
-			setResult(444, new Intent());
-		 	finish();		
+							 Movimento.COLUMN_INTEGER_NR_LAYOUT, mov_pecas.getNr_layout(), 
+							 Movimento.COLUMN_INTEGER_NR_VISITA, mov_pecas.getNr_visita());
 	}
 	
-	@Override
-	public void onBackPressed() {
-		
-		setResult(444, new Intent());
-		finish();
-	}
+	//@Override
+	//public void onBackPressed() {	
+		//setResult(444, new Intent());
+		//finish();
+	//}
 }
 
