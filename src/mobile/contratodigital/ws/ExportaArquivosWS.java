@@ -96,8 +96,6 @@ public class ExportaArquivosWS {
 			@Override
 			protected Map<String, DataPart> getByteData() {
 
-				Log.i("tag", "2: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
 				Map<String, DataPart> params = new HashMap<String, DataPart>();
 
 				File file = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/");
@@ -105,8 +103,6 @@ public class ExportaArquivosWS {
 				String[] directories = file.list(new FilenameFilter() {
 					@Override
 					public boolean accept(File current, String nomeDoDiretorio) {
-
-						Log.i("tag", "3: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
 						return new File(current, nomeDoDiretorio).isDirectory();
 					}
@@ -119,14 +115,11 @@ public class ExportaArquivosWS {
 					params.put("", new DataPart("", new byte[1]));
 				} else {
 
-					Log.i("tag", "4: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
 					for (String diretorioDoCliente : directories) {
 
 						if (diretorioDoCliente != "Nome da empresa não informado") {
 
-							file2 = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/"
-									+ diretorioDoCliente);
+							file2 = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/"+diretorioDoCliente);
 						}
 						File[] listaComArquivos = file2.listFiles();
 
@@ -134,8 +127,6 @@ public class ExportaArquivosWS {
 
 							params.put("", new DataPart("", new byte[1]));
 						} else {
-
-							Log.i("tag", "5: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
 							for (File arquivo : listaComArquivos) {
 
@@ -167,20 +158,11 @@ public class ExportaArquivosWS {
 									params.put("" + qtd + diretorioDoCliente,
 											new DataPart(arquivo.getName(), fileToByteArray(arquivo), "file/msword"));
 								}
-
 								qtd++;
 							}
-
-							Log.i("tag", "6: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
 						}
-
 					}
-
-					Log.i("tag", "7: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
 				}
-
 				return params;
 			}
 		};

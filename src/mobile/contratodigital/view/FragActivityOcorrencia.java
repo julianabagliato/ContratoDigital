@@ -32,6 +32,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -163,16 +164,16 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		menu.add(0, 5, 0, "Consultar CNPJ");
 		menu.add(0, 6, 0, "Consultar Inscrição Estadual");
 		menu.add(0, 7, 0, "Informar Peças");
-		menu.add(0, 8, 0, "Foto CNPJ");
-		menu.add(0, 9, 0, "Foto CPF");
 		menu.add(0, 10, 0, "Foto RG");
+		menu.add(0, 9, 0, "Foto CPF");
+		menu.add(0, 8, 0, "Foto CNPJ");
+		menu.add(0, 17, 0, "Foto PAC");
 		menu.add(0, 11, 0, "Foto Contrato");
-		menu.add(0, 12, 0, "Adicionar Fotos");
+		menu.add(0, 12, 0, "Anexar Fotos");
+		menu.add(0, 14, 0, "Anexar Arquivos PDFs");
 		menu.add(0, 13, 0, "Simular Instalação");
-		menu.add(0, 14, 0, "Anexar pdf");
 		menu.add(0, 15, 0, "Visualizar Arquivos Gerados");
 		menu.add(0, 16, 0, "Gerar Nº de Contrato");
-		menu.add(0, 17, 0, "Foto PAC");
 
 		return true;
 	}
@@ -351,34 +352,30 @@ public class FragActivityOcorrencia extends FragmentActivity {
 								geraContrato("ContratoContaSIM", ActivityContratoContaSIM.class, mov_informacoesCliente, srcContrato);
 								break;
 								
-							case FOTO_CONTRATO: teste(mov_informacoesCliente, "Contrato.jpg");
+							case FOTO_CONTRATO: buscarArquivo("Contrato.jpg");
 								break;
 								
-							case FOTO_CNPJ: teste(mov_informacoesCliente, "CNPJ.jpg");								
-								break;
-							
-							case FOTO_PAC: teste(mov_informacoesCliente, "PAC.jpg");
+							case FOTO_CNPJ: buscarArquivo("CNPJ.jpg");								
 								break;
 							
-							case FOTOS_DIVERSAS: teste(mov_informacoesCliente, "Foto1.jpg");
+							case FOTO_PAC: buscarArquivo("PAC.jpg");
+								break;
+							
+							case FOTO_CPF: buscarArquivo("CPF.jpg");
 								break;
 								
-							case FOTO_CPF: teste(mov_informacoesCliente, "CPF.jpg");
+							case FOTO_RG: buscarArquivo("RG.jpg");
 								break;
 								
-							case FOTO_RG: teste(mov_informacoesCliente, "RG.jpg");
+							case FOTOS_DIVERSAS: buscarArquivo("Foto_0.jpg");
+								break;
+							
+							case AnexarPDF: buscarArquivo("Doc_0.pdf");
 								break;
 								
 								
-								
-								
-							case AnexarPDF:
-								criaDiretorioComOuSemNumeroDeContrato();
-								buscarfile(mov_informacoesCliente, "Doc_Cliente.pdf");
-								break;
 								
 							case SimularInstalacao:
-								criaDiretorioComOuSemNumeroDeContrato();
 								chamaAplicativoFotoshop();
 								break;
 								
@@ -414,35 +411,22 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		
 	}
 	
-	private void teste(Movimento mov_informacoesCliente, String nomeDoArquivo) {
-
-		nomeDoArquivoSelecionado = nomeDoArquivo;
-		
-		criaDiretorioComOuSemNumeroDeContrato();
-		
-		buscarFoto(mov_informacoesCliente);
-	}
-	private void buscarFoto(Movimento mov_informacoesCliente) {
-		
-		if(formularioEquipamentosSimuladosFoiPreenchido()) {
-		
-			Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-
-			startActivityForResult(Intent.createChooser(intent, "Selecione uma imagem:"), REQUISICAO_BUSCA_FOTO);
-		}
-	}
-
-	private void buscarfile(Movimento mov_informacoesCliente, String nomeDoArquivo) {
+	private void buscarArquivo(String nomeDoArquivo) {
 		
 		nomeDoArquivoSelecionado = nomeDoArquivo;
 		
 		if(formularioEquipamentosSimuladosFoiPreenchido()) {
 				  
-				   Intent intent = new Intent();
-		            intent.setAction(Intent.ACTION_GET_CONTENT);
-		            intent.setType("*/*");
-	                
-			startActivityForResult(Intent.createChooser(intent, "Selecione um PDF :"), REQUISICAO_BUSCA_ARQUIVO);	
+			if(nomeDoArquivoSelecionado.contains(".jpg")) {
+				
+				Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);	
+				startActivityForResult(Intent.createChooser(intent, "Selecione um arquivo:"), REQUISICAO_BUSCA_FOTO);				
+			}else {
+				Intent intent = new Intent();
+				intent.setAction(Intent.ACTION_GET_CONTENT);
+				intent.setType("*/*");            
+				startActivityForResult(Intent.createChooser(intent, "Selecione um arquivo:"), REQUISICAO_BUSCA_ARQUIVO);					
+			}	
 		}
 	}
 
@@ -653,6 +637,14 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	}
 	
 	private void chamaAplicativoFotoshop() {
+		
+		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
+	    
+		File diretorioDestino = new File(srcContrato);
+	    if (!diretorioDestino.exists()) {	    	
+	    	 diretorioDestino.mkdirs();
+	    }
+
 		
 		Dao dao = new Dao(context);
 
@@ -1025,27 +1017,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		return imageView_seta;
 	}
 
-	  private void criaDiretorioComOuSemNumeroDeContrato() {
-		
-		/*  
-		Dao dao = new Dao(context);
-
-		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-																		Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-																		Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-		*/
-		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
-
-		try {
-			File diretorio = new File(srcContrato);
-				 diretorio.mkdir();
-		} 
-		catch (Exception erro) {
-			new MeuAlerta(""+erro, null, context).meuAlertaOk();	
-		}
-
-	}
-
 	private Movimento preencheNoObjetoOcampoInformacao(Object objeto, String conteudo) {
 
 		try {
@@ -1086,57 +1057,61 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			
 		    Uri caminhoDoArquivoEscolhido = intent.getData();
 	
-			switch (requestCode) {
-			
-			case REQUISICAO_BUSCA_ARQUIVO:
+			if (requestCode == REQUISICAO_BUSCA_ARQUIVO) {
 				
 				if (resultCode == RESULT_OK) {
-					 
-					boolean arquivoEhImagem = false; 
-					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido, arquivoEhImagem);		    
+					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido);		    
 				}
-				break;
 			}
 			
 			if (resultCode != Activity.RESULT_CANCELED) {
 				
 				if (requestCode == REQUISICAO_BUSCA_FOTO) {
-					
-					boolean arquivoEhImagem = true; 
-					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido, arquivoEhImagem);
+					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido);
 				}
 			}
 		}
 	}
 	
-	private void buscaArquivoESalvaNoDiretorioDoCliente(Uri caminhoDoArquivoEscolhido, boolean arquivoEhImagem) {
+	private void buscaArquivoESalvaNoDiretorioDoCliente(Uri caminhoDoArquivoEscolhido) {
 		
-		/*
-		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-															Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-															Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-		 */										
 		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
 	    
+	    TrabalhaComFotos trabalhaComFotos = new TrabalhaComFotos();
+
+	    String diretorioOrigem = trabalhaComFotos.devolveDiretorioDoArquivoSelecionado(context, caminhoDoArquivoEscolhido);	
+	   
 		File diretorioDestino = new File(srcContrato);
 	    if (!diretorioDestino.exists()) {	    	
 	    	 diretorioDestino.mkdirs();
 	    }
-
-	    TrabalhaComFotos trabalhaComFotos = new TrabalhaComFotos();
-
-	    String diretorioOrigem = trabalhaComFotos.devolveDiretorioDoArquivoSelecionado(context, caminhoDoArquivoEscolhido);	
-				 
+	    
+	    String nomeDoArquivoAUtilizar = nomeDoArquivoSelecionado;
+	    
+	    if(nomeDoArquivoSelecionado.contains("Doc_")) {
+	    	
+	    	nomeDoArquivoAUtilizar = devolveUltimoArquivoDocSalvo(srcContrato, nomeDoArquivoSelecionado);
+	    }
+	    if(nomeDoArquivoSelecionado.contains("Foto_")) {
+	    	
+	    	nomeDoArquivoAUtilizar = devolveUltimoArquivoFotoSalvo(srcContrato, nomeDoArquivoSelecionado);
+	    }
+	    
 	    try {
-	    	if(arquivoEhImagem) {
+	    	if(nomeDoArquivoAUtilizar.contains(".jpg")) {
 	    		
 	    		Bitmap bitmap = Diminui_MB_imagens.decodeSampledBitmapFromPicturePath(diretorioOrigem, 200, 200);
-	    		trabalhaComFotos.escreveNoBitmap(bitmap, diretorioDestino+"/"+nomeDoArquivoSelecionado);
-	    	}else {	    		
-	    		trabalhaComFotos.escreveNoArquivo(diretorioOrigem, srcContrato, nomeDoArquivoSelecionado);
+	    		trabalhaComFotos.escreveNoBitmap(bitmap, diretorioDestino+"/"+nomeDoArquivoAUtilizar);
+	    		new MeuAlerta("Foto salva!", null, context).meuAlertaOk();
+	    	}
+	    	else if(nomeDoArquivoAUtilizar.contains(".pdf")) {
+		    	trabalhaComFotos.escreveNoArquivo(diretorioOrigem, srcContrato, nomeDoArquivoAUtilizar);
+	    		new MeuAlerta("Arquivo salvo!", null, context).meuAlertaOk();
+	    	}
+	    	else {	    		
+	    		new MeuAlerta("Arquivo não suportado", null, context).meuAlertaOk();
 	    	}
 			    	
-			 new MeuAlerta("Arquivo salvo!", null, context).meuAlertaOk();
 		} 
 		catch (Exception erro) {
 			 erro.printStackTrace();
@@ -1144,6 +1119,59 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		}
 	}
 	
+	private String devolveUltimoArquivoDocSalvo(String srcContrato, String nomeDoArquivoSelecionado) {
+	    String[] listaParaPegarNumero = new String[3];
+		CaminhoArquivo caminhoArquivo = new CaminhoArquivo(context);
+		ArrayList<CaminhoArquivo> lista = caminhoArquivo.populaListaComNomeDeArquivosBaseadoEmDiretorio(srcContrato);
+		boolean achouAlgumArquivoDoc = false;
+			for(CaminhoArquivo cArquivo : lista) {
+				if(cArquivo.getArquivo().contains("Doc_")) {
+					listaParaPegarNumero = desmontaStringEProcuraNumero(cArquivo.getArquivo());
+					achouAlgumArquivoDoc = true;
+				}		
+			}
+		if(!achouAlgumArquivoDoc) {
+			listaParaPegarNumero = desmontaStringEProcuraNumero(nomeDoArquivoSelecionado);						
+		}
+		return montaStringComNumeroSomado(listaParaPegarNumero);
+	}
+	private String devolveUltimoArquivoFotoSalvo(String srcContrato, String nomeDoArquivoSelecionado) {
+	    String[] listaParaPegarNumero = new String[3];
+		CaminhoArquivo caminhoArquivo = new CaminhoArquivo(context);
+		ArrayList<CaminhoArquivo> lista = caminhoArquivo.populaListaComNomeDeArquivosBaseadoEmDiretorio(srcContrato);
+		boolean achouAlgumArquivoDoc = false;
+			for(CaminhoArquivo cArquivo : lista) {
+				if(cArquivo.getArquivo().contains("Foto_")) {
+					listaParaPegarNumero = desmontaStringEProcuraNumero(cArquivo.getArquivo());
+					achouAlgumArquivoDoc = true;
+				}		
+			}
+		if(!achouAlgumArquivoDoc) {
+			listaParaPegarNumero = desmontaStringEProcuraNumero(nomeDoArquivoSelecionado);						
+		}
+		return montaStringComNumeroSomado(listaParaPegarNumero);
+	}
+	private String montaStringComNumeroSomado(String[] lista) {
+   		int numeroEncontrado = Integer.parseInt(lista[1]);
+		int numeroAserUtilizado = numeroEncontrado + 1;
+		return lista[0]+String.valueOf(numeroAserUtilizado)+lista[2];
+	}
+	private String[] desmontaStringEProcuraNumero(String nomeArquivo) {
+		String[] lista = new String[3];
+		if(nomeArquivo.contains("_")) {
+			int posicaoDoUnderline = nomeArquivo.indexOf("_");
+			String ladoEsquerdo = nomeArquivo.substring(0, posicaoDoUnderline+1);
+			int tamanhoTotal = nomeArquivo.length();
+			String numeroEncontrado = nomeArquivo.substring(posicaoDoUnderline+1, tamanhoTotal-4);
+			int posicaoDoPonto = nomeArquivo.indexOf(".");
+			String ladoDireito = nomeArquivo.substring(posicaoDoPonto, tamanhoTotal);
+			lista[0] = ladoEsquerdo;
+			lista[1] = numeroEncontrado;
+			lista[2] = ladoDireito;
+		}
+		return lista;
+	}
+
 	@Override
 	public void onBackPressed() {
 

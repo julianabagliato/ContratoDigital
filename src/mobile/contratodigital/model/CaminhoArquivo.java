@@ -57,7 +57,7 @@ public class CaminhoArquivo {
 		}
 	}
 
-	private ArrayList<CaminhoArquivo> populaListaComNomeDeArquivosBaseadoEmDiretorio(String diretorioAserProcurado) {
+	public ArrayList<CaminhoArquivo> populaListaComNomeDeArquivosBaseadoEmDiretorio(String diretorioAserProcurado) {
 
 		ArrayList<CaminhoArquivo> lista = new ArrayList<CaminhoArquivo>();
 
@@ -73,12 +73,7 @@ public class CaminhoArquivo {
 
 				String arq = arquivo.toString();
 
-				if (arq.contains(".pdf") 
-						|| arq.contains(".jpg") 
-							|| arq.contains(".doc") 
-								|| arq.contains(".docx")
-									|| arq.contains(".png")
-										|| arq.contains(".txt")) {
+				if (arq.contains(".pdf") || arq.contains(".jpg")) {
 
 					int posicaoDaUltimaBarra = arq.lastIndexOf("/");
 					int tamanhoTotal = arq.length();

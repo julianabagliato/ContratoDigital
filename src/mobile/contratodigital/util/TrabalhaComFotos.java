@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,19 +35,19 @@ public class TrabalhaComFotos {
 	public void escreveNoArquivo(String diretorioOrigem, String diretorioDestino, String nomeDoArquivoSelecionado) throws Exception {
 		
 		File Antigo_caminho = new File(diretorioOrigem);
-    	File destino = new File(diretorioDestino+nomeDoArquivoSelecionado);
-		InputStream in = new FileInputStream(Antigo_caminho);
-		OutputStream out = new FileOutputStream(destino);
+		File destino = new File(diretorioDestino+nomeDoArquivoSelecionado);
+		InputStream inputStream = new FileInputStream(Antigo_caminho);
+		OutputStream outputStream = new FileOutputStream(destino);			
 		byte[] buf = new byte[1024];
 		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
+		while ((len = inputStream.read(buf)) > 0) {
+			outputStream.write(buf, 0, len);
 		}
-		in.close();
-		out.close();
+		inputStream.close();
+		outputStream.close();
 		//Antigo_caminho.delete();
 	}
-	
+
 	public void escreveNoBitmap(Bitmap bitmap, String diretorioComNomeDoArquivo) throws IOException {
 		
 		FileOutputStream fileOutputStream = new FileOutputStream(diretorioComNomeDoArquivo);
