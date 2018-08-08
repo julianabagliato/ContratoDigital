@@ -19,38 +19,35 @@ import android.widget.TextView;
 import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.IpRS;
-import mobile.contratodigital.enums.IpURL;
 import mobile.contratodigital.enums.TipoView;
+import mobile.contratodigital.model.ContratoUtil;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.ws.ExportaArquivosWS;
 import sharedlib.contratodigital.model.Layout;
 import sharedlib.contratodigital.model.Movimento;
-import sharedlib.contratodigital.model.Representante;
 
-/**
- * Classe do tipo activity  usada para exportar dados
- * @author Edição - Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Criação -Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ActivityExportar extends Activity {
 
-	private static final String RESOURCE_REST_ARQUIVOS = "/Retorno/Arquivo/";
 	private Menu menu;
 	private static String URLescolhida = IpRS.URL_SIVA_REST;
+	private static final String RESOURCE_REST_ARQUIVOS = "/Retorno/Arquivo/";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final Context context = this;
+		Context context = this;
 
-		final Dao dao = new Dao(context);
+		Dao dao = new Dao(context);
 
 		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
-		actionBar.setTitle("Comunicar");
-		
+				  actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
+				  actionBar.setTitle("Comunicar");
+
+		setContentView(criaTela(dao, context));
+	}
+	
+	private LinearLayout criaTela(final Dao dao, final Context context) {
 
 		LinearLayout linearLayoutPrincipal = new LinearLayout(context);
 		linearLayoutPrincipal.setOrientation(LinearLayout.VERTICAL);
@@ -70,88 +67,52 @@ public class ActivityExportar extends Activity {
 						@Override
 						public void onClick(View v) {
 
-							int qtdDeMovimentos = 0;
-
-							for (Layout layout : dao.listaTodaTabela(Layout.class, 
-																	 Layout.COLUMN_INTEGER_IND_TIP_LAYOUT, TipoView.LAYOUT_FORMULARIO.getValor())) {
-
-								qtdDeMovimentos = dao.selectCount_where_nrVisita_naoEhZERO(Movimento.class, layout.getNr_layout());
-								
-								//qtdDeMovimentos = dao.selectCount(Movimento.class);
-					
-								if (qtdDeMovimentos > 0) {
-									
-									ExportaArquivosWS exportarFotos = new ExportaArquivosWS(context, URLescolhida + RESOURCE_REST_ARQUIVOS);
-								 					  exportarFotos.exportar();
-									
-								 	break;
-								}
-							}
-
-							if (qtdDeMovimentos == 0) {
-								
-								new MeuAlerta( "Não possui dados para exportar", null, context).meuAlertaOk();
-
-								//Toast.makeText(context, "Não possui dados para exportar", Toast.LENGTH_SHORT).show();
-							}
-
+							acaoAposCliqueNoBotaoExportar(dao, context);							
 						}
-						
 					});
 		linearLayoutPrincipal.addView(imageButton_exportar);
-		
-/*		
-		TextView textView_exportarArquivos = new TextView(context);
-				 textView_exportarArquivos.setText("Exportar apenas arquivos:");
-				 textView_exportarArquivos.setGravity(Gravity.CENTER_HORIZONTAL);
-				 textView_exportarArquivos.setTextSize(30);
-				 textView_exportarArquivos.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		linearLayoutPrincipal.addView(textView_exportarArquivos);
 
-		ImageButton imageButton_exportarArquivos = new ImageButton(context);
-			   		imageButton_exportarArquivos.setImageDrawable(getResources().getDrawable(R.drawable.import_export_icon_256));
-			   		imageButton_exportarArquivos.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			   		imageButton_exportarArquivos.setOnClickListener(new OnClickListener() {
-			   			@Override
-			   			public void onClick(View v) {
-
-			   				//File file = new File(Environment.getExternalStorageDirectory() + "/DCIM/Camera/");
-			   				File file = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/");
-
-			   			 	if(!file.exists()){
-			   		    		file.getParentFile().mkdirs();  	
-			   		    	}
-			   		   	
-			   			 	if(file.listFiles() == null){
-			   			 		
-			   			 		Toast.makeText(context, "Não possui arquivos para exportar", Toast.LENGTH_SHORT).show();
-			   			 	}
-			   			 	else{
-						   		   //int qtdFotos = file.listFiles().length;  
-								   //if (qtdFotos > 0) {
-			
-			   			 		ExportaArquivosWS exportarArquivos = new ExportaArquivosWS(context, IpURL.URL_SERVER_REST.getValor() + RESOURCE_REST_ARQUIVOS);
-												exportarArquivos.exportar();	
-								   
-								   //}else{						   
-									  //Toast.makeText(context, "Não encontrou arquivos para exportar", Toast.LENGTH_SHORT).show();
-								   //} 		
-			   			 	}
-					   
-					   
-				   }
-		});
-		linearLayoutPrincipal.addView(imageButton_exportarArquivos);*/
-
-		setContentView(linearLayoutPrincipal);
+		return linearLayoutPrincipal;
 	}
+	
+	private void acaoAposCliqueNoBotaoExportar(Dao dao, Context context) {
+		
+		int qtdDeMovimentos = 0;
+
+		for (Layout layout : dao.listaTodaTabela(Layout.class, 
+												 Layout.COLUMN_INTEGER_IND_TIP_LAYOUT, TipoView.LAYOUT_FORMULARIO.getValor())) {
+
+			qtdDeMovimentos = dao.selectCount_where_nrVisita_naoEhZERO(Movimento.class, layout.getNr_layout());
+
+			if (qtdDeMovimentos > 0) {
+				
+				
+				ContratoUtil contratoUtil = new ContratoUtil(dao, context);
+				
+				//if(contratoUtil.preencheu2LayoutsObrigatoriosAntesDeExportar(nrVisita)) {
+				
+					ExportaArquivosWS exportarFotos = new ExportaArquivosWS(context, URLescolhida + RESOURCE_REST_ARQUIVOS);
+									  exportarFotos.exportar();
+				//}
+			 					  
+			 	break;			 	
+			}
+		}
+
+		if (qtdDeMovimentos == 0) {
+			
+			new MeuAlerta( "Não possui informação para exportar", null, context).meuAlertaOk();
+		}
+	
+	}
+	
 	public boolean onCreateOptionsMenu(Menu menuinterno) {
 		menu = menuinterno;
 		
 		menu.add(0,0,0, "Oi");
-		menu.add(0,1,0,"Vogel");
-		menu.add(0,2,0,"WCS");
-		menu.add(0,3,0,"Local");
+		menu.add(0,1,0, "Vogel");
+		menu.add(0,2,0, "WCS");
+		menu.add(0,3,0, "Local");
 		menu.getItem(0).setEnabled(false);
 		
 	    return true;
@@ -160,6 +121,7 @@ public class ActivityExportar extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		switch(item.getItemId()){
+		
 		case 0: URLescolhida = IpRS.acaoLinkOi(menu);
 		return true;
 	
@@ -179,6 +141,7 @@ public class ActivityExportar extends Activity {
 		return super.onOptionsItemSelected(item);
 
 	}
+	
 	@Override
 	public void onBackPressed() {
 

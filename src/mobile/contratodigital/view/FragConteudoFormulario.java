@@ -116,7 +116,7 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 		
 		Dao dao = new Dao(context);
 
-		contratoUtil = new ContratoUtil(dao, movimento_1.getNr_visita());
+		contratoUtil = new ContratoUtil(dao, context);
 		
 		endereco_temp = new Endereco_temp();
 
@@ -1628,7 +1628,7 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 			
 			if(nr_layout == NomeLayout.INFORMACOES_CLIENTE.getNumero() || nr_layout == NomeLayout.ENDERECO_PADRAO.getNumero() || nr_layout == NomeLayout.ENDERECO_ENTREGA.getNumero()) {
 			
-				if(contratoUtil.naoTemNumeroDeContrato() ) {
+				if(contratoUtil.naoTemNumeroDeContrato(movimento_1.getNr_visita())) {
 					
 					habilitaViews();			
 				}else {

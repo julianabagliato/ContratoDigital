@@ -23,27 +23,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.provider.MediaStore.Files;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.webkit.MimeTypeMap;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -59,7 +52,6 @@ import mobile.contratodigital.util.ChamaAplicativo;
 import mobile.contratodigital.util.Diminui_MB_imagens;
 import mobile.contratodigital.util.GetChildCount;
 import mobile.contratodigital.util.MeuAlerta;
-import mobile.contratodigital.util.StatusMemoria;
 import mobile.contratodigital.util.TelaBuilder;
 import mobile.contratodigital.util.TrabalhaComFotos;
 import sharedlib.contratodigital.model.Layout;
@@ -85,42 +77,35 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	private List<Layout> listaComlayouts_Obrigatorios;
 	private TelaBuilder telaBuilder;
 	private Dao dao;
-	private String srcContratos;
-	private String nomearquivo;
-	private int nr = 0;
-	private TextView textFile;
+	//private String srcContratos;
+	private String nomeDoArquivoSelecionado;
+	//private int nr = 0;
+	//private TextView textFile;
 	public static final int REQUISICAO_BUSCA_FOTO = 1234;
 	public static final int REQUISICAO_PERMISSAO_TIRAR_FOTO = 111;
 	public static final int REQUISICAO_PERMISSAO_LEITURA = 222;
 	public static final int REQUISICAO_PERMISSAO_ESCRITA = 333;
-	private static final int PICKFILE_RESULT_CODE = 33333;
-	public static final int REQUISICAO_TIRAR_FOTO = 666;
-	
-	//private String numeroContrato;
-	//private List<Movimento> listaTodosMovimentos;
-	//private static final int AdicionarFormulario = 0;
-	//private static final int RemoverFormulário = 1;
+	private static final int REQUISICAO_BUSCA_ARQUIVO = 33333;
 	
 	private static final int GerarContratoPadrao = 2;
 	private static final int GerarContratoContaSIM = 3;
 	private static final int SimularPrecos = 4;
 	private static final int ConsultarCNPJ = 5;
 	private static final int ConsultarInscricaoEstadual = 6;
-	
-	private static final int InformarPecas = 7;
-	private static final int InformarPecasNew = 27;
-	
-	private static final int FotoCNPJ = 8;
-	private static final int FotoCPF = 9;
-	private static final int FotoRG = 10;
-	private static final int FotoContrato = 11;
-	private static final int AdicionarFotos = 12;
+	private static final int InformarPecas = 7;	
+	private static final int FOTO_CNPJ = 8;
+	private static final int FOTO_CPF = 9;
+	private static final int FOTO_RG = 10;
+	private static final int FOTO_CONTRATO = 11;
+	private static final int FOTOS_DIVERSAS = 12;
 	private static final int SimularInstalacao = 13;
 	private static final int AnexarPDF = 14;
-	private static final int VisualizarArquivosGerados = 15;
+	private static final int VISUALIZAR_ARQUIVOS_GERADOS = 15;
 	private static final int GerarNumeroDeContrato = 16;
+	private static final int FOTO_PAC = 17;
 	private ContratoUtil contratoUtil;
 	private static final String ADICIONOU_LAYOUT_REPRESENTACAO = "SIM";
+	//private static final String NOME_DO_ARQUIVO = "nomeDoArquivo";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -159,19 +144,13 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			listaComlayouts_Obrigatorios.add(layout);	
 			}	
 		}
-
 		
-		
-		contratoUtil = new ContratoUtil(dao, movimento1.getNr_visita());
-		
+		contratoUtil = new ContratoUtil(dao, context);
 		
 		setContentView(constroiTela());
 		
 		populaTodasAsListasEcriaLayoutDinamicamente();
 	}
-	
-	
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,7 +172,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		menu.add(0, 14, 0, "Anexar pdf");
 		menu.add(0, 15, 0, "Visualizar Arquivos Gerados");
 		menu.add(0, 16, 0, "Gerar Nº de Contrato");
-		menu.add(0, 27, 0, "Informar Peças New");
+		menu.add(0, 17, 0, "Foto PAC");
 
 		return true;
 	}
@@ -226,22 +205,23 @@ public class FragActivityOcorrencia extends FragmentActivity {
 						
 		case InformarPecas: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(InformarPecas);	
 			return true;
-		case InformarPecasNew: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(InformarPecasNew);	
-		return true;
-
-		case FotoCNPJ: verificaPermissaoLeituraEFazAlgumaAcao(FotoCNPJ);
+	
+		case FOTO_CNPJ: verificaPermissaoLeituraEFazAlgumaAcao(FOTO_CNPJ);
+			return true;
+		
+		case FOTO_PAC: verificaPermissaoLeituraEFazAlgumaAcao(FOTO_PAC);
 			return true;
 
-		case FotoCPF: verificaPermissaoLeituraEFazAlgumaAcao(FotoCPF);	
+		case FOTO_CPF: verificaPermissaoLeituraEFazAlgumaAcao(FOTO_CPF);	
 			return true;
 
-		case FotoRG: verificaPermissaoLeituraEFazAlgumaAcao(FotoRG);		
+		case FOTO_RG: verificaPermissaoLeituraEFazAlgumaAcao(FOTO_RG);		
 			return true;
 			
-		case FotoContrato: verificaPermissaoLeituraEFazAlgumaAcao(FotoContrato);	
+		case FOTO_CONTRATO: verificaPermissaoLeituraEFazAlgumaAcao(FOTO_CONTRATO);	
 			return true;
 
-		case AdicionarFotos: verificaPermissaoLeituraEFazAlgumaAcao(AdicionarFotos);			
+		case FOTOS_DIVERSAS: verificaPermissaoLeituraEFazAlgumaAcao(FOTOS_DIVERSAS);			
 			return true;
 
 		case SimularInstalacao: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(SimularInstalacao);
@@ -250,7 +230,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		case AnexarPDF: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(AnexarPDF);		
 			return true;
 
-		case VisualizarArquivosGerados: verificaPermissaoLeituraEFazAlgumaAcao(VisualizarArquivosGerados);
+		case VISUALIZAR_ARQUIVOS_GERADOS: verificaPermissaoLeituraEFazAlgumaAcao(VISUALIZAR_ARQUIVOS_GERADOS);
 			return true;
 
 		case GerarNumeroDeContrato: verificaSeNaoTemNumeroDeContratoEFazAlgumaAcao(GerarNumeroDeContrato);
@@ -319,8 +299,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-	 	 
-		Log.i("tag", "onRequestPermissionsResult requestCode: " + requestCode);
 		
       if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {	
 	    	  
@@ -344,7 +322,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	private void verificaSeNaoTemNumeroDeContratoEFazAlgumaAcao(int acao) {
 					
-			if (contratoUtil.naoTemNumeroDeContrato()) {
+			if (contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita())) {
 				
 				verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(acao);
 			} 
@@ -355,46 +333,48 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		
 	private void verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(int acao) {
 
-						if (layoutsObrigatoriosForamPreenchidos()) {
+						if (contratoUtil.layoutsObrigatoriosForamPreenchidos(listaComlayouts_Obrigatorios, movimento1)) {
 	
 							Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
 																							Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
 																							Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
 
-							srcContratos = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente);
-							
+							String srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
 
 							switch (acao) {
 
 							case GerarContratoPadrao:
-								geraContrato("ContratoPadrao", ActivityContratoPadrao.class, mov_informacoesCliente, srcContratos);
+								geraContrato("ContratoPadrao", ActivityContratoPadrao.class, mov_informacoesCliente, srcContrato);
 								break;
 								
 							case GerarContratoContaSIM:
-								geraContrato("ContratoContaSIM", ActivityContratoContaSIM.class, mov_informacoesCliente, srcContratos);
+								geraContrato("ContratoContaSIM", ActivityContratoContaSIM.class, mov_informacoesCliente, srcContrato);
 								break;
 								
-							case FotoContrato:
+							case FOTO_CONTRATO: teste(mov_informacoesCliente, "Contrato.jpg");
+								break;
+								
+							case FOTO_CNPJ: teste(mov_informacoesCliente, "CNPJ.jpg");								
+								break;
+							
+							case FOTO_PAC: teste(mov_informacoesCliente, "PAC.jpg");
+								break;
+							
+							case FOTOS_DIVERSAS: teste(mov_informacoesCliente, "Foto1.jpg");
+								break;
+								
+							case FOTO_CPF: teste(mov_informacoesCliente, "CPF.jpg");
+								break;
+								
+							case FOTO_RG: teste(mov_informacoesCliente, "RG.jpg");
+								break;
+								
+								
+								
+								
+							case AnexarPDF:
 								criaDiretorioComOuSemNumeroDeContrato();
-								nomearquivo = "Contrato.jpg";
-								buscarFoto(mov_informacoesCliente);
-								break;
-								
-							case FotoCNPJ:
-								criaDiretorioComOuSemNumeroDeContrato();
-								nomearquivo = "Cnpj.jpg";
-								//tirarFotoCnpj();
-								buscarFoto(mov_informacoesCliente);
-								break;
-								
-							case AdicionarFotos:
-								criaDiretorioComOuSemNumeroDeContrato();
-								nomearquivo = "foto1.jpg";
-								buscarFoto(mov_informacoesCliente);
-								break;
-								
-							case SimularPrecos :
-								abrirSimulador();	
+								buscarfile(mov_informacoesCliente, "Doc_Cliente.pdf");
 								break;
 								
 							case SimularInstalacao:
@@ -402,29 +382,11 @@ public class FragActivityOcorrencia extends FragmentActivity {
 								chamaAplicativoFotoshop();
 								break;
 								
-							case FotoCPF:
-								criaDiretorioComOuSemNumeroDeContrato();
-								nomearquivo = "CPF.jpg";
-								buscarFoto(mov_informacoesCliente);
-								break;
-								
-							case FotoRG:
-								criaDiretorioComOuSemNumeroDeContrato();
-								nomearquivo = "RG.jpg";
-								buscarFoto(mov_informacoesCliente);
+							case SimularPrecos :
+								abrirSimulador();	
 								break;
 
-							case AnexarPDF:
-								criaDiretorioComOuSemNumeroDeContrato();
-								nomearquivo = "Doc_Cliente.pdf";
-								buscarfile(mov_informacoesCliente);
-								break;
-								
 							case InformarPecas: 		                 		
-								irParaActivityPecas();
-								break;
-						
-							case InformarPecasNew: 		                 		
 								irParaActivityPecasNew();
 								break;
 						
@@ -432,8 +394,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 								abrirWebview_InscricaoEstadual();
 								break;
 								
-							case VisualizarArquivosGerados:
-								mostraListaDeArquivos(mov_informacoesCliente);
+							case VISUALIZAR_ARQUIVOS_GERADOS:
+								visualizarArquivosGerados(mov_informacoesCliente);
 								break;
 	
 							case ConsultarCNPJ :
@@ -451,58 +413,61 @@ public class FragActivityOcorrencia extends FragmentActivity {
 						}
 		
 	}
+	
+	private void teste(Movimento mov_informacoesCliente, String nomeDoArquivo) {
 
-	private boolean layoutsObrigatoriosForamPreenchidos() {
-
-		int movimentosEncontrados = 0;
+		nomeDoArquivoSelecionado = nomeDoArquivo;
 		
-		for (Layout layout_obrigatorio : listaComlayouts_Obrigatorios) {
-			
-			if (layout_obrigatorio != null) {
-
-				Movimento mov_obrigatorio = (Movimento) dao.devolveObjeto(Movimento.class,
-																		  Movimento.COLUMN_INTEGER_NR_LAYOUT, layout_obrigatorio.getNr_layout(),
-																		  Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-			
-					if (mov_obrigatorio == null) {
-					
-						avisaQformularioObrigatorioNaoFoiPreenchido(layout_obrigatorio.getNr_layout());
-						break;
-					}
-					else {
-						
-						if(layout_obrigatorio.getNr_layout() == NomeLayout.REPRESENTACAO.getNumero()) {
-							
-							if(mov_obrigatorio.getInformacao_1().isEmpty()) {
-								
-								avisaQformularioObrigatorioNaoFoiPreenchido(layout_obrigatorio.getNr_layout());
-								break;
-							}
-							else {
-								movimentosEncontrados++;
-							}
-							
-						}else {							
-							movimentosEncontrados++;
-						}
-						
-					} 
-				
-			}else {
-				new MeuAlerta("Não foi encontrado Layout obrigatório", null, context).meuAlertaOk();
-			}
-		}
+		criaDiretorioComOuSemNumeroDeContrato();
 		
-		
-		if(movimentosEncontrados == listaComlayouts_Obrigatorios.size()){
-			
-			return true;
-		}else {
-			return false;
-		}
-		
+		buscarFoto(mov_informacoesCliente);
 	}
+	private void buscarFoto(Movimento mov_informacoesCliente) {
 		
+		if(formularioEquipamentosSimuladosFoiPreenchido()) {
+		
+			Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+
+			startActivityForResult(Intent.createChooser(intent, "Selecione uma imagem:"), REQUISICAO_BUSCA_FOTO);
+		}
+	}
+
+	private void buscarfile(Movimento mov_informacoesCliente, String nomeDoArquivo) {
+		
+		nomeDoArquivoSelecionado = nomeDoArquivo;
+		
+		if(formularioEquipamentosSimuladosFoiPreenchido()) {
+				  
+				   Intent intent = new Intent();
+		            intent.setAction(Intent.ACTION_GET_CONTENT);
+		            intent.setType("*/*");
+	                
+			startActivityForResult(Intent.createChooser(intent, "Selecione um PDF :"), REQUISICAO_BUSCA_ARQUIVO);	
+		}
+	}
+
+	private void visualizarArquivosGerados(Movimento mov_informacoesCliente) {
+		
+		String srcContrato = devolveDiretorioAserUtilizado(mov_informacoesCliente);
+		
+		CaminhoArquivo caminhoArquivo = new CaminhoArquivo(context);
+					   caminhoArquivo.mostraListaDeArquivos(mov_informacoesCliente, srcContrato);
+	}
+	
+	private String devolveDiretorioAserUtilizado(Movimento mov_informacoesCliente) {
+		
+		String srcContrato = "";
+		
+		if (contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita())) {
+			
+			srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());	
+		} else {	
+			srcContrato = usaNumeroDeContrato(mov_informacoesCliente.getNr_contrato());
+		}
+		
+		return srcContrato;
+	}
+	
 	private void solicitaConfirmacaoParaPoderGerarNumeroDeContrato(final Movimento mov_informacoesCliente){
 		
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -525,73 +490,61 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		
 	private void AtualizarContrato(Movimento mov_informacoesCliente) {
 		
-		
 		if(formularioEquipamentosSimuladosFoiPreenchido()) {
 			
 			String numeroContrato = GerarNumerodeContrato();
 			
-		String srcContrato = usaRazaoSocialComCPF_CNPJ(movimento1);
+			String srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
 			
-		try {
-
-			File Antigo_caminho = new File(srcContrato);
-			File novoCaminho = new File(srcContrato.replace(
-					String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")),
-					"_" + numeroContrato));
-			Antigo_caminho.renameTo(novoCaminho);
-
-			String deletar = srcContrato.replace("_" + numeroContrato, String
-					.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")));
-				Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
+			try {
+	
+				File Antigo_caminho = new File(srcContrato);
+				File novoCaminho = new File(srcContrato.replace(
+				String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")), "_" + numeroContrato));
 				
-				Runtime.getRuntime().exec("cmd /c rd k:\\" + deletar + " /s /q");
-				
-				Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
-		
-		
-			Dao dao = new Dao(context);
-
-			ArrayList<Movimento> listaTodosMovimentos = dao.devolveListaComMovimentosPopulados(mov_informacoesCliente);
+				Antigo_caminho.renameTo(novoCaminho);
+	
+				String deletar = srcContrato.replace("_" + numeroContrato, String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")));
+					Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
+					Runtime.getRuntime().exec("cmd /c rd k:\\" + deletar + " /s /q");					
+					Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
 			
-			int tamanho = listaTodosMovimentos.size();
-			
-			for (int i = 0; i < tamanho; i++) {
+				Dao dao = new Dao(context);
+	
+				ArrayList<Movimento> listaTodosMovimentos = dao.devolveListaComMovimentosPopulados(mov_informacoesCliente);
 				
-				Movimento movimento2 = new Movimento();
+				int tamanho = listaTodosMovimentos.size();
 				
-				movimento2 = listaTodosMovimentos.get(i);
-				
-				if(movimento2 != null) {
+				for (int i = 0; i < tamanho; i++) {
 					
-					movimento2.setNr_contrato(numeroContrato);
-
-					preencheNoObjetoOcampoInformacao(movimento2, numeroContrato);
-				
-					insereMovimento(dao, movimento2);
+					Movimento movimento2 = new Movimento();
+					
+					movimento2 = listaTodosMovimentos.get(i);
+					
+					if(movimento2 != null) {
+						
+						movimento2.setNr_contrato(numeroContrato);
+	
+						preencheNoObjetoOcampoInformacao(movimento2, numeroContrato);
+					
+						insereMovimento(dao, movimento2);
+					}
+					
 				}
 				
+				Antigo_caminho.renameTo(novoCaminho);
+				
+				
+				new MeuAlerta("Número de contrato gerado: "+numeroContrato, null, context).meuAlertaOk();
+			
+			} 
+			catch (IOException erro) {
+				
+				new MeuAlerta("Erro: "+erro, null, context).meuAlertaOk();
+	
 			}
-			
-			Antigo_caminho.renameTo(novoCaminho);
-			
-			
-			new MeuAlerta("Número de contrato gerado: "+numeroContrato, null, context).meuAlertaOk();
 		
-		} 
-		catch (IOException erro) {
-			
-			new MeuAlerta("Erro: "+erro, null, context).meuAlertaOk();
-
-		}
-
-			
-			
-			
-			
-			
 		}	
-
-		//}
 	}
 
 	private String GerarNumerodeContrato() {
@@ -610,174 +563,15 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		return numeroContrato;
 
 	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-
-		switch (requestCode) {
+	
+	private String usaRazaoSocialComCPF_CNPJ(String info_1, String info_4) {
 		
-		case PICKFILE_RESULT_CODE:
-			
-			if (resultCode == RESULT_OK) {
-
-				Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-																				Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-																				Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-		
-				if (contratoUtil.naoTemNumeroDeContrato()) {
-					
-					srcContratos = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente);
-				} else {	
-					srcContratos = usaNumeroDeContrato(mov_informacoesCliente);
-				}
-				
-				
-				String FilePath = intent.getData().getPath().replace("file/", "");
-				textFile.setText(FilePath);
-				File Antigo_caminho = new File(FilePath);
-				// File novoCaminho = new File(FilePath.replace(FilePath., "_" +
-				// Numero_contrato));
-
-				//File src = new File(".");
-				String dstPath = Environment.getExternalStorageDirectory() + srcContratos;
-				File dst;
-
-				dst = new File(dstPath + nomearquivo);
-				try {
-					InputStream in = new FileInputStream(Antigo_caminho);
-					OutputStream out = new FileOutputStream(dst);
-					byte[] buf = new byte[1024];
-					int len;
-					while ((len = in.read(buf)) > 0) {
-						out.write(buf, 0, len);
-					}
-					in.close();
-					out.close();
-					Antigo_caminho.delete();
-				} catch (Exception e) {
-
-					//boolean deuErro = true;
-					
-					e.printStackTrace();
-
-				}
-				if (textFile.getText() != "") {
-
-				}
-			}
-			break;
-		}
-		
-		//if (resultCode == 444) {
-			//finish();
-			//startActivity(getIntent());
-		//}
-		
-		if (resultCode != Activity.RESULT_CANCELED) {
-
-			if (requestCode == REQUISICAO_BUSCA_FOTO) {
-
-				new StatusMemoria().mostraStatusMemoria();
-
-				buscaFotoEmostraNolinearLayout_tela(intent);
-
-				new StatusMemoria().mostraStatusMemoria();
-			}
-
-			if (requestCode == REQUISICAO_TIRAR_FOTO) {
-
-				new StatusMemoria().mostraStatusMemoria();
-
-				buscaFotoEmostraNolinearLayout_tela(intent);
-
-				new StatusMemoria().mostraStatusMemoria();
-			}
-		}
+		return Environment.getExternalStorageDirectory()+"/ContratoDigital/"+info_1+"_"+info_4.replace("/", "-")+"/";
 	}
 	
-	private String usaRazaoSocialComCPF_CNPJ(Movimento mov_informacoesCliente) {
+	private String usaNumeroDeContrato(String nrContrato) {
 		
-		srcContratos = Environment.getExternalStorageDirectory()+"/ContratoDigital/"+mov_informacoesCliente.getInformacao_1()+"_"+mov_informacoesCliente.getInformacao_4().replace("/", "-")+"/";
-		
-		return srcContratos;
-	}
-	
-	private String usaNumeroDeContrato(Movimento mov_informacoesCliente) {
-		
-		srcContratos = Environment.getExternalStorageDirectory() + "/ContratoDigital/"+"_"+mov_informacoesCliente.getNr_contrato()+"/";
-		
-		return srcContratos;
-	}
-
-
-	@Override
-	public void onBackPressed() {
-		
-		// setResult(resultado, new Intent());
-
-		startActivity(new Intent(this, ActivityListaClientes.class));
-
-		finish();
-	}
-
-	private void irParaActivityPecas() {
-		
-		//if (layoutsObrigatoriosForamPreenchidos()) {
-
-			Intent intent = new Intent(FragActivityOcorrencia.this, ActivityPecas.class);
-
-			Bundle bundle = new Bundle();
-			Dao dao = new Dao(context);
-
-			Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-					Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-					Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-
-			ArrayList<Movimento> listaTodosMovimentos = dao.devolveListaComMovimentosPopulados(mov_informacoesCliente);
-
-			int tam = 0;
-			int value = 0;
-			int atua = 0;
-			while (tam < listaTodosMovimentos.size()) {
-				String movito = "";
-				//String prog = "";
-				String visit = "";
-				if (listaTodosMovimentos.get(tam) != null) {
-					movito = String.valueOf(listaTodosMovimentos.get(tam).getNr_layout());
-					//prog = String.valueOf(listaTodosMovimentos.get(tam).getNr_programacao());
-					visit = String.valueOf(listaTodosMovimentos.get(tam).getNr_visita());
-
-				}
-				if (movito.equals("668") & visit.equals(String.valueOf(mov_informacoesCliente.getNr_visita()))) {
-					value = 1;
-					atua = tam;
-					tam = listaTodosMovimentos.size() + 1;
-				}
-				tam = tam + 1;
-			}
-			if (value == 1) {
-
-				bundle.putSerializable("movimento2", listaTodosMovimentos.get(atua));
-				bundle.putString("prova", "1");
-				
-				if (listaTodosMovimentos.get(atua).getNr_contrato().trim().equals("")) {
-					
-					bundle.putString("contrato", "");
-				}
-				if (listaTodosMovimentos.get(atua).getNr_contrato().trim().equals("")) {
-					bundle.putString("contrato", listaTodosMovimentos.get(atua).getNr_contrato());
-				}
-
-			} else {
-				bundle.putSerializable("movimento", mov_informacoesCliente);
-				bundle.putString("prova", "2");
-
-			}
-
-			intent.putExtras(bundle);
-			startActivityForResult(intent, 444);
-
-		//}
+		return Environment.getExternalStorageDirectory() + "/ContratoDigital/"+"_"+nrContrato+"/";
 	}
 
 	private void irParaActivityPecasNew() {
@@ -881,39 +675,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			}
 		}
 	}
-
-	
-	/*
-	private boolean formulario_INFORMACOES_CLIENTE_foiPreenchido2() {
-
-		boolean layoutObrigatorioPreenchido = false;
-		
-		for (Layout layout_obrigatorio : listaComlayouts_Obrigatorios) {
-
-			if (layout_obrigatorio != null) {
-
-				if (layout_obrigatorio.getNr_layout() == NomeLayout.INFORMACOES_CLIENTE.getNumero()) {
-
-					Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-																					 Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-																					 Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-
-					if (mov_informacoesCliente != null) {
-						
-						layoutObrigatorioPreenchido = true;
-					} 
-					else {
-						avisaQformularioObrigatorioNaoFoiPreenchido(layout_obrigatorio.getNr_layout());
-
-						break;
-					}
-				}
-			}
-		}
-		
-		return layoutObrigatorioPreenchido;
-	}
-	*/
 	
 	private void chamaAplicativoFotoshop() {
 		
@@ -926,7 +687,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 		ChamaAplicativo chamaAplicativo = new ChamaAplicativo();
 	
-		if (contratoUtil.naoTemNumeroDeContrato()) {
+		if (contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita())) {
 			
 			chamaAplicativo.chamaOApp(context, "br.com.extend.fotoshop", "nomeEmpresa_cnpj", ""+mov_informacoesCliente.getInformacao_1()+"_"+mov_informacoesCliente.getInformacao_4().replace("/", "-"));	
 		} else {
@@ -944,40 +705,23 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	}
 
 	private void abrirWebview_Cnpj() {
-		
-		//if (layoutsObrigatoriosForamPreenchidos()) {
 
 			Intent intent = new Intent(FragActivityOcorrencia.this, WebViewCNPJ.class);
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("movimento", movimento1);
 			intent.putExtras(bundle);
 			startActivityForResult(intent, 444);
-		//}
-
 	}
 
 	private void abrirWebview_InscricaoEstadual() {
-		
-		//if (layoutsObrigatoriosForamPreenchidos()) {
 
 			Intent intent = new Intent(FragActivityOcorrencia.this, Webview_Inscricao.class);
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("movimento", movimento1);
 			intent.putExtras(bundle);
 			startActivityForResult(intent, 444);
-		//}
-
 	}
-
-
-	private void avisaQformularioObrigatorioNaoFoiPreenchido(int nrLayout) {
-		
-		Layout layout = (Layout) dao.devolveObjeto(Layout.class, 
-												   Layout.COLUMN_INTEGER_NR_LAYOUT, nrLayout);
-		
-		new MeuAlerta("Formulario ("+layout.getDescricao()+") precisa ser preenchido", null, context).meuAlertaOk();	
-	}
-
+	
 	private void geraContrato(String nomeDoContrato, Class<? extends Activity> activityAserChamada, Movimento mov_informacoesCliente, String srcContrato) {
 
 		if(formularioEquipamentosSimuladosFoiPreenchido()) {
@@ -998,7 +742,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 		if(mov_equipamentosSimulados == null) {
 			
-			avisaQformularioObrigatorioNaoFoiPreenchido(NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
+			contratoUtil.avisaQformularioObrigatorioNaoFoiPreenchido(NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
 			
 			return false;
 		}else {
@@ -1006,188 +750,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		}
 		
 	}
-	
-	private void mostraListaDeArquivos(Movimento mov_informacoesCliente) {
-		
-		String srcContrato = "";
-		
-		if (contratoUtil.naoTemNumeroDeContrato()) {
-			
-			srcContratos = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente);	
-		} else {	
-			srcContrato = usaNumeroDeContrato(mov_informacoesCliente);
-		}
-
-		ArrayList<CaminhoArquivo> lista = populaListaComNomeDeArquivosBaseadoEmDiretorio(srcContrato);
-
-		if (lista.isEmpty()) {
-			
-			informaQnaoTemArquivos();
-		} else {
-			escolheApenasUmItemDaLista("Arquivos Gerados", lista);
-		}
-	}
-
-	private void informaQnaoTemArquivos() {
-	
-		new MeuAlerta("Não contem arquivos", null, context).meuAlertaOk();	
-	}
-
-	private ArrayList<CaminhoArquivo> populaListaComNomeDeArquivosBaseadoEmDiretorio(String diretorioAserProcurado) {
-
-		ArrayList<CaminhoArquivo> lista = new ArrayList<CaminhoArquivo>();
-
-		File file2 = new File(diretorioAserProcurado);
-
-		File[] listaComArquivos = file2.listFiles();
-
-		if (listaComArquivos == null) {
-			
-			informaQnaoTemArquivos();
-		} else {
-			for (File arquivo : listaComArquivos) {
-
-				String arq = arquivo.toString();
-
-				if (arq.contains(".pdf")) {
-
-					int posicaoDaUltimaBarra = arq.lastIndexOf("/");
-					int tamanhoTotal = arq.length();
-
-					String caminho = arq.substring(0, posicaoDaUltimaBarra + 1);
-					String nomeDoArquivo = arq.substring(posicaoDaUltimaBarra + 1, tamanhoTotal);
-
-					lista.add(new CaminhoArquivo(nomeDoArquivo, caminho));
-				}
-				if (arq.contains(".jpg")) {
-
-					int posicaoDaUltimaBarra = arq.lastIndexOf("/");
-					int tamanhoTotal = arq.length();
-
-					String caminho = arq.substring(0, posicaoDaUltimaBarra + 1);
-					String nomeDoArquivo = arq.substring(posicaoDaUltimaBarra + 1, tamanhoTotal);
-
-					lista.add(new CaminhoArquivo(nomeDoArquivo, caminho));
-				}
-			}
-		}
-		return lista;
-	}
-
-	private void escolheApenasUmItemDaLista(String titulo, final ArrayList<CaminhoArquivo> lista) {
-
-		ArrayAdapter arrayAdapter = new ArrayAdapter(context, R.layout.item_menu_geral, lista);
-
-		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-		builder1.setTitle(titulo);
-		builder1.setSingleChoiceItems(arrayAdapter, 0, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int posicao) {
-
-				for (int i = 0; i < lista.size(); i++) {
-
-					if (posicao == i) {
-						
-						//if (lista.get(i).getArquivo().contains(".pdf")) {
-							
-							CaminhoArquivo caminhoArquivo = lista.get(i);
-							
-							String caminho = caminhoArquivo.getCaminho();
-							String arquivo = caminhoArquivo.getArquivo();
-							
-							String caminhoComArquivo = caminho + arquivo;
-							
-							int posicaoOndeEstaOPonto = caminhoComArquivo.indexOf(".");
-							
-							String diretorioDoArquivoSemExtensao = caminhoComArquivo.substring(0, posicaoOndeEstaOPonto);
-							
-							String apenasExtensao = caminhoComArquivo.substring(posicaoOndeEstaOPonto + 1, caminhoComArquivo.length());
-							
-							Log.i("tag","diretorioDoArquivoSemExtensao: "+diretorioDoArquivoSemExtensao);
-							Log.i("tag","apenasExtensao: "+apenasExtensao);
-							
-							chamaVisualizadorBaseadoExtensao(context, diretorioDoArquivoSemExtensao, apenasExtensao);
-							
-						//} else {
-							
-							//new MeuAlerta("Foto cadastrada! porém visualizador não é \n compativel para essa versão do android!", null, context).meuAlertaOk();	
-						//}
-					}
-
-				}
-				dialogInterface.dismiss();
-			}
-		});
-
-		builder1.show();
-	}
-
-	
-	/*
-	private void chamaVisualizadorPDF(String caminhoArquivo) {
-
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.fromFile(new File(caminhoArquivo)), "application/pdf");
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(intent);
-	}
-	*/
-	private void chamaVisualizadorIMG(String caminhoArquivo) {
-
-		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-		startActivityForResult(Intent.createChooser(intent, "Selecione uma imagem:"), REQUISICAO_BUSCA_FOTO);
-		intent.setDataAndType(Uri.fromFile(new File(caminhoArquivo)), "application/jpg");
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(intent);
-	}
-	
-	private void chamaVisualizadorBaseadoExtensao(Context context, String SRC_CONTRATO, String extensaoPDFouDOC) {
-
-		String caminhoComExtensao = SRC_CONTRATO +"."+ extensaoPDFouDOC;
-
-		String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extensaoPDFouDOC);
-
-	
-		
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		
-		//intent.setDataAndType(Uri.fromFile(new File(caminhoComExtensao)), mimeType);
-
-
-		//Uri photoURI =                          FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".my.package.name.provider", new File(caminhoComExtensao));
-		//intent = new Intent(Intent.ACTION_VIEW, FileProvider.getUriForFile(context, "mobile.contratodigital.view", new File(caminhoComExtensao)));
-
-		
-		// New Approach
-	    				  Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName(), new File(caminhoComExtensao));
-	    				  
-	    Log.i("tag","apkURI: "+apkURI);
-
-	    Log.i("tag","mimeType: "+mimeType);
-	    					 
-	    				  
-	    intent.setDataAndType(apkURI, mimeType);
-	    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-	    // End New Approach
-		
-		
-		
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-		
-		context.startActivity(intent);
-
-		/*
-		if (context instanceof ActivityContratoPadrao) {
-			((ActivityContratoPadrao) context).finish();
-		}
-		if (context instanceof ActivityContratoContaSIM) {
-			((ActivityContratoContaSIM) context).finish();
-		}
-		*/
-	}
-
-	
+				
 	private void adicionaFormulario() {
 
 		listaComNrLayoutNaoRepetidos.clear();
@@ -1259,9 +822,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			chamaListaMultiplaEscolha("Remover", items, selecionados);
 		} else {
 			new MeuAlerta("Não há formularios a serem removidos!", null, context).meuAlertaOk();
-
-			// Toast.makeText(context, "Não há formularios a serem removidos! ",
-			// Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -1314,7 +874,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 									
 									
 									
-									if(contratoUtil.naoTemNumeroDeContrato() ) {
+									if(contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita()) ) {
 						
 										insereMovimentoECriaLayoutDinamicamente(movimento);
 									}else {
@@ -1386,7 +946,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	}
 	
-
 	private LinearLayout criaLinearLayoutTitulo(final int nrProgrComNrForm, int nrLayout, int color, int color2) {
 
 		LinearLayout linearLayout_titulo = new LinearLayout(context);
@@ -1398,7 +957,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		final ImageView imageView_seta = criaImageViewSeta();
 		linearLayout_titulo.addView(imageView_seta);
 		// linearLayout_titulo.requestFocus(View.FOCUS_DOWN);
-		textFile = new TextView(context);
+		
+		//textFile = new TextView(context);
 		
 		if (nrLayout != 25) {
 			
@@ -1491,82 +1051,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		return imageView_seta;
 	}
 
-	/*
-	 * @Override public void clicouFragConteudoFormulario(String mensagem, int
-	 * nrProgrComNrForm) {
-	 * 
-	 * FragConteudoFormularioHolder fragConteudoFormularioHolder =
-	 * (FragConteudoFormularioHolder)
-	 * fragmentManager.findFragmentByTag("fragCFH" + nrProgrComNrForm);
-	 * fragConteudoFormularioHolder.recebeInformacao(mensagem); }
-	 */
-
-	/*
-	  private void tirarFotoCnpj() {
-	  
-	  FotoCNPJ trabalhaComFotos = new FotoCNPJ();
-	 
-	  Uri uri_diretorio = trabalhaComFotos.criaEDevolveDiretorioOndeAFotoSeraSalva(movimento1.getInformacao_1(),movimento1.getInformacao_4());
-	  
-	  Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	  intent.putExtra("aaa", uri_diretorio);
-	  
-	  startActivityForResult(intent, REQUISICAO_TIRAR_FOTO);	  
-	  }
-	 */
-	
-	/* private void tirarFotoCPF() {
-	 * 
-	 * FotoCpf trabalhaComFotos = new FotoCpf();
-	 * 
-	 * Uri uri_diretorio =
-	 * trabalhaComFotos.criaEDevolveDiretorioOndeAFotoSeraSalva(movimento1.
-	 * getInformacao_1(), movimento1.getInformacao_4());
-	 * 
-	 * Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	 * intent.putExtra("aaa", uri_diretorio);
-	 * 
-	 * startActivityForResult(intent, REQUISICAO_TIRAR_FOTO); new MeuAlerta(
-	 * "CPF Gravado com sucesso", null, context).meuAlertaOk();
-	 * 
-	 * }
-	 * 
-	 * private void tirarFotoRG() {
-	 * 
-	 * FotoRG trabalhaComFotos = new FotoRG();
-	 * 
-	 * Uri uri_diretorio =
-	 * trabalhaComFotos.criaEDevolveDiretorioOndeAFotoSeraSalva(movimento1.
-	 * getInformacao_1(), movimento1.getInformacao_4());
-	 * 
-	 * Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	 * intent.putExtra("aaa", uri_diretorio);
-	 * 
-	 * startActivityForResult(intent, REQUISICAO_TIRAR_FOTO); new MeuAlerta(
-	 * "RG Gravado com sucesso", null, context).meuAlertaOk();
-	 * 
-	 * }
-	 * 
-	 * private void tirarFotoContrato() {
-	 * 
-	 * FotoContrato trabalhaComFotos = new FotoContrato();
-	 * 
-	 * Uri uri_diretorio =
-	 * trabalhaComFotos.criaEDevolveDiretorioOndeAFotoSeraSalva(movimento1.
-	 * getInformacao_1(), movimento1.getInformacao_4());
-	 * 
-	 * Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	 * intent.putExtra("aaa", uri_diretorio);
-	 * 
-	 * startActivityForResult(intent, REQUISICAO_TIRAR_FOTO); new MeuAlerta(
-	 * "Contrato Gravado com sucesso", null, context).meuAlertaOk();
-	 * 
-	 * }
-	 */
-
 	  private void criaDiretorioComOuSemNumeroDeContrato() {
-		
-		String srcContrato;
 		
 		Dao dao = new Dao(context);
 
@@ -1574,12 +1059,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 																		Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
 																		Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
 
-		if (contratoUtil.naoTemNumeroDeContrato()) {
-			
-			srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente);		
-		} else {
-			srcContrato = usaNumeroDeContrato(mov_informacoesCliente);
-		}
+		String srcContrato = devolveDiretorioAserUtilizado(mov_informacoesCliente);
 
 		try {
 			File diretorio = new File(srcContrato);
@@ -1620,163 +1100,107 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	private void insereMovimento(Dao dao, Movimento mov) {
 
 		dao.insereOUatualiza(mov,
-							// Movimento.COLUMN_INTEGER_NR_PROGRAMACAO,
-							// mov.getNr_programacao(),
 							Movimento.COLUMN_INTEGER_NR_LAYOUT, mov.getNr_layout(), 
 							Movimento.COLUMN_INTEGER_NR_VISITA, mov.getNr_visita());
 	}
-
-	private void tirarFoto() {
-		
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);				
-	   	   
-		//startActivityForResult(intent, REQUISICAO_TIRAR_FOTO);	
-		
-		startActivityForResult(intent, REQUISICAO_PERMISSAO_TIRAR_FOTO);		
+					
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    
+		if(intent == null) {
+			 new MeuAlerta("Nenhum arquivo selecionado", null, context).meuAlertaOk();
+		}else {
+			
+		    Uri caminhoDoArquivoEscolhido = intent.getData();
+	
+			switch (requestCode) {
+			
+			case REQUISICAO_BUSCA_ARQUIVO:
+				
+				if (resultCode == RESULT_OK) {
+					 
+					boolean arquivoEhImagem = false; 
+					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido, arquivoEhImagem);		    
+				}
+				break;
+			}
+			
+			if (resultCode != Activity.RESULT_CANCELED) {
+				
+				if (requestCode == REQUISICAO_BUSCA_FOTO) {
+					
+					boolean arquivoEhImagem = true; 
+					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido, arquivoEhImagem);
+				}
+			}
+		}
 	}
 	
-	private void buscarFoto(Movimento mov_informacoesCliente) {
+	private void buscaArquivoESalvaNoDiretorioDoCliente(Uri caminhoDoArquivoEscolhido, boolean arquivoEhImagem) {
 		
-		if(formularioEquipamentosSimuladosFoiPreenchido()) {
-		
-			Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-	
-			startActivityForResult(Intent.createChooser(intent, "Selecione uma imagem:"), REQUISICAO_BUSCA_FOTO);
-		}
-		
-		// finish();
-	}
-
-	private static Uri getFilesContentUri() {
-		return Files.getContentUri("external");
-	}
-
-	private void buscarfile(Movimento mov_informacoesCliente) {
-
-		if(formularioEquipamentosSimuladosFoiPreenchido()) {
-
-			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.setType("file/*");
-			startActivityForResult(Intent.createChooser(intent, "Selecione uma imagem:"), PICKFILE_RESULT_CODE);
-			// startActivityForResult(intent,PICKFILE_RESULT_CODE);
-
-		}
-
-	}
-
-	private void buscaFotoEmostraNolinearLayout_tela(Intent intent) {
-		
-		//boolean deuErro = false;
-		
-		Dao dao = new Dao(context);
-
 		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
 				Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
 				Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
+		
+		String srcContrato = devolveDiretorioAserUtilizado(mov_informacoesCliente);
+	    
+		File diretorioDestino = new File(srcContrato);
+	    if (!diretorioDestino.exists()) {	    	
+	    	 diretorioDestino.mkdirs();
+	    }
 
-		if (contratoUtil.naoTemNumeroDeContrato()) {
-			
-			srcContratos = "/ContratoDigital/" + mov_informacoesCliente.getInformacao_1() + "_"
-					+ mov_informacoesCliente.getInformacao_4().replace("/", "-") + "/";
+	    TrabalhaComFotos trabalhaComFotos = new TrabalhaComFotos();
 
-		} else {
-			srcContratos = "/ContratoDigital/" + "_" + mov_informacoesCliente.getNr_contrato() + "/";
-
+	    String diretorioOrigem = trabalhaComFotos.devolveDiretorioDoArquivoSelecionado(context, caminhoDoArquivoEscolhido);	
+				 
+	    try {
+	    	if(arquivoEhImagem) {
+	    		
+	    		Bitmap bitmap = Diminui_MB_imagens.decodeSampledBitmapFromPicturePath(diretorioOrigem, 200, 200);
+	    		escreveNoBitmap(bitmap, diretorioDestino+"/"+nomeDoArquivoSelecionado);
+	    	}else {	    		
+	    		escreveNoArquivo(diretorioOrigem, srcContrato, nomeDoArquivoSelecionado);
+	    	}
+			    	
+			 new MeuAlerta("Arquivo salvo!", null, context).meuAlertaOk();
+		} 
+		catch (Exception erro) {
+			 erro.printStackTrace();
+			 new MeuAlerta("Arquivo invalido", null, context).meuAlertaOk();
 		}
-
-		Uri caminhoDaFotoSelecionada = intent.getData();
-
-		TrabalhaComFotos trabalhaComFotos = new TrabalhaComFotos();
-
-		String picturePath = trabalhaComFotos.devolveStringPicturePathBaseadoEmCaminhoDaFotoSelecionada(context,
-				caminhoDaFotoSelecionada);
-		Bitmap bitmap = Diminui_MB_imagens.decodeSampledBitmapFromPicturePath(picturePath, 200, 200);
-		BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
-
-		try {
-
-			if (nomearquivo == "foto0.jpg") {
-				File imageFile = new File(Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-
-				while (imageFile.exists()) {
-					nr = nr + 1;
-					imageFile = new File(Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-					// nomearquivo= "foto"+nr +".jpg";
-					// nomearquivo = nomearquivo.replace(".jpg", "") + nr +
-					// ".jpg";
-				}
-				if (!imageFile.exists()) {
-					nr = nr - 1;
-					nomearquivo = "foto" + nr + ".jpg";
-
-					// nomearquivo = nomearquivo.replace(".jpg", "") + nr +
-					// ".jpg";
-					FileOutputStream fileOutputStream = new FileOutputStream(
-							Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-
-					int quality = 100;
-
-					bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
-
-					fileOutputStream.flush();
-					fileOutputStream.close();
-					new MeuAlerta("Imagem Gravada! ", null, context).meuAlertaOk();
-
-					// Toast.makeText(context, "Imagem Gravada! ",
-					// Toast.LENGTH_LONG).show();
-				}
-			} else if (nomearquivo == "Contrato.jpg") {
-				File imageFile2 = new File(
-						Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-
-				while (imageFile2.exists()) {
-					nr = nr + 1;
-					imageFile2 = new File(Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-					// nomearquivo= "foto"+nr +".jpg";
-					// nomearquivo = nomearquivo.replace(".jpg", "") + nr +
-					// ".jpg";
-				}
-				if (!imageFile2.exists()) {
-					nr = nr - 1;
-					nomearquivo = "Contrato" + nr + ".jpg";
-
-					// nomearquivo = nomearquivo.replace(".jpg", "") + nr +
-					// ".jpg";
-					FileOutputStream fileOutputStream = new FileOutputStream(
-							Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-
-					int quality = 100;
-
-					bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
-
-					fileOutputStream.flush();
-					fileOutputStream.close();
-					new MeuAlerta("Imagem Gravada! ", null, context).meuAlertaOk();
-
-					// Toast.makeText(context, "Imagem Gravada! ",
-					// Toast.LENGTH_LONG).show();
-				}
-			} else {
-				FileOutputStream fileOutputStream = new FileOutputStream(
-						Environment.getExternalStorageDirectory() + srcContratos + "/" + nomearquivo);
-
-				int quality = 100;
-
-				bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
-
-				fileOutputStream.flush();
-				fileOutputStream.close();
-				new MeuAlerta("Imagem Gravada! ", null, context).meuAlertaOk();
-
-			}
-
-		} catch (Exception e) {
-
-			//deuErro = true;
-			e.printStackTrace();
-
+	}
+	
+	private void escreveNoArquivo(String diretorioOrigem, String diretorioDestino, String nomeDoArquivoSelecionado) throws Exception {
+		
+		File Antigo_caminho = new File(diretorioOrigem);
+    	File destino = new File(diretorioDestino+nomeDoArquivoSelecionado);
+		InputStream in = new FileInputStream(Antigo_caminho);
+		OutputStream out = new FileOutputStream(destino);
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = in.read(buf)) > 0) {
+			out.write(buf, 0, len);
 		}
-
+		in.close();
+		out.close();
+		//Antigo_caminho.delete();
+	}
+	
+	private void escreveNoBitmap(Bitmap bitmap, String diretorioComNomeDoArquivo) throws IOException {
+		
+		FileOutputStream fileOutputStream = new FileOutputStream(diretorioComNomeDoArquivo);
+		   
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+						 fileOutputStream.flush();
+						 fileOutputStream.close();
 	}
 
+	@Override
+	public void onBackPressed() {
+
+		startActivity(new Intent(this, ActivityListaClientes.class));
+
+		finish();
+	}
+	
 }

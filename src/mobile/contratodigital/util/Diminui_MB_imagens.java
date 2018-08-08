@@ -3,13 +3,7 @@ package mobile.contratodigital.util;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-/**
- * Classe generica criada para diminuir os MB das imagens.
- *  @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
+
 public class Diminui_MB_imagens {
 
 	

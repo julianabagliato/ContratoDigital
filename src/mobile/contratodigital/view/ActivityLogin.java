@@ -35,7 +35,7 @@ import mobile.contratodigital.util.DetectaConexao;
 import mobile.contratodigital.util.Mascara;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.RecebeJSON;
-import mobile.contratodigital.ws.BotaoExportarWS;
+import mobile.contratodigital.ws.ExportarDadosWS;
 import mobile.contratodigital.ws.VolleySingleton;
 import mobile.contratodigital.ws.VolleyTimeout;
 import sharedlib.contratodigital.model.Movimento;
@@ -299,7 +299,7 @@ public class ActivityLogin extends Activity {
 					@Override
 					public void onClick(View v) {
 
-						BotaoExportarWS botaoExportar = new BotaoExportarWS(context);
+						ExportarDadosWS botaoExportar = new ExportarDadosWS(context);
 						botaoExportar.exportar();
 
 						alertDialog.dismiss();

@@ -8,14 +8,6 @@ import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.NomeLayout;
 import sharedlib.contratodigital.model.*;
 
-/**
- * Classe criada para montar o json de exportação
- * 
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class MontaJSONObjectExportar {
 
 	private Context context;
@@ -40,56 +32,28 @@ public class MontaJSONObjectExportar {
 
 			// ####################################################################################
 			JSONArray jSONArray_listaComMovimentos = new JSONArray();
-			// JSONArray jSONArray_listaComItemLayouts = new JSONArray();
 			JSONArray jSONArray_listaComLayouts = new JSONArray();
 
-			JSONArray jSONArray_listaComCad_cidades = new JSONArray();
-			JSONArray jSONArray_listaComCad_eqpto = new JSONArray();
-
-			jSONArray_listaComCad_eqpto.put(devolveJsonObjectDeUmaClasse(Cad_eqpto.class));
-
-			jSONArray_listaComCad_cidades.put(devolveJsonObjectDeUmaClasse(Cad_cidades.class));
-
-			for (Layout layout : dao.listaTodaTabela(Layout.class)) {// ,
-																		// Layout.COLUMN_INTEGER_IND_TIP_LAYOUT,
-																		// TipoView.LAYOUT_FORMULARIO.getValor()
+			for (Layout layout : dao.listaTodaTabela(Layout.class)) {
 
 				if (layout.getNr_layout() == NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero()) {
 
-					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));
-
-					// for(Item_layout item_layout :
-					// dao.listaTodaTabela(Item_layout.class,
-					// Item_layout.COLUMN_INTEGER_NR_LAYOUT,
-					// layout.getNr_layout())){
-					// jSONArray_listaComItemLayouts.put(devolveJsonObjectDeUmaClasse(item_layout));
-					// }
+					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));	
 				}
+				
 				if (layout.getNr_layout() == NomeLayout.SIMULADOR2.getNumero()) {
 
-					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));
-
-					// for(Item_layout item_layout :
-					// dao.listaTodaTabela(Item_layout.class,
-					// Item_layout.COLUMN_INTEGER_NR_LAYOUT,
-					// layout.getNr_layout())){
-					// jSONArray_listaComItemLayouts.put(devolveJsonObjectDeUmaClasse(item_layout));
-					// }
+					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));					
 				}
 
-				// for(Movimento movimento :
-				// dao.listaTodaTabela_where_nrSeqMovto_naoEhZERO(Movimento.class,
-				// Movimento.COLUMN_INTEGER_NR_LAYOUT, layout.getNr_layout())){
-				for (Movimento movimento : dao.listaTodaTabela(Movimento.class, Movimento.COLUMN_INTEGER_NR_LAYOUT,
-						layout.getNr_layout())) {
+				for (Movimento movimento : dao.listaTodaTabela(Movimento.class, 
+															   Movimento.COLUMN_INTEGER_NR_LAYOUT, layout.getNr_layout())) {
 
 					jSONArray_listaComMovimentos.put(devolveJsonObjectDeUmaClasse(movimento));
 				}
 			}
 
 			jSONObject_retorno.put("listaComMovimentos", jSONArray_listaComMovimentos);
-			// jSONObject_retorno.put("listaComItemLayouts",
-			// jSONArray_listaComItemLayouts);
 			jSONObject_retorno.put("listaComLayouts", jSONArray_listaComLayouts);
 			// ####################################################################################
 

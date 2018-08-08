@@ -26,33 +26,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.util.Log;
-import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.util.MeuAlerta;
-//import android.widget.Toast;
 import mobile.contratodigital.util.TrabalhaComImagens;
-import mobile.contratodigital.view.ArrayAdapterCliente;
 import sharedlib.contratodigital.model.Layout;
 import sharedlib.contratodigital.model.Movimento;
 import sharedlib.contratodigital.util.Generico;
 
-/**
- * Classe para exposrtar arquivos via Webservice
- * 
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ExportaArquivosWS {
 
 	private ProgressDialog progressDialog;
 	private Context context;
 	private String url;
 	private File file2;
-	// private List<Movimento> listaComMovimentos;
-	// private Dao dao;
-	// private ArrayAdapterCliente adapterCliente;
 	private Layout layout;
 
 	public ExportaArquivosWS(Context _context, String urlDoServidorComCaminhoDoRestService) {
@@ -61,8 +47,6 @@ public class ExportaArquivosWS {
 	}
 
 	public void exportar() {
-
-		Log.i("tag", "1: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
 		iniciaProgressDialog();
 
@@ -78,42 +62,37 @@ public class ExportaArquivosWS {
 
 						String resultResponse = new String(response.data);
 
-						if (resultResponse.equals("OK")) {
+						if (resultResponse.equals("OK") || resultResponse.equals("")) {
 
-							acaoAposConfirmacao();
+							terminouComOsArquivosAgoraEnviaremosOsDados();
 
 						} else if (resultResponse.equals("ERRO")) {
 
 							new MeuAlerta("Erro no envio dos arquivos", null, context).meuAlertaOk();
-
-							// Toast.makeText(context, "Erro no envio dos arquivos",
-							// Toast.LENGTH_SHORT).show();
-						} else if (resultResponse.equals("")) {
-							new MeuAlerta("Sem arquivos", null, context).meuAlertaOk();
-
-							// Toast.makeText(context, "Sem arquivos", Toast.LENGTH_SHORT).show();
-						} else {
+						} 
+						//else if (resultResponse.equals("")) {
+						//acaoAposConfirmacao();
+							//new MeuAlerta("Sem arquivos", null, context).meuAlertaOk();
+						//} 
+						else {
 							new MeuAlerta("Erro desconhecido com os arquivos", null, context).meuAlertaOk();
-
-							// Toast.makeText(context, "Erro desconhecido com os arquivos",
-							// Toast.LENGTH_SHORT).show();
 						}
 					}
-
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError volleyError) {
 
 						encerraProgressDialog();
-						new MeuAlerta("Arquivos não enviados: " + volleyError, null, context).meuAlertaOk();
-
-						// Toast.makeText(context, "Arquivos não enviados: " + volleyError,
-						// Toast.LENGTH_SHORT).show();
+						
+						if(volleyError.toString().contains("TimeoutError")) {
+							
+							new MeuAlerta("Favor tentar com outro link", null, context).meuAlertaOk();
+						}else {							
+							new MeuAlerta("Arquivos não enviados: " + volleyError, null, context).meuAlertaOk();
+						}
 					}
 				}
-
 		) {
-
 			@Override
 			protected Map<String, DataPart> getByteData() {
 
@@ -135,7 +114,7 @@ public class ExportaArquivosWS {
 
 				int qtd = 1;
 
-				if (directories.length == 0) {
+				if (directories == null || directories.length == 0) {
 
 					params.put("", new DataPart("", new byte[1]));
 				} else {
@@ -208,9 +187,8 @@ public class ExportaArquivosWS {
 
 		RequestQueue requestQueue = VolleySingleton.getInstance(context).getRequestQueue();
 
-		multipartRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
-
-		requestQueue.add(multipartRequest);
+									  multipartRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
+					 requestQueue.add(multipartRequest);
 	}
 
 	private static byte[] fileToByteArray(File fileName) {
@@ -288,7 +266,7 @@ public class ExportaArquivosWS {
 		}
 	}
 
-	private void acaoAposConfirmacao() {
+	private void terminouComOsArquivosAgoraEnviaremosOsDados() {
 
 		List<Movimento> listaComMovimentos = null;
 
@@ -296,8 +274,8 @@ public class ExportaArquivosWS {
 
 		Dao dao = new Dao(context);
 
-		layout = (Layout) dao.devolveObjeto(Layout.class, Layout.COLUMN_INTEGER_OBRIGATORIO,
-				Generico.LAYOUT_OBRIGATORIO_SIM.getValor());
+		layout = (Layout) dao.devolveObjeto(Layout.class, 
+											Layout.COLUMN_INTEGER_OBRIGATORIO, Generico.LAYOUT_OBRIGATORIO_SIM.getValor());
 
 		if (layout == null) {
 
@@ -308,8 +286,6 @@ public class ExportaArquivosWS {
 
 		int tamanho = listaComMovimentos.size();
 
-		Log.i("tag", "10: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
 		for (int i = 0; i < tamanho; i++) {
 
 			if (listaComMovimentos != null) {
@@ -317,44 +293,40 @@ public class ExportaArquivosWS {
 				if (listaComMovimentos.get(i).getNr_contrato().trim().equals("")) {
 
 					numeroContratoEstaVazio = true;
-
 				}
 			}
-
 		}
-
-		Log.i("tag", "11: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
-		// adapterCliente = new ArrayAdapterCliente(context, R.layout.adapter_cliente,
-		// listaComMovimentos);
 
 		if (!numeroContratoEstaVazio) {
 
-			BotaoExportarWS botaoExportar = new BotaoExportarWS(context);
-			botaoExportar.exportar();
-			AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-			alertDialog.setMessage("Dados exportados com sucesso!\nDeseja remover os arquivos do PDA?")
-					.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-
-							removeTodosArquivos();
-
-						}
-					}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-						}
-					});
-			alertDialog.setCancelable(false);
-			alertDialog.show();
+			ExportarDadosWS exportarDados = new ExportarDadosWS(context);
+							exportarDados.exportar();
 			
+			solicitaRemoverArquivosPDA();			
 		} else {
-			new MeuAlerta("Algum Cliente sem contrato! Favor Verificar.", null, context).meuAlertaOk();
-
+			new MeuAlerta("No mínimo 1 contrato precisar ser assinado.", null, context).meuAlertaOk();
 		}
 	}
 
+	private void solicitaRemoverArquivosPDA() {
+		
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+		alertDialog.setMessage("Dados exportados com sucesso!\nDeseja remover os arquivos do PDA?")
+				.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+
+						removeTodosArquivos();
+					}
+				}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});
+		alertDialog.setCancelable(false);
+		alertDialog.show();
+	}
+	
 	private void removeTodosArquivos() {
 
 		boolean deletou = false;

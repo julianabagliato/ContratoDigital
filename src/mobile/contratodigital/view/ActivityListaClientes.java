@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,17 +22,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
+import mobile.contratodigital.model.ItemPeca;
 import mobile.contratodigital.util.TelaBuilder;
 import sharedlib.contratodigital.model.*;
 import sharedlib.contratodigital.util.Generico;
 
-/**
- * Classe do tipo activity  usada para mostrar e liberar seleção de clientes ainda não sincronizados
- * @author Edição - Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Criação- Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ActivityListaClientes extends Activity {
 
 	private Context context;
@@ -96,7 +92,17 @@ public class ActivityListaClientes extends Activity {
 				}
 			}
 		});
-				
+			
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView parent, View view, int position, long id) {
+					
+				acaoAposLongClick(view);
+				  
+			return true;
+			}
+		});
+		
 		LinearLayout linearLayout_holderListView = telaBuilder.cria_LL_HOLDER(0.06f);		
 					 		linearLayout_holderListView.addView(listView);
 		linearLayoutTela.addView(linearLayout_holderListView);
@@ -108,7 +114,7 @@ public class ActivityListaClientes extends Activity {
 			@Override
 			public void onClick(View view) {
 				
-				acaoAposCliqueNoBotao();
+				acaoAposCliqueNoBotaoCadastrarNovoCliente();
 			}
 		});
 					 linearLayout_holderButton.addView(button_cadastrarNovoCliente);
@@ -117,7 +123,50 @@ public class ActivityListaClientes extends Activity {
 		return linearLayoutTela;
 	}
 
-	private void acaoAposCliqueNoBotao(){
+	private void acaoAposLongClick(View view){
+		
+		for (Movimento movimento : listaComMovimentos) {
+
+			if (movimento.getNr_visita() == view.getId()) {
+				
+				solicitaConfirmacaoDeletarCliente(movimento);
+				
+				break;
+			}
+		}
+	}
+	
+	private void solicitaConfirmacaoDeletarCliente(final Movimento movimento) {
+		
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+		   alertDialog.setTitle("Atenção");
+	       alertDialog.setMessage("Deseja realmente deletar o cliente "+movimento.getInformacao_1()+" ?");
+	       alertDialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					
+					deletaCliente(movimento);
+				}
+			});
+	        alertDialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+				}
+			});	        
+	        alertDialog.show();
+	}
+
+	private void deletaCliente(Movimento movimento) {
+	
+		listaComMovimentos.remove(movimento);
+		
+		adapterCliente.notifyDataSetChanged();	
+		
+		dao.deletaObjeto(Movimento.class, Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
+		
+	}
+	
+	private void acaoAposCliqueNoBotaoCadastrarNovoCliente(){
 	
 		Movimento movimento = new Movimento();
 		 
@@ -128,7 +177,7 @@ public class ActivityListaClientes extends Activity {
 			movimento.setNr_programacao(listaComMovimentos.get(0).getNr_programacao());
 		}
 		
-		int ultimoNrVisita = listaComMovimentos.size(); //dao.devolveUltimo_NrVisita(Movto_visita_repres.class);
+		int ultimoNrVisita = dao.devolveUltimoNrVisitaDoMovimento();
 		
 		int ultimoNrVisita_mais1 = ultimoNrVisita + 1;
 					  	

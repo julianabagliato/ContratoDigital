@@ -369,20 +369,30 @@ public class Dao extends BancoSQLiteOpenHelper {
 	
 	public <T> List<T> listaTodaTabela_GroupBy_NrVisita(Class<T> classe, int nrLayoutObrigatorio) {
 
-		String querySelect = " SELECT * FROM " + classe.getSimpleName() + " where " + Movimento.COLUMN_INTEGER_NR_LAYOUT+ " = " + nrLayoutObrigatorio
-				// + " and " + Movimento.COLUMN_INTEGER_NR_VISITA + " != 0 "
-				+ " group by " + Movimento.COLUMN_INTEGER_NR_VISITA;
+		String querySelect = " SELECT * FROM " + classe.getSimpleName() 
+						   + " where " + Movimento.COLUMN_INTEGER_NR_LAYOUT+ " = " + nrLayoutObrigatorio
+						 //+ " and " + Movimento.COLUMN_INTEGER_NR_VISITA + " != 0 "
+						   + " group by " + Movimento.COLUMN_INTEGER_NR_VISITA;
 
 		return devolveListaBaseadoEmSQL_final(classe, querySelect);
 	}
 	  
 	  public int selectCount_where_nrVisita_naoEhZERO(Class<?> classe, int nr_layout){
 	  
-	  String sql = " SELECT count(*) FROM " + classe.getSimpleName() + " where "+ Movimento.COLUMN_INTEGER_NR_LAYOUT + " = " + nr_layout +" and " + Movimento.COLUMN_INTEGER_NR_VISITA + " != 0";
+	  String sql = " SELECT count(*) FROM " + classe.getSimpleName() 
+	  			 + " where "+ Movimento.COLUMN_INTEGER_NR_LAYOUT + " = " + nr_layout 
+	  			 + " and " + Movimento.COLUMN_INTEGER_NR_VISITA + " != 0";
 	  
 	  return devolveQtdEncontrada(sql);
 	  }
-	  	  
+	  	 
+	  public int devolveUltimoNrVisitaDoMovimento() {
+		  
+		  String query = " SELECT distinct "+Movimento.COLUMN_INTEGER_NR_VISITA+" FROM "+Movimento.class.getSimpleName() 
+				  	   + " order by "+Movimento.COLUMN_INTEGER_NR_VISITA+" desc limit 1";
+
+		  return devolveQtdEncontrada(query);
+	  }
 	  
 
 }
