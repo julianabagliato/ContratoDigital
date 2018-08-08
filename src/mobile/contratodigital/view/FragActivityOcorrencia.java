@@ -339,7 +339,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 																							Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
 																							Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
 
-							String srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
+							String srcContrato = contratoUtil.usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
 
 							switch (acao) {
 
@@ -395,7 +395,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 								break;
 								
 							case VISUALIZAR_ARQUIVOS_GERADOS:
-								visualizarArquivosGerados(mov_informacoesCliente);
+								visualizarArquivosGerados();
 								break;
 	
 							case ConsultarCNPJ :
@@ -446,28 +446,14 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		}
 	}
 
-	private void visualizarArquivosGerados(Movimento mov_informacoesCliente) {
+	private void visualizarArquivosGerados() {
 		
-		String srcContrato = devolveDiretorioAserUtilizado(mov_informacoesCliente);
+		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
 		
 		CaminhoArquivo caminhoArquivo = new CaminhoArquivo(context);
-					   caminhoArquivo.mostraListaDeArquivos(mov_informacoesCliente, srcContrato);
+					   caminhoArquivo.mostraListaDeArquivos(srcContrato);
 	}
-	
-	private String devolveDiretorioAserUtilizado(Movimento mov_informacoesCliente) {
 		
-		String srcContrato = "";
-		
-		if (contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita())) {
-			
-			srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());	
-		} else {	
-			srcContrato = usaNumeroDeContrato(mov_informacoesCliente.getNr_contrato());
-		}
-		
-		return srcContrato;
-	}
-	
 	private void solicitaConfirmacaoParaPoderGerarNumeroDeContrato(final Movimento mov_informacoesCliente){
 		
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -494,7 +480,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			
 			String numeroContrato = GerarNumerodeContrato();
 			
-			String srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
+			String srcContrato = contratoUtil.usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
 			
 			try {
 	
@@ -564,16 +550,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	}
 	
-	private String usaRazaoSocialComCPF_CNPJ(String info_1, String info_4) {
-		
-		return Environment.getExternalStorageDirectory()+"/ContratoDigital/"+info_1+"_"+info_4.replace("/", "-")+"/";
-	}
-	
-	private String usaNumeroDeContrato(String nrContrato) {
-		
-		return Environment.getExternalStorageDirectory() + "/ContratoDigital/"+"_"+nrContrato+"/";
-	}
-
 	private void irParaActivityPecasNew() {
 			
 			Dao dao = new Dao(context);
@@ -715,7 +691,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	private void abrirWebview_InscricaoEstadual() {
 
-			Intent intent = new Intent(FragActivityOcorrencia.this, Webview_Inscricao.class);
+			Intent intent = new Intent(FragActivityOcorrencia.this, WebviewInscricaoEstadual.class);
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("movimento", movimento1);
 			intent.putExtras(bundle);
@@ -870,8 +846,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 									listaComlayouts_Obrigatorios.add(layout);
 										
 									movimento.setInformacao_50(ADICIONOU_LAYOUT_REPRESENTACAO);
-									
-									
 									
 									
 									if(contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita()) ) {
@@ -1053,13 +1027,14 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	  private void criaDiretorioComOuSemNumeroDeContrato() {
 		
+		/*  
 		Dao dao = new Dao(context);
 
 		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
 																		Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
 																		Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-
-		String srcContrato = devolveDiretorioAserUtilizado(mov_informacoesCliente);
+		*/
+		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
 
 		try {
 			File diretorio = new File(srcContrato);
@@ -1107,9 +1082,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     
-		if(intent == null) {
-			 new MeuAlerta("Nenhum arquivo selecionado", null, context).meuAlertaOk();
-		}else {
+		if(intent != null) {
 			
 		    Uri caminhoDoArquivoEscolhido = intent.getData();
 	
@@ -1138,11 +1111,12 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	
 	private void buscaArquivoESalvaNoDiretorioDoCliente(Uri caminhoDoArquivoEscolhido, boolean arquivoEhImagem) {
 		
+		/*
 		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-				Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-				Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
-		
-		String srcContrato = devolveDiretorioAserUtilizado(mov_informacoesCliente);
+															Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
+															Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
+		 */										
+		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
 	    
 		File diretorioDestino = new File(srcContrato);
 	    if (!diretorioDestino.exists()) {	    	
@@ -1157,9 +1131,9 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	    	if(arquivoEhImagem) {
 	    		
 	    		Bitmap bitmap = Diminui_MB_imagens.decodeSampledBitmapFromPicturePath(diretorioOrigem, 200, 200);
-	    		escreveNoBitmap(bitmap, diretorioDestino+"/"+nomeDoArquivoSelecionado);
+	    		trabalhaComFotos.escreveNoBitmap(bitmap, diretorioDestino+"/"+nomeDoArquivoSelecionado);
 	    	}else {	    		
-	    		escreveNoArquivo(diretorioOrigem, srcContrato, nomeDoArquivoSelecionado);
+	    		trabalhaComFotos.escreveNoArquivo(diretorioOrigem, srcContrato, nomeDoArquivoSelecionado);
 	    	}
 			    	
 			 new MeuAlerta("Arquivo salvo!", null, context).meuAlertaOk();
@@ -1170,31 +1144,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		}
 	}
 	
-	private void escreveNoArquivo(String diretorioOrigem, String diretorioDestino, String nomeDoArquivoSelecionado) throws Exception {
-		
-		File Antigo_caminho = new File(diretorioOrigem);
-    	File destino = new File(diretorioDestino+nomeDoArquivoSelecionado);
-		InputStream in = new FileInputStream(Antigo_caminho);
-		OutputStream out = new FileOutputStream(destino);
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		in.close();
-		out.close();
-		//Antigo_caminho.delete();
-	}
-	
-	private void escreveNoBitmap(Bitmap bitmap, String diretorioComNomeDoArquivo) throws IOException {
-		
-		FileOutputStream fileOutputStream = new FileOutputStream(diretorioComNomeDoArquivo);
-		   
-		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-						 fileOutputStream.flush();
-						 fileOutputStream.close();
-	}
-
 	@Override
 	public void onBackPressed() {
 

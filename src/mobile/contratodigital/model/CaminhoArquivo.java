@@ -45,7 +45,7 @@ public class CaminhoArquivo {
 		return this.arquivo;
 	}
 	
-	public void mostraListaDeArquivos(Movimento mov_informacoesCliente, String srcContrato) {
+	public void mostraListaDeArquivos(String srcContrato) {
 		
 		ArrayList<CaminhoArquivo> lista = populaListaComNomeDeArquivosBaseadoEmDiretorio(srcContrato);
 

@@ -114,7 +114,7 @@
             android:label="Webview_Cnpj" >
         </activity>
            <activity
-            android:name="mobile.contratodigital.view.Webview_Inscricao"
+            android:name="mobile.contratodigital.view.WebviewInscricaoEstadual"
             android:label="Webview_Inscricao" >
         </activity>
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

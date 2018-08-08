@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
@@ -17,14 +16,12 @@ import android.widget.ZoomButtonsController;
 import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.NomeLayout;
-import mobile.contratodigital.model.ContratoUtil;
-import mobile.contratodigital.util.TrabalhaComFotos;
 import sharedlib.contratodigital.model.Movimento;
 
 public class WebViewCNPJ extends Activity {
 	
 	private Context context;
-	private Movimento movimento;
+	private Movimento mov_informacoesCliente;
 	private WebView webView;
 	private ZoomButtonsController zoomButtonsController = null;
 	private Dao dao;  
@@ -36,16 +33,15 @@ public class WebViewCNPJ extends Activity {
 		context = WebViewCNPJ.this;
 
 						 Bundle bundle = getIntent().getExtras();
-		movimento = (Movimento) bundle.getSerializable("movimento");
+		mov_informacoesCliente = (Movimento) bundle.getSerializable("movimento");
 	
 		dao = new Dao(context);
 
-		if(movimento.getNr_contrato() == null) {
+		if(mov_informacoesCliente.getNr_contrato() == null) {
 			
-			
-			movimento = (Movimento) dao.devolveObjeto(Movimento.class, 
+			mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class, 
 													  Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(), 
-													  Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
+													  Movimento.COLUMN_INTEGER_NR_VISITA, mov_informacoesCliente.getNr_visita());
 		}
 		
 		webView = new WebView(this); 
@@ -53,27 +49,21 @@ public class WebViewCNPJ extends Activity {
 		disableControls();
 
 		webView.setWebViewClient(new WebViewClient() {
-
 			public void onTouchEvent(){
 				class NoZoomControllWebView extends WebView {
-
 				    private ZoomButtonsController zoom_controll = null;
-
 				    public NoZoomControllWebView(Context context) {
 				        super(context);
 				        disableControls();
 				    }
-
 				    public NoZoomControllWebView(Context context, AttributeSet attrs, int defStyle) {
 				        super(context, attrs, defStyle);
 				        disableControls();
 				    }
-
 				    public NoZoomControllWebView(Context context, AttributeSet attrs) {
 				        super(context, attrs);
 				        disableControls();
 				    }
-
 				    private void disableControls(){
 				    	
 				        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
@@ -83,9 +73,7 @@ public class WebViewCNPJ extends Activity {
 				            getControlls();
 				        }
 				    }
-
 				    private void getControlls() {
-				    	
 				        try {
 				            Class<?> webview = Class.forName("android.webkit.WebView");
 				            Method method = webview.getMethod("getZoomButtonsController");
@@ -94,7 +82,6 @@ public class WebViewCNPJ extends Activity {
 				            e.printStackTrace();
 				        }
 				    }
-
 				    @Override
 				    public boolean onTouchEvent(MotionEvent ev) {
 				        super.onTouchEvent(ev);
@@ -105,12 +92,10 @@ public class WebViewCNPJ extends Activity {
 				    }
 				}
 			}
-			
 		@Override
 		public void onPageFinished(WebView webView, String url) {
 			}
 		});
-	
 		setContentView(webView);
 		
 		WebSettings webSettings = webView.getSettings();
@@ -130,28 +115,13 @@ public class WebViewCNPJ extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == R.id.Capturar) {
-
-			String srcContrato;
-
-			ContratoUtil contratoUtil = new ContratoUtil(dao, context);
-
-			if (contratoUtil.naoTemNumeroDeContrato(movimento.getNr_visita())) {
 			
-				srcContrato = Environment.getExternalStorageDirectory()
-						    +"/ContratoDigital/"+movimento.getInformacao_1()
-						                    +"_"+movimento.getInformacao_4().replace("/","-")+"/Consulta_cnpj.jpg";	
-			}else {			
-				srcContrato = Environment.getExternalStorageDirectory()
-						    +"/ContratoDigital/_"+movimento.getNr_contrato()+"/Consulta_cnpj.jpg";	
-			}
-
-			TrabalhaComFotos trabalhaComFotos = new TrabalhaComFotos();	
-							 trabalhaComFotos.capturar(webView, movimento, dao, context, srcContrato);
-
+			WebViewUtil webViewUtil = new WebViewUtil();
+			webViewUtil.copiaImagemDaTelaAtual(webView, dao, context, mov_informacoesCliente, "ConsultaCNPJ.jpg");
 		}
 		return false;
 	}
-		
+			
    private void disableControls(){
 	   
        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {

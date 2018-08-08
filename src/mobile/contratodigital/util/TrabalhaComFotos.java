@@ -1,8 +1,11 @@
 package mobile.contratodigital.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -23,10 +26,34 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.WebView;
 import mobile.contratodigital.dao.Dao;
-import mobile.contratodigital.model.ContratoUtil;
 import sharedlib.contratodigital.model.Movimento;
 
 public class TrabalhaComFotos {
+	
+	public void escreveNoArquivo(String diretorioOrigem, String diretorioDestino, String nomeDoArquivoSelecionado) throws Exception {
+		
+		File Antigo_caminho = new File(diretorioOrigem);
+    	File destino = new File(diretorioDestino+nomeDoArquivoSelecionado);
+		InputStream in = new FileInputStream(Antigo_caminho);
+		OutputStream out = new FileOutputStream(destino);
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = in.read(buf)) > 0) {
+			out.write(buf, 0, len);
+		}
+		in.close();
+		out.close();
+		//Antigo_caminho.delete();
+	}
+	
+	public void escreveNoBitmap(Bitmap bitmap, String diretorioComNomeDoArquivo) throws IOException {
+		
+		FileOutputStream fileOutputStream = new FileOutputStream(diretorioComNomeDoArquivo);
+		   
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+						 fileOutputStream.flush();
+						 fileOutputStream.close();
+	}
 	
 	public void capturar(WebView webView, Movimento movimento, Dao dao, Context context, String srcContrato) {
 				
@@ -36,19 +63,27 @@ public class TrabalhaComFotos {
 		    }
 
 		Picture picture = webView.capturePicture();
-						 Bitmap bitmap = Bitmap.createBitmap(picture.getWidth(), picture.getHeight(), Bitmap.Config.ARGB_8888);
-		picture.draw(new Canvas(bitmap));
 		
-		try {
-		FileOutputStream fileOutputStream = new FileOutputStream(srcContrato);
-			if (fileOutputStream != null) {				
-				bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-				fileOutputStream.close();
+		int altura = picture.getHeight();
+		
+		if(altura == 0 || altura > 3000) {		
+			new MeuAlerta("Captura inválida", null, context).meuAlertaOk();		
+		}else {
+							 Bitmap bitmap = Bitmap.createBitmap(picture.getWidth(), picture.getHeight(), Bitmap.Config.ARGB_8888);
+			picture.draw(new Canvas(bitmap));
+			
+			try {
+			FileOutputStream fileOutputStream = new FileOutputStream(srcContrato);
+				if (fileOutputStream != null) {				
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+					fileOutputStream.close();
+				}
+				new MeuAlerta("Consulta Gravada com sucesso!", null, context).meuAlertaOk();
+			} 
+			catch (Exception erro) {
+				new MeuAlerta("Erro ao salvar o arquivo", null, context).meuAlertaOk();
+				erro.printStackTrace();
 			}
-			new MeuAlerta("Consulta Gravada com sucesso!", null, context).meuAlertaOk();
-		} 
-		catch (Exception erro) {
-			new MeuAlerta(""+erro, null, context).meuAlertaOk();
 		}
 	}
 

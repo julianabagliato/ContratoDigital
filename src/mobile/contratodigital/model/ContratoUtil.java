@@ -15,6 +15,7 @@ import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.NomeLayout;
 import mobile.contratodigital.enums.TipoView;
 import mobile.contratodigital.util.MeuAlerta;
+import mobile.contratodigital.util.TrabalhaComFotos;
 import sharedlib.contratodigital.model.Layout;
 import sharedlib.contratodigital.model.Movimento;
 import sharedlib.contratodigital.util.Generico;
@@ -30,19 +31,6 @@ public class ContratoUtil {
 		this.context = context;
 	}
 	
-	public boolean naoTemNumeroDeContrato(int nrVisita) {
-		
-		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
-																		 Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
-																		 Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita);
-		
-		if (mov_informacoesCliente == null || mov_informacoesCliente.getNr_contrato().trim().equals("")) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-
 	public boolean preencheu2LayoutsObrigatoriosAntesDeExportar(int nrVisita) {
 		
 		int movimentosEncontrados = 0;
@@ -143,5 +131,57 @@ public class ContratoUtil {
 		
 		new MeuAlerta("Formulario ("+layout.getDescricao()+") precisa ser preenchido", null, context).meuAlertaOk();	
 	}
+
+	public String devolveDiretorioAserUtilizado(int nrVisita) {
+
+		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
+																		Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
+																		Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita);
+
+		String srcContrato = "";
+		
+		if (naoTemNumeroDeContrato(nrVisita)) {
+			
+			srcContrato = usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());	
+		} else {	
+			srcContrato = usaNumeroDeContrato(mov_informacoesCliente.getNr_contrato());
+		}
+		
+		return srcContrato;
+	}
+	
+	public boolean naoTemNumeroDeContrato(int nrVisita) {
+		
+		Movimento mov_informacoesCliente = (Movimento) dao.devolveObjeto(Movimento.class,
+																		 Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.INFORMACOES_CLIENTE.getNumero(),
+																		 Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita);
+		
+		if (mov_informacoesCliente == null || mov_informacoesCliente.getNr_contrato().trim().equals("")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	public String usaRazaoSocialComCPF_CNPJ(String info_1, String info_4) {
+		
+		return Environment.getExternalStorageDirectory()+"/ContratoDigital/"+info_1+"_"+info_4.replace("/", "-")+"/";
+	}
+	
+	private String usaNumeroDeContrato(String nrContrato) {
+		
+		return Environment.getExternalStorageDirectory() + "/ContratoDigital/"+"_"+nrContrato+"/";
+	}
+	
+	private void copiaImagemDaTelaAtual(int nrVisita, String info_1, String info_4, String nrContrato) {
+
+		String srcContrato;
+		if (naoTemNumeroDeContrato(nrVisita)) {
+			srcContrato = Environment.getExternalStorageDirectory()+"/ContratoDigital/"+info_1+"_"+info_4.replace("/","-")+"/ConsultaCNPJ.jpg";	
+		}else {			
+			srcContrato = Environment.getExternalStorageDirectory()+"/ContratoDigital/_"+nrContrato+"/ConsultaCNPJ.jpg";	
+		}
+	}
+
 
 }
