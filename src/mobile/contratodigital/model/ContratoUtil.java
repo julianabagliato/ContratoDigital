@@ -46,6 +46,7 @@ public class ContratoUtil {
 		if (mov_dadosCadastro == null) {
 					
 			avisaQformularioObrigatorioNaoFoiPreenchido(NomeLayout.DADOS_CADASTRO.getNumero());
+			return false;
 		}else {
 			movimentosEncontrados++;
 		}
@@ -53,6 +54,7 @@ public class ContratoUtil {
 		if (mov_consumoCliente == null) {
 			
 			avisaQformularioObrigatorioNaoFoiPreenchido(NomeLayout.CONSUMO_CLIENTE.getNumero());
+			return false;
 		}else {
 			movimentosEncontrados++;
 		}
@@ -172,16 +174,5 @@ public class ContratoUtil {
 		
 		return Environment.getExternalStorageDirectory() + "/ContratoDigital/"+"_"+nrContrato+"/";
 	}
-	
-	private void copiaImagemDaTelaAtual(int nrVisita, String info_1, String info_4, String nrContrato) {
-
-		String srcContrato;
-		if (naoTemNumeroDeContrato(nrVisita)) {
-			srcContrato = Environment.getExternalStorageDirectory()+"/ContratoDigital/"+info_1+"_"+info_4.replace("/","-")+"/ConsultaCNPJ.jpg";	
-		}else {			
-			srcContrato = Environment.getExternalStorageDirectory()+"/ContratoDigital/_"+nrContrato+"/ConsultaCNPJ.jpg";	
-		}
-	}
-
-
+		
 }

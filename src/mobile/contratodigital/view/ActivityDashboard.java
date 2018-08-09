@@ -121,7 +121,7 @@ public class ActivityDashboard extends Activity {
 			break;
 			
 		case R.id.textView_comunicar:
-			startActivity(new Intent(this, ActivityExportar.class));
+			startActivity(new Intent(this, ActivityListaClientesExportacao.class));
 			finish();
 			break;			
 		}

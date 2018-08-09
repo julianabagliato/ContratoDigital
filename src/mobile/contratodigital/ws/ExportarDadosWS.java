@@ -7,11 +7,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Environment;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.MontaJSONObjectExportar;
+import mobile.contratodigital.util.TrabalhaComArquivos;
 
 public class ExportarDadosWS {
 
@@ -53,8 +58,9 @@ public class ExportarDadosWS {
 								if (jSONObject_response.getInt("terminouDeInserir") == 1) {
 									
 									Dao dao = new Dao(context);	
-										//dao.deletaObjeto(Movimento.class, 1, 1);
-										
+									
+									//dao.deletaObjeto(Movimento.class, 1, 1);
+									//solicitaRemoverArquivosPDA();
 								} 
 								else if (jSONObject_response.getInt("terminouDeInserir") == -1) {
 
@@ -77,6 +83,28 @@ public class ExportarDadosWS {
 				});
 						 jsonObjectRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
 		requestQueue.add(jsonObjectRequest);
+	}
+
+	private void solicitaRemoverArquivosPDA() {
+		
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+		alertDialog.setMessage("Dados exportados com sucesso!\nDeseja remover os arquivos do PDA?")
+				.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+
+						String diretorioDoCliente = Environment.getExternalStorageDirectory() + "/ContratoDigital/";
+						
+						TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
+											trabalhaComArquivos.removeDiretorioDoCliente(context, diretorioDoCliente);
+					}
+				}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});
+		alertDialog.setCancelable(false);
+		alertDialog.show();
 	}
 
 	private void iniciaProgressDialog() {

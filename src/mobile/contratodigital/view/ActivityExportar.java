@@ -30,10 +30,15 @@ public class ActivityExportar extends Activity {
 
 	private Menu menu;
 	private static String URLescolhida = IpRS.URL_SIVA_REST;
+	private Movimento movimento;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Bundle bundle = getIntent().getExtras();
+
+		movimento = (Movimento) bundle.getSerializable("movimento");
 
 		Context context = this;
 
@@ -75,34 +80,22 @@ public class ActivityExportar extends Activity {
 	}
 	
 	private void acaoAposCliqueNoBotaoExportar(Dao dao, Context context) {
-		
-		int qtdDeMovimentos = 0;
-
-		for (Layout layout : dao.listaTodaTabela(Layout.class, 
-												 Layout.COLUMN_INTEGER_IND_TIP_LAYOUT, TipoView.LAYOUT_FORMULARIO.getValor())) {
-
-			qtdDeMovimentos = dao.selectCount_where_nrVisita_naoEhZERO(Movimento.class, layout.getNr_layout());
-
-			if (qtdDeMovimentos > 0) {
 				
+		ContratoUtil contratoUtil = new ContratoUtil(dao, context);
 				
-				ContratoUtil contratoUtil = new ContratoUtil(dao, context);
+		if(contratoUtil.naoTemNumeroDeContrato(movimento.getNr_visita())){
+			
+			new MeuAlerta("Cliente não possui contrato vinculado", null, context).meuAlertaOk();
+		}
+		else {
+			if(contratoUtil.preencheu2LayoutsObrigatoriosAntesDeExportar(movimento.getNr_visita())) {
 				
-				//if(contratoUtil.preencheu2LayoutsObrigatoriosAntesDeExportar(nrVisita)) {
-				
-					ExportaArquivosWS exportarFotos = new ExportaArquivosWS(context, URLescolhida);
-									  exportarFotos.exportar();
-				//}
-			 					  
-			 	break;			 	
+				String diretorioDoCliente = contratoUtil.devolveDiretorioAserUtilizado(movimento.getNr_visita());
+				String pastaDoCliente = movimento.getNr_contrato();
+				ExportaArquivosWS exportarFotos = new ExportaArquivosWS(context, URLescolhida, diretorioDoCliente, pastaDoCliente);
+								  exportarFotos.exportar();
 			}
 		}
-
-		if (qtdDeMovimentos == 0) {
-			
-			new MeuAlerta( "Não possui informação para exportar", null, context).meuAlertaOk();
-		}
-	
 	}
 	
 	public boolean onCreateOptionsMenu(Menu menuinterno) {
@@ -122,30 +115,18 @@ public class ActivityExportar extends Activity {
 		switch(item.getItemId()){
 		
 		case 0: URLescolhida = IpRS.acaoLinkOi(menu);
-		return true;
+			return true;
 	
 		case 1: URLescolhida = IpRS.acaoLinkvogel(menu);
-		return true;
+			return true;
 		
-		case 2:
-			 URLescolhida = IpRS.acaoLinWCS(menu);
+		case 2: URLescolhida = IpRS.acaoLinWCS(menu);
 			return true;
 			
-		case 3:
-			 URLescolhida = IpRS.acaoLinkLocal(menu);
-		return true;
-	
-	
+		case 3: URLescolhida = IpRS.acaoLinkLocal(menu);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
-
 	}
 	
-	@Override
-	public void onBackPressed() {
-
-		Intent intent = new Intent(ActivityExportar.this, ActivityDashboard.class);
-		startActivity(intent);
-		finish();
-	}
 }

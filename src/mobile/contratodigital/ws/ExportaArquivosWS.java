@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.util.Log;
 import mobile.contratodigital.dao.Dao;
+import mobile.contratodigital.model.ContratoUtil;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.TrabalhaComArquivos;
 import mobile.contratodigital.util.TrabalhaComImagens;
@@ -40,12 +41,16 @@ public class ExportaArquivosWS {
 	private Context context;
 	private String URLescolhida;
 	private static final String RESOURCE_REST_ARQUIVOS = "/Retorno/Arquivo/";
-	private File file2;
-	private Layout layout;
-
-	public ExportaArquivosWS(Context _context, String URLescolhida) {
+	//private File file2;
+	//private Layout layout;
+	private String diretorioDoCliente;
+	private String pastaDoCliente;
+	
+	public ExportaArquivosWS(Context _context, String URLescolhida, String diretorioDoCliente, String pastaDoCliente) {
 		this.context = _context;
 		this.URLescolhida = URLescolhida;
+		this.diretorioDoCliente = diretorioDoCliente;
+		this.pastaDoCliente = pastaDoCliente;
 	}
 
 	public void exportar() {
@@ -68,17 +73,12 @@ public class ExportaArquivosWS {
 
 						if (resultResponse.equals("OK") || resultResponse.equals("")) {
 
-							terminouComOsArquivosAgoraEnviaremosOsDados();
+							ExportarDadosWS exportarDados = new ExportarDadosWS(context, URLescolhida);
+											exportarDados.exportar();	
 
-						} else if (resultResponse.equals("ERRO")) {
-
+						}else if(resultResponse.equals("ERRO")) {
 							new MeuAlerta("Erro no envio dos arquivos", null, context).meuAlertaOk();
-						} 
-						//else if (resultResponse.equals("")) {
-						//acaoAposConfirmacao();
-							//new MeuAlerta("Sem arquivos", null, context).meuAlertaOk();
-						//} 
-						else {
+						}else {
 							new MeuAlerta("Erro desconhecido com os arquivos", null, context).meuAlertaOk();
 						}
 					}
@@ -100,73 +100,43 @@ public class ExportaArquivosWS {
 			@Override
 			protected Map<String, DataPart> getByteData() {
 
-				Map<String, DataPart> params = new HashMap<String, DataPart>();
-
-				File file = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/");
-
-				String[] directories = file.list(new FilenameFilter() {
-					@Override
-					public boolean accept(File current, String nomeDoDiretorio) {
-
-						return new File(current, nomeDoDiretorio).isDirectory();
-					}
-				});
-
 				int qtd = 1;
 
-				if (directories == null || directories.length == 0) {
+				Map<String, DataPart> params = new HashMap<String, DataPart>();
 
-					params.put("", new DataPart("", new byte[1]));
-				} else {
+				//File file = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/");
+				File file = new File(diretorioDoCliente);
 
-					for (String diretorioDoCliente : directories) {
-
-						if (diretorioDoCliente != "Nome da empresa não informado") {
-
-							file2 = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/"+diretorioDoCliente);
-						}
-						File[] listaComArquivos = file2.listFiles();
-
+				File[] listaComArquivos = file.listFiles();
 						if (listaComArquivos.length == 0) {
 
 							params.put("", new DataPart("", new byte[1]));
 						} else {
-
 							for (File arquivo : listaComArquivos) {
 
 								String arq = arquivo.toString();
 
 								if (arq.contains(".jpg")) {
-
 									Bitmap bitmap = decodeSampledBitmapFromResource("" + arquivo, 800, 600);
-
 									if (bitmap != null) {
-
 										BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
 
-										params.put("" + qtd + diretorioDoCliente,
-												new DataPart(arquivo.getName(),
-														TrabalhaComImagens.pegaBytesDoDrawable(context, bitmapDrawable),
-														"file/jpeg"));
+										params.put(""+qtd+pastaDoCliente, new DataPart(arquivo.getName(),
+																		TrabalhaComImagens.pegaBytesDoDrawable(context, bitmapDrawable),
+																		"file/jpeg"));
 									}
 								}
 
 								if (arq.contains(".pdf")) {
-
-									params.put("" + qtd + diretorioDoCliente,
-											new DataPart(arquivo.getName(), fileToByteArray(arquivo), "file/pdf"));
+									params.put(""+qtd+pastaDoCliente, new DataPart(arquivo.getName(), fileToByteArray(arquivo), "file/pdf"));
 								}
 
 								if (arq.contains(".doc")) {
-
-									params.put("" + qtd + diretorioDoCliente,
-											new DataPart(arquivo.getName(), fileToByteArray(arquivo), "file/msword"));
+									params.put(""+qtd+pastaDoCliente, new DataPart(arquivo.getName(), fileToByteArray(arquivo), "file/msword"));
 								}
 								qtd++;
 							}
 						}
-					}
-				}
 				return params;
 			}
 		};
@@ -251,70 +221,5 @@ public class ExportaArquivosWS {
 			progressDialog = null;
 		}
 	}
-
-	private void terminouComOsArquivosAgoraEnviaremosOsDados() {
-
-		List<Movimento> listaComMovimentos = null;
-
-		boolean numeroContratoEstaVazio = false;
-
-		Dao dao = new Dao(context);
-
-		layout = (Layout) dao.devolveObjeto(Layout.class, 
-											Layout.COLUMN_INTEGER_OBRIGATORIO, Generico.LAYOUT_OBRIGATORIO_SIM.getValor());
-
-		if (layout == null) {
-
-			listaComMovimentos = new ArrayList<Movimento>();
-		} else {
-			listaComMovimentos = dao.listaTodaTabela_GroupBy_NrVisita(Movimento.class, layout.getNr_layout());
-		}
-
-		int tamanho = listaComMovimentos.size();
-
-		for (int i = 0; i < tamanho; i++) {
-
-			if (listaComMovimentos != null) {
-
-				if (listaComMovimentos.get(i).getNr_contrato().trim().equals("")) {
-
-					numeroContratoEstaVazio = true;
-				}
-			}
-		}
-
-		if (!numeroContratoEstaVazio) {
-
-			ExportarDadosWS exportarDados = new ExportarDadosWS(context, URLescolhida);
-							exportarDados.exportar();
-			
-			//solicitaRemoverArquivosPDA();			
-		} else {
-			new MeuAlerta("No mínimo 1 contrato precisar ser assinado.", null, context).meuAlertaOk();
-		}
-	}
-
-	private void solicitaRemoverArquivosPDA() {
-		
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-		alertDialog.setMessage("Dados exportados com sucesso!\nDeseja remover os arquivos do PDA?")
-				.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-
-						String diretorioDoCliente = Environment.getExternalStorageDirectory() + "/ContratoDigital/";
-						
-						TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
-											trabalhaComArquivos.removeDiretorioDoCliente(context, diretorioDoCliente);
-					}
-				}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-					}
-				});
-		alertDialog.setCancelable(false);
-		alertDialog.show();
-	}
 	
-
 }
