@@ -156,21 +156,21 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		menu.add(0, 0, 0, "Adicionar Formulário");
-		menu.add(0, 1, 0, "Remover Formulário");
-		menu.add(0, 2, 0, "Gerar Contrato Padrão");
-		menu.add(0, 3, 0, "Gerar Contrato Conta SIM");
-		menu.add(0, 4, 0, "Simular Preços");
-		menu.add(0, 5, 0, "Consultar CNPJ");
-		menu.add(0, 6, 0, "Consultar Inscrição Estadual");
-		menu.add(0, 7, 0, "Informar Peças");
-		menu.add(0, 10, 0, "Foto RG");
-		menu.add(0, 9, 0, "Foto CPF");
-		menu.add(0, 8, 0, "Foto CNPJ");
-		menu.add(0, 17, 0, "Foto PAC");
-		menu.add(0, 11, 0, "Foto Contrato");
+		menu.add(0,  0, 0, "Adicionar Formulário");
+		menu.add(0,  1, 0, "Remover Formulário");
+		menu.add(0,  2, 0, "Gerar Contrato Padrão");
+		menu.add(0,  3, 0, "Gerar Contrato Conta SIM");
+		menu.add(0,  4, 0, "Simular Preços");
+		menu.add(0,  5, 0, "Consultar CNPJ");
+		menu.add(0,  6, 0, "Consultar Inscrição Estadual");
+		menu.add(0,  7, 0, "Informar Peças");
+		menu.add(0, 10, 0, "Anexar Foto RG");
+		menu.add(0,  9, 0, "Anexar Foto CPF");
+		menu.add(0,  8, 0, "Anexar Foto CNPJ");
+		menu.add(0, 17, 0, "Anexar Foto PAC");
+		menu.add(0, 11, 0, "Anexar Foto Contrato");
 		menu.add(0, 12, 0, "Anexar Fotos");
-		menu.add(0, 14, 0, "Anexar Arquivos PDFs");
+		menu.add(0, 14, 0, "Anexar PDFs");
 		menu.add(0, 13, 0, "Simular Instalação");
 		menu.add(0, 15, 0, "Visualizar Arquivos Gerados");
 		menu.add(0, 16, 0, "Gerar Nº de Contrato");
@@ -462,58 +462,44 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		
 		if(formularioEquipamentosSimuladosFoiPreenchido()) {
 			
-			String numeroContrato = GerarNumerodeContrato();
-			
-			String srcContrato = contratoUtil.usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), mov_informacoesCliente.getInformacao_4());
+			String srcContrato = contratoUtil.usaRazaoSocialComCPF_CNPJ(mov_informacoesCliente.getInformacao_1(), 
+																		mov_informacoesCliente.getInformacao_4());
 			
 			try {
 	
-				File Antigo_caminho = new File(srcContrato);
-				File novoCaminho = new File(srcContrato.replace(
-				String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")), "_" + numeroContrato));
+				File antigoCaminho = new File(srcContrato);
+			    if (!antigoCaminho.exists()) {	    	
+			    	 antigoCaminho.mkdirs();
+			    }
+
+			    String numeroContrato = GerarNumerodeContrato();
 				
-				Antigo_caminho.renameTo(novoCaminho);
+				File novoCaminho = new File(srcContrato.replace(mov_informacoesCliente.getInformacao_1()
+														   +"_"+mov_informacoesCliente.getInformacao_4().replace("/", "-"),"_"+numeroContrato));
+				
+				antigoCaminho.renameTo(novoCaminho);
 	
-				String deletar = srcContrato.replace("_" + numeroContrato, String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")));
-					Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
-					Runtime.getRuntime().exec("cmd /c rd k:\\" + deletar + " /s /q");					
-					Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
-			
-				Dao dao = new Dao(context);
-	
-				ArrayList<Movimento> listaTodosMovimentos = dao.devolveListaComMovimentosPopulados(mov_informacoesCliente);
-				
-				int tamanho = listaTodosMovimentos.size();
-				
-				for (int i = 0; i < tamanho; i++) {
-					
-					Movimento movimento2 = new Movimento();
-					
-					movimento2 = listaTodosMovimentos.get(i);
-					
-					if(movimento2 != null) {
-						
-						movimento2.setNr_contrato(numeroContrato);
-	
-						preencheNoObjetoOcampoInformacao(movimento2, numeroContrato);
-					
-						insereMovimento(dao, movimento2);
-					}
-					
-				}
-				
-				Antigo_caminho.renameTo(novoCaminho);
-				
-				
-				new MeuAlerta("Número de contrato gerado: "+numeroContrato, null, context).meuAlertaOk();
-			
-			} 
-			catch (IOException erro) {
-				
-				new MeuAlerta("Erro: "+erro, null, context).meuAlertaOk();
-	
-			}
+				//String deletar = srcContrato.replace("_" + numeroContrato, String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")));
+					//Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
+					//Runtime.getRuntime().exec("cmd /c rd k:\\" + deletar + " /s /q");					
+					//Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
 		
+				ArrayList<Movimento> listaTodosMovimentos = dao.devolveListaComMovimentosPopulados(mov_informacoesCliente);
+				for (Movimento movimento : listaTodosMovimentos) {
+					if(movimento != null) {
+						movimento.setNr_contrato(numeroContrato);
+						//preencheNoObjetoOcampoInformacao(movimento, numeroContrato);
+						dao.insereOUatualiza(movimento,
+											 Movimento.COLUMN_INTEGER_NR_LAYOUT, movimento.getNr_layout(), 
+											 Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
+					}
+				}
+				//antigoCaminho.renameTo(novoCaminho);
+				new MeuAlerta("Número de contrato gerado: "+numeroContrato, null, context).meuAlertaOk();
+			} 
+			catch (Exception erro) {
+				new MeuAlerta(""+erro, null, context).meuAlertaOk();
+			}
 		}	
 	}
 
@@ -1017,22 +1003,15 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		return imageView_seta;
 	}
 
+	/*
 	private Movimento preencheNoObjetoOcampoInformacao(Object objeto, String conteudo) {
-
 		try {
-
 			Class<?> classe = objeto.getClass();
-
 			for (Field atributo : classe.getDeclaredFields()) {
-
 				atributo.setAccessible(true);
-
 				if (atributo.getName().contains("Nr_contrato")) {
-
 					if (!conteudo.isEmpty()) {
-
 						atributo.set(objeto, conteudo);
-
 						break;
 					}
 				}
@@ -1042,14 +1021,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		}
 		return (Movimento) objeto;
 	}
-
-	private void insereMovimento(Dao dao, Movimento mov) {
-
-		dao.insereOUatualiza(mov,
-							Movimento.COLUMN_INTEGER_NR_LAYOUT, mov.getNr_layout(), 
-							Movimento.COLUMN_INTEGER_NR_VISITA, mov.getNr_visita());
-	}
-					
+	*/
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     

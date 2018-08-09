@@ -21,9 +21,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-//import android.widget.Toast;
 import mobile.contratodigital.R;
-import mobile.contratodigital.enums.IpURL;
+import mobile.contratodigital.enums.IpRS;
 import mobile.contratodigital.enums.VersaoApp;
 import mobile.contratodigital.util.DownloadAplicativo;
 import mobile.contratodigital.util.MeuAlerta;
@@ -31,13 +30,6 @@ import mobile.contratodigital.ws.VolleySingleton;
 import mobile.contratodigital.ws.VolleyTimeout;
 import sharedlib.contratodigital.model.Configuracao;
 
-/**
- * Classe do tipo activity  usada para inicializar a aplicação e solicitar validar conexão
- * @author Edição - Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Criação- Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
 public class ActivityMain extends Activity {
 
 	private static final String RESOURCE_REST_DOWNLOAD_APK = "/Configuracao/DownloadApk/";
@@ -59,14 +51,13 @@ public class ActivityMain extends Activity {
 	
 		//buscarVersao();
 		vaiParaLogin();
-		
 	}
 		
 	private void buscarVersao() {
 
 		queue = VolleySingleton.getInstance(this).getRequestQueue();
 
-		String url = IpURL.URL_SERVER_REST.getValor() + RESOURCE_REST_VERSAO;
+		String url = IpRS.URL_SIVA_REST + RESOURCE_REST_VERSAO;
 
 		progressDialog = new ProgressDialog(ActivityMain.this);
 		progressDialog.setCanceledOnTouchOutside(false);
@@ -179,7 +170,7 @@ public class ActivityMain extends Activity {
 				encerraProgressDialog();
 				encerraAlertDialog();
 
-				new DownloadAplicativo(ActivityMain.this, "CadastroCliente", IpURL.URL_SERVER_REST.getValor() + RESOURCE_REST_DOWNLOAD_APK);
+				new DownloadAplicativo(ActivityMain.this, "CadastroCliente", IpRS.URL_SIVA_REST + RESOURCE_REST_DOWNLOAD_APK);
 			}
 		});
 		

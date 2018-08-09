@@ -299,7 +299,7 @@ public class ActivityLogin extends Activity {
 					@Override
 					public void onClick(View v) {
 
-						ExportarDadosWS botaoExportar = new ExportarDadosWS(context);
+						ExportarDadosWS botaoExportar = new ExportarDadosWS(context, URLescolhida);
 						botaoExportar.exportar();
 
 						alertDialog.dismiss();

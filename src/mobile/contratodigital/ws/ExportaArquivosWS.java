@@ -37,23 +37,26 @@ public class ExportaArquivosWS {
 
 	private ProgressDialog progressDialog;
 	private Context context;
-	private String url;
+	private String URLescolhida;
+	private static final String RESOURCE_REST_ARQUIVOS = "/Retorno/Arquivo/";
 	private File file2;
 	private Layout layout;
 
-	public ExportaArquivosWS(Context _context, String urlDoServidorComCaminhoDoRestService) {
+	public ExportaArquivosWS(Context _context, String URLescolhida) {
 		this.context = _context;
-		this.url = urlDoServidorComCaminhoDoRestService;
+		this.URLescolhida = URLescolhida;
 	}
 
 	public void exportar() {
 
 		iniciaProgressDialog();
+		
+		String url = URLescolhida+RESOURCE_REST_ARQUIVOS;
 
 		MultipartRequest multipartRequest = new MultipartRequest(
 
-				Request.Method.POST, url,
-
+				Request.Method.POST, 
+				url,
 				new Response.Listener<NetworkResponse>() {
 					@Override
 					public void onResponse(NetworkResponse response) {
@@ -281,10 +284,10 @@ public class ExportaArquivosWS {
 
 		if (!numeroContratoEstaVazio) {
 
-			ExportarDadosWS exportarDados = new ExportarDadosWS(context);
+			ExportarDadosWS exportarDados = new ExportarDadosWS(context, URLescolhida);
 							exportarDados.exportar();
 			
-			solicitaRemoverArquivosPDA();			
+			//solicitaRemoverArquivosPDA();			
 		} else {
 			new MeuAlerta("No mínimo 1 contrato precisar ser assinado.", null, context).meuAlertaOk();
 		}
@@ -313,12 +316,7 @@ public class ExportaArquivosWS {
 
 		boolean deletou = false;
 
-		// File file = new File(Environment.getExternalStorageDirectory() +
-		// "/DCIM/Camera/");
-
 		File file = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/");
-
-		Log.i("tag", "12: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
 		for (File pastaCliente : file.listFiles()) {
 
@@ -332,12 +330,8 @@ public class ExportaArquivosWS {
 			deletou = pastaCliente.delete();
 		}
 
-		Log.i("tag", "13: " + new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
 		if (deletou) {
-			new MeuAlerta("Imagens removidas! ", null, context).meuAlertaOk();
-
-			// Toast.makeText(context, "Imagens removidas!", Toast.LENGTH_SHORT).show();
+			new MeuAlerta("Arquivos removidos! ", null, context).meuAlertaOk();
 		}
 	}
 }

@@ -30,7 +30,6 @@ public class ActivityExportar extends Activity {
 
 	private Menu menu;
 	private static String URLescolhida = IpRS.URL_SIVA_REST;
-	private static final String RESOURCE_REST_ARQUIVOS = "/Retorno/Arquivo/";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +90,7 @@ public class ActivityExportar extends Activity {
 				
 				//if(contratoUtil.preencheu2LayoutsObrigatoriosAntesDeExportar(nrVisita)) {
 				
-					ExportaArquivosWS exportarFotos = new ExportaArquivosWS(context, URLescolhida + RESOURCE_REST_ARQUIVOS);
+					ExportaArquivosWS exportarFotos = new ExportaArquivosWS(context, URLescolhida);
 									  exportarFotos.exportar();
 				//}
 			 					  

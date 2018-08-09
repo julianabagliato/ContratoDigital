@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import android.content.Context;
+import android.util.Log;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.NomeLayout;
 import sharedlib.contratodigital.model.*;
@@ -35,7 +36,7 @@ public class MontaJSONObjectExportar {
 			JSONArray jSONArray_listaComLayouts = new JSONArray();
 
 			for (Layout layout : dao.listaTodaTabela(Layout.class)) {
-
+			
 				if (layout.getNr_layout() == NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero()) {
 
 					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));	

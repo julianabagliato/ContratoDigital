@@ -10,19 +10,19 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import mobile.contratodigital.dao.Dao;
-import mobile.contratodigital.enums.IpURL;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.MontaJSONObjectExportar;
-import sharedlib.contratodigital.model.Movimento;
 
 public class ExportarDadosWS {
 
+	private String URLescolhida;
 	private static final String RESOURCE_REST_RETORNO_INSERE_RETORNOS = "/Retorno/insereRetornos/";
 	private ProgressDialog progressDialog;
 	private Context context;
 	
-	public ExportarDadosWS(Context _context) {
+	public ExportarDadosWS(Context _context, String URLescolhida) {
 		this.context = _context;
+		this.URLescolhida = URLescolhida;
 	}
 
 	public void exportar() {
@@ -31,7 +31,7 @@ public class ExportarDadosWS {
 
 		iniciaProgressDialog();
 
-		String url = IpURL.URL_SERVER_REST.getValor() + RESOURCE_REST_RETORNO_INSERE_RETORNOS;
+		String url = URLescolhida + RESOURCE_REST_RETORNO_INSERE_RETORNOS;
 
 		MontaJSONObjectExportar montaJSONObjectExportar = new MontaJSONObjectExportar(context);
 
@@ -53,7 +53,8 @@ public class ExportarDadosWS {
 								if (jSONObject_response.getInt("terminouDeInserir") == 1) {
 									
 									Dao dao = new Dao(context);	
-									dao.deletaObjeto(Movimento.class, 1, 1);
+										//dao.deletaObjeto(Movimento.class, 1, 1);
+										
 								} 
 								else if (jSONObject_response.getInt("terminouDeInserir") == -1) {
 

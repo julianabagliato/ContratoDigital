@@ -409,18 +409,11 @@ public class ActivityPecasNew extends Activity {
 		}
 		
 		mov_pecas.setInformacao_1(stringBuilderQtdECodigo.toString());
-		
-		//new MeuAlerta(""+mov_pecas.getInformacao_1(), null, context).meuAlertaOk();
 
 		dao.insereOUatualiza(mov_pecas,
 							 Movimento.COLUMN_INTEGER_NR_LAYOUT, mov_pecas.getNr_layout(), 
 							 Movimento.COLUMN_INTEGER_NR_VISITA, mov_pecas.getNr_visita());
 	}
 	
-	//@Override
-	//public void onBackPressed() {	
-		//setResult(444, new Intent());
-		//finish();
-	//}
 }
 

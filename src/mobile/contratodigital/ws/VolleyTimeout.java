@@ -4,7 +4,7 @@ import com.android.volley.DefaultRetryPolicy;
 
 public class VolleyTimeout {
 
-	private static int IMEOUT_MS = 15000;
+	private static int IMEOUT_MS = 5000;
 	
 	public static DefaultRetryPolicy recuperarTimeout(){
 		
