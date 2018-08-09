@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -22,8 +23,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
+import mobile.contratodigital.model.ContratoUtil;
 import mobile.contratodigital.model.ItemPeca;
 import mobile.contratodigital.util.TelaBuilder;
+import mobile.contratodigital.util.TrabalhaComArquivos;
 import sharedlib.contratodigital.model.*;
 import sharedlib.contratodigital.util.Generico;
 
@@ -158,12 +161,21 @@ public class ActivityListaClientes extends Activity {
 
 	private void deletaCliente(Movimento movimento) {
 	
+		
+		ContratoUtil contratoUtil = new ContratoUtil(dao, context);
+		
+		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento.getNr_visita());
+		
+		TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
+							trabalhaComArquivos.removeDiretorioDoCliente(context, srcContrato);
+
+							
 		listaComMovimentos.remove(movimento);
-		
+							
 		adapterCliente.notifyDataSetChanged();	
-		
+							
 		dao.deletaObjeto(Movimento.class, Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
-		
+
 	}
 	
 	private void acaoAposCliqueNoBotaoCadastrarNovoCliente(){

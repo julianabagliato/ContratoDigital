@@ -28,6 +28,7 @@ import android.os.Environment;
 import android.util.Log;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.util.MeuAlerta;
+import mobile.contratodigital.util.TrabalhaComArquivos;
 import mobile.contratodigital.util.TrabalhaComImagens;
 import sharedlib.contratodigital.model.Layout;
 import sharedlib.contratodigital.model.Movimento;
@@ -301,7 +302,10 @@ public class ExportaArquivosWS {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
-						removeTodosArquivos();
+						String diretorioDoCliente = Environment.getExternalStorageDirectory() + "/ContratoDigital/";
+						
+						TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
+											trabalhaComArquivos.removeDiretorioDoCliente(context, diretorioDoCliente);
 					}
 				}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
 					@Override
@@ -312,26 +316,5 @@ public class ExportaArquivosWS {
 		alertDialog.show();
 	}
 	
-	private void removeTodosArquivos() {
 
-		boolean deletou = false;
-
-		File file = new File(Environment.getExternalStorageDirectory() + "/ContratoDigital/");
-
-		for (File pastaCliente : file.listFiles()) {
-
-			if (pastaCliente.isDirectory()) {
-
-				for (File arquivo : pastaCliente.listFiles()) {
-
-					arquivo.delete();
-				}
-			}
-			deletou = pastaCliente.delete();
-		}
-
-		if (deletou) {
-			new MeuAlerta("Arquivos removidos! ", null, context).meuAlertaOk();
-		}
-	}
 }
