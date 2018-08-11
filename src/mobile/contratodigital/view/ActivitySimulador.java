@@ -85,6 +85,8 @@ public class ActivitySimulador extends Activity{
 	private AnaliseGerencial analiseGerencial;
 	private AnaliseOficial analiseOficial;	
 	private String ultimoDiametroEscolhido = "";
+	public static final int REQUISICAO_SIMULADOR = 444;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -237,7 +239,7 @@ public class ActivitySimulador extends Activity{
 		Toast.makeText(context, "Ação efetuda!", Toast.LENGTH_SHORT).show();
 	
 			
-		setResult(444, new Intent());
+		setResult(REQUISICAO_SIMULADOR, new Intent());
 	 	finish();
 	}
 	

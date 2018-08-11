@@ -87,6 +87,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	public static final int REQUISICAO_PERMISSAO_LEITURA = 222;
 	public static final int REQUISICAO_PERMISSAO_ESCRITA = 333;
 	private static final int REQUISICAO_BUSCA_ARQUIVO = 33333;
+	public static final int REQUISICAO_SIMULADOR = 444;
 	
 	private static final int GerarContratoPadrao = 2;
 	private static final int GerarContratoContaSIM = 3;
@@ -112,6 +113,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Log.i("tag","oncreate foi chamado");
+		
 		Bundle bundle = getIntent().getExtras();
 
 		movimento1 = (Movimento) bundle.getSerializable("movimento");
@@ -615,7 +618,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		Bundle bundle = new Bundle();	
 		bundle.putSerializable("movimento", movimento1);    
 		intent.putExtras(bundle);	
-		startActivityForResult(intent, 444);
+		startActivityForResult(intent, REQUISICAO_SIMULADOR);
 	}
 
 	private void abrirWebview_Cnpj() {
@@ -624,7 +627,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("movimento", movimento1);
 			intent.putExtras(bundle);
-			startActivityForResult(intent, 444);
+			//startActivityForResult(intent, 444);
+			startActivity(intent);
 	}
 
 	private void abrirWebview_InscricaoEstadual() {
@@ -633,7 +637,8 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			Bundle bundle = new Bundle();
 			bundle.putSerializable("movimento", movimento1);
 			intent.putExtras(bundle);
-			startActivityForResult(intent, 444);
+			//startActivityForResult(intent, 444);
+			startActivity(intent);
 	}
 	
 	private void geraContrato(String nomeDoContrato, Class<? extends Activity> activityAserChamada, Movimento mov_informacoesCliente, String srcContrato) {
@@ -983,9 +988,17 @@ public class FragActivityOcorrencia extends FragmentActivity {
 					buscaArquivoESalvaNoDiretorioDoCliente(caminhoDoArquivoEscolhido);
 				}
 			}
+			
+			if (resultCode == REQUISICAO_SIMULADOR) {
+				destroiERecriaActivity();
+			}
 		}
 	}
 	
+	private void destroiERecriaActivity() {
+		finish();
+		startActivity(getIntent());
+	}
 	private void buscaArquivoESalvaNoDiretorioDoCliente(Uri caminhoDoArquivoEscolhido) {
 		
 		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento1.getNr_visita());
@@ -1087,9 +1100,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-
 		startActivity(new Intent(context, ActivityListaClientes.class));
-
 		finish();
 	}
 	
