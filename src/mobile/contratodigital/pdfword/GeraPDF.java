@@ -107,18 +107,8 @@ public abstract class GeraPDF {
 		document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getConsumoPrevistoEmKg()));
 		document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getPrevConsumoAteFimContrato()));
 	    document.add(devolveConteudo("\n"));
-	    
-	    
-	    
-		
-		
-		
 
 	    Movimento mov_equipamentosSimulados = listaComMovimentos.get(SequenciaMovAddedEmLista.mov_equipamentosSimulados.getPosicao());
-
-	
-
-	
 
 		List<String> listaTanques = new ArrayList<String>();
 		List<String> listaCilindros = new ArrayList<String>();
@@ -161,16 +151,12 @@ public abstract class GeraPDF {
 		}
 		//FIM ordenaItensAntesDeAdicionarNaView
 		
-		
 		//ll_holder5.addView(telaBuilder.cria_LL_TVtitulo_TVconteudo("Equipamentos objeto de comodato", ":"));	
 	    document.add(devolveConteudo1("Equipamentos Objetos em comodato:"));
-
 		
 		double subtotalTanques = adicionaItensNaActivityConformeListaRecebida(listaTanques, document);
 		double subtotalCilindros = adicionaItensNaActivityConformeListaRecebida(listaCilindros, document);
 		double subtotalEquipamentos = adicionaItensNaActivityConformeListaRecebida(listaEquipamentos, document);
-		
-		
 
 		double subtotal1 = subtotalTanques + subtotalCilindros + subtotalEquipamentos;
 				
@@ -209,7 +195,6 @@ public abstract class GeraPDF {
 		//INICIO: a lista <OUTROS> apenas serve para caso sobre alguma sujeira nao planejada
 		adicionaItensNaActivityConformeListaRecebida(listaOutros, document);
 		//FIM:    a lista <OUTROS> apenas serve para caso sobre alguma sujeira nao planejada
-
 
         document.add(devolveConteudo("\n"));
 		document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getCustoTotalInvestimento()));
@@ -320,31 +305,35 @@ public abstract class GeraPDF {
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_1.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha6, rotacao);
  
         
-        if(assinatura_0.getRecebeAssinatura() != null) { 	
+        if(assinatura_0.getRecebeAssinatura() == null) { 	
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Testemunha_1>", font_conteudo), posicaoInicialColuna2, posicaoLinha07, rotacao);
+        }else {
         	geraImagem(pdfContentByte, assinatura_0.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha07);
         }
         if(assinatura_0.getNome() != null) {
         	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_0.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha08, rotacao);
         }
         if(assinatura_0.getRg() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_0.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha10, rotacao);
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_0.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha09, rotacao);
         }
         if(assinatura_0.getCpf() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_0.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha11, rotacao);
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_0.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha10, rotacao);
         }
 
 
-        if(assinatura_2.getRecebeAssinatura() != null) { 	
+        if(assinatura_2.getRecebeAssinatura() == null) { 	
+         	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Testemunha_2>", font_conteudo), posicaoInicialColuna1, posicaoLinha07, rotacao);
+        }else {
         	geraImagem(pdfContentByte, assinatura_2.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna1, posicaoLinha07);
         }
         if(assinatura_2.getNome() != null) {
         	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_2.getNome(), font_conteudo), posicaoInicialColuna1, posicaoLinha08, rotacao);
         }
         if(assinatura_2.getRg() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_2.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);	
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_2.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha09, rotacao);	
         }
         if(assinatura_2.getCpf() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_2.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha11, rotacao);	
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_2.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);	
         }
 
     }

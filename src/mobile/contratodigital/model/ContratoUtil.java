@@ -2,6 +2,9 @@ package mobile.contratodigital.model;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -15,9 +18,12 @@ import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.NomeLayout;
 import mobile.contratodigital.enums.TipoView;
 import mobile.contratodigital.util.MeuAlerta;
+import mobile.contratodigital.util.TrabalhaComArquivos;
 import mobile.contratodigital.util.TrabalhaComFotos;
+import mobile.contratodigital.view.ArrayAdapterCliente;
 import sharedlib.contratodigital.model.Layout;
 import sharedlib.contratodigital.model.Movimento;
+import sharedlib.contratodigital.model.Representante;
 import sharedlib.contratodigital.util.Generico;
 
 public class ContratoUtil {
@@ -31,6 +37,45 @@ public class ContratoUtil {
 		this.context = context;
 	}
 	
+	public void deletaCliente(Movimento movimento, List<Movimento> listaComMovimentos, ArrayAdapterCliente adapterCliente) {
+		
+		//ContratoUtil contratoUtil = new ContratoUtil(dao, context);
+		
+		String srcContrato = this.devolveDiretorioAserUtilizado(movimento.getNr_visita());
+		
+		TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
+							trabalhaComArquivos.removeDiretorioDoCliente(context, srcContrato);
+							
+		listaComMovimentos.remove(movimento);
+							
+		adapterCliente.notifyDataSetChanged();	
+							
+		dao.deletaObjeto(Movimento.class, Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
+	}
+
+	
+	public String criaNumeroDeContrato() {
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+		String dataFormatada = dateFormat.format(new Date());
+
+		Representante representante = (Representante) dao.devolveObjeto(Representante.class);
+
+		return dataFormatada + representante.getCod_rep();
+	}
+
+	public void addNumeroDeContratoEAtualizaMovimento(Movimento movimento, String numeroContrato) {
+		
+		if(movimento != null) {
+			
+			movimento.setNr_contrato(numeroContrato);
+			
+			dao.insereOUatualiza(movimento,
+								 Movimento.COLUMN_INTEGER_NR_LAYOUT, movimento.getNr_layout(), 
+								 Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
+		}
+	}
+
 	public boolean preencheu2LayoutsObrigatoriosAntesDeExportar(int nrVisita) {
 		
 		int movimentosEncontrados = 0;

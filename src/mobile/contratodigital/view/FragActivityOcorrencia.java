@@ -373,42 +373,28 @@ public class FragActivityOcorrencia extends FragmentActivity {
 							case AnexarPDF: buscarArquivo("Doc_0.pdf");
 								break;
 								
-								
-								
-							case SimularInstalacao:
-								chamaAplicativoFotoshop();
+							case SimularInstalacao: chamaAplicativoFotoshop();
 								break;
 								
-							case SimularPrecos :
-								abrirSimulador();	
+							case SimularPrecos: abrirSimulador();	
 								break;
 
-							case InformarPecas: 		                 		
-								irParaActivityPecasNew();
+							case InformarPecas: irParaActivityPecasNew();
 								break;
 						
-							case ConsultarInscricaoEstadual:
-								abrirWebview_InscricaoEstadual();
+							case ConsultarInscricaoEstadual: abrirWebview_InscricaoEstadual();
 								break;
 								
-							case VISUALIZAR_ARQUIVOS_GERADOS:
-								visualizarArquivosGerados();
+							case VISUALIZAR_ARQUIVOS_GERADOS: visualizarArquivosGerados();
 								break;
 	
-							case ConsultarCNPJ :
-								abrirWebview_Cnpj();
+							case ConsultarCNPJ: abrirWebview_Cnpj();
 								break;
 								
-							case GerarNumeroDeContrato:
-								solicitaConfirmacaoParaPoderGerarNumeroDeContrato(mov_informacoesCliente);
+							case GerarNumeroDeContrato: solicitaConfirmacaoParaPoderGerarNumeroDeContrato(mov_informacoesCliente);
 								break;
-								
-							}
-
-				
-				
+							}				
 						}
-		
 	}
 	
 	private void buscarArquivo(String nomeDoArquivo) {
@@ -441,12 +427,12 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	private void solicitaConfirmacaoParaPoderGerarNumeroDeContrato(final Movimento mov_informacoesCliente){
 		
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-		alertDialog.setMessage("Deseja Realmente Gerar Contrato?")
+		alertDialog.setMessage("Deseja Gerar Contrato?")
 				.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
-						AtualizarContrato(mov_informacoesCliente);
+						renomeiaPastaDoCliente(mov_informacoesCliente);
 						
 					}
 				}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -458,7 +444,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		alertDialog.show();
 	}
 		
-	private void AtualizarContrato(Movimento mov_informacoesCliente) {
+	private void renomeiaPastaDoCliente(Movimento mov_informacoesCliente) {
 		
 		if(formularioEquipamentosSimuladosFoiPreenchido()) {
 			
@@ -467,57 +453,31 @@ public class FragActivityOcorrencia extends FragmentActivity {
 			
 			try {
 	
-				File antigoCaminho = new File(srcContrato);
-			    if (!antigoCaminho.exists()) {	    	
-			    	 antigoCaminho.mkdirs();
+				File pastaAntigaCPFCNPJ = new File(srcContrato);
+			    if (!pastaAntigaCPFCNPJ.exists()) {	    	
+			    	 pastaAntigaCPFCNPJ.mkdirs();
 			    }
 
-			    String numeroContrato = GerarNumerodeContrato();
+			    String numeroContrato = contratoUtil.criaNumeroDeContrato();
 				
-				File novoCaminho = new File(srcContrato.replace(mov_informacoesCliente.getInformacao_1()
-														   +"_"+mov_informacoesCliente.getInformacao_4().replace("/", "-"),"_"+numeroContrato));
+				File pastaNovaNumeroContrato = new File(srcContrato.replace(mov_informacoesCliente.getInformacao_1()
+														   			   +"_"+mov_informacoesCliente.getInformacao_4().replace("/", "-"),
+														   			    "_"+numeroContrato));
 				
-				antigoCaminho.renameTo(novoCaminho);
-	
-				//String deletar = srcContrato.replace("_" + numeroContrato, String.valueOf(movimento1.getInformacao_1() + "_" + movimento1.getInformacao_4().replace("/", "-")));
-					//Runtime.getRuntime().exec("cmd /c net use k: \\\\NTI_X23\\C$\\Users /yes");
-					//Runtime.getRuntime().exec("cmd /c rd k:\\" + deletar + " /s /q");					
-					//Runtime.getRuntime().exec("cmd /c net use k: /delete /yes");
+				pastaAntigaCPFCNPJ.renameTo(pastaNovaNumeroContrato);
 		
 				ArrayList<Movimento> listaTodosMovimentos = dao.devolveListaComMovimentosPopulados(mov_informacoesCliente);
 				for (Movimento movimento : listaTodosMovimentos) {
-					if(movimento != null) {
-						movimento.setNr_contrato(numeroContrato);
-						//preencheNoObjetoOcampoInformacao(movimento, numeroContrato);
-						dao.insereOUatualiza(movimento,
-											 Movimento.COLUMN_INTEGER_NR_LAYOUT, movimento.getNr_layout(), 
-											 Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
-					}
+					
+					contratoUtil.addNumeroDeContratoEAtualizaMovimento(movimento, numeroContrato);	
 				}
-				//antigoCaminho.renameTo(novoCaminho);
-				new MeuAlerta("Número de contrato gerado: "+numeroContrato, null, context).meuAlertaOk();
+				
+				new MeuAlerta("Número de contrato gerado:", numeroContrato, context).meuAlertaOk();
 			} 
 			catch (Exception erro) {
 				new MeuAlerta(""+erro, null, context).meuAlertaOk();
 			}
 		}	
-	}
-
-	private String GerarNumerodeContrato() {
-		
-		//if (layoutsObrigatoriosForamPreenchidos()) {
-
-			Date data = new Date();
-			DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-			String dataFormatada = dateFormat.format(data);
-
-			Dao dao = new Dao(context);
-			Representante representante = (Representante) dao.devolveObjeto(Representante.class);
-
-			String numeroContrato = dataFormatada + representante.getCod_rep();
-		//}
-		return numeroContrato;
-
 	}
 	
 	private void irParaActivityPecasNew() {
@@ -1002,26 +962,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 		return imageView_seta;
 	}
-
-	/*
-	private Movimento preencheNoObjetoOcampoInformacao(Object objeto, String conteudo) {
-		try {
-			Class<?> classe = objeto.getClass();
-			for (Field atributo : classe.getDeclaredFields()) {
-				atributo.setAccessible(true);
-				if (atributo.getName().contains("Nr_contrato")) {
-					if (!conteudo.isEmpty()) {
-						atributo.set(objeto, conteudo);
-						break;
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return (Movimento) objeto;
-	}
-	*/
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -1148,7 +1088,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	@Override
 	public void onBackPressed() {
 
-		startActivity(new Intent(this, ActivityListaClientes.class));
+		startActivity(new Intent(context, ActivityListaClientes.class));
 
 		finish();
 	}

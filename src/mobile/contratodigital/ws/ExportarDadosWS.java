@@ -14,9 +14,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
 import mobile.contratodigital.dao.Dao;
+import mobile.contratodigital.model.ContratoUtil;
+import mobile.contratodigital.util.Aviso;
 import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.MontaJSONObjectExportar;
 import mobile.contratodigital.util.TrabalhaComArquivos;
+import sharedlib.contratodigital.model.Movimento;
+import  mobile.contratodigital.view.ActivityListaClientesExportacao;
 
 public class ExportarDadosWS {
 
@@ -30,7 +34,7 @@ public class ExportarDadosWS {
 		this.URLescolhida = URLescolhida;
 	}
 
-	public void exportar() {
+	public void exportar(final int nrVisita, final String diretorioDoCliente, final Movimento movimento) {
 
 		RequestQueue requestQueue = VolleySingleton.getInstance(context).getRequestQueue();
 
@@ -44,7 +48,7 @@ public class ExportarDadosWS {
 
 				Request.Method.POST, 
 				url, 
-				montaJSONObjectExportar.montaJSONObject(),
+				montaJSONObjectExportar.montaJSONObject(nrVisita),
 
 				new Response.Listener<JSONObject>() {
 					@Override
@@ -57,10 +61,11 @@ public class ExportarDadosWS {
 							try {
 								if (jSONObject_response.getInt("terminouDeInserir") == 1) {
 									
-									Dao dao = new Dao(context);	
 									
-									//dao.deletaObjeto(Movimento.class, 1, 1);
-									//solicitaRemoverArquivosPDA();
+									Aviso aviso = (ActivityListaClientesExportacao) context;
+										  aviso.avisaQueTerminou(movimento);
+									
+									//deletaCliente(movimento);
 								} 
 								else if (jSONObject_response.getInt("terminouDeInserir") == -1) {
 
@@ -78,45 +83,22 @@ public class ExportarDadosWS {
 					public void onErrorResponse(VolleyError volleyError) {
 
 						encerraProgressDialog();
-						new MeuAlerta("onErrorResponse volleyError: " + volleyError, null, context).meuAlertaOk();
+						new MeuAlerta("VolleyError: "+volleyError, null, context).meuAlertaOk();
 					}
 				});
 						 jsonObjectRequest.setRetryPolicy(VolleyTimeout.recuperarTimeout());
 		requestQueue.add(jsonObjectRequest);
 	}
 
-	private void solicitaRemoverArquivosPDA() {
-		
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-		alertDialog.setMessage("Dados exportados com sucesso!\nDeseja remover os arquivos do PDA?")
-				.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-
-						String diretorioDoCliente = Environment.getExternalStorageDirectory() + "/ContratoDigital/";
-						
-						TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
-											trabalhaComArquivos.removeDiretorioDoCliente(context, diretorioDoCliente);
-					}
-				}).setNegativeButton("Não", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-					}
-				});
-		alertDialog.setCancelable(false);
-		alertDialog.show();
-	}
-
 	private void iniciaProgressDialog() {
-
 		progressDialog = new ProgressDialog(context);
-		progressDialog.setCanceledOnTouchOutside(false);
+		//progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.setCancelable(false);
 		progressDialog.setMessage("Sincronizando...");
 		progressDialog.show();
 	}
 
 	private void encerraProgressDialog() {
-
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 			progressDialog = null;

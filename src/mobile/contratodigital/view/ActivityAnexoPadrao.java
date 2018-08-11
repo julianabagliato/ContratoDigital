@@ -151,7 +151,7 @@ public class ActivityAnexoPadrao extends Activity {
 				if(!contratoAct.temCamposVaziosAnexo(ll_principal)){
 					
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-					alertDialog.setMessage("Deseja Realmente Gerar Contrato?")
+					alertDialog.setMessage("Confirma geração do contrato?")
 							.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int id) {
@@ -264,6 +264,7 @@ public class ActivityAnexoPadrao extends Activity {
 	 	startActivity(intent);	
 	 	finish(); 			
 	}
+	
 	private Movimento preencheNoObjetoOcampoInformacao(Object objeto, String conteudo) {
 
 		try {

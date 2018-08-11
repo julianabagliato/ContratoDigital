@@ -41,19 +41,13 @@ public class ExportaArquivosWS {
 	private Context context;
 	private String URLescolhida;
 	private static final String RESOURCE_REST_ARQUIVOS = "/Retorno/Arquivo/";
-	//private File file2;
-	//private Layout layout;
-	private String diretorioDoCliente;
-	private String pastaDoCliente;
 	
-	public ExportaArquivosWS(Context _context, String URLescolhida, String diretorioDoCliente, String pastaDoCliente) {
+	public ExportaArquivosWS(Context _context, String URLescolhida) {
 		this.context = _context;
 		this.URLescolhida = URLescolhida;
-		this.diretorioDoCliente = diretorioDoCliente;
-		this.pastaDoCliente = pastaDoCliente;
 	}
 
-	public void exportar() {
+	public void exportar(final int nrVisita, final String diretorioDoCliente, final String pastaDoCliente, final Movimento movimento) {
 
 		iniciaProgressDialog();
 		
@@ -74,7 +68,7 @@ public class ExportaArquivosWS {
 						if (resultResponse.equals("OK") || resultResponse.equals("")) {
 
 							ExportarDadosWS exportarDados = new ExportarDadosWS(context, URLescolhida);
-											exportarDados.exportar();	
+											exportarDados.exportar(nrVisita, diretorioDoCliente, movimento);	
 
 						}else if(resultResponse.equals("ERRO")) {
 							new MeuAlerta("Erro no envio dos arquivos", null, context).meuAlertaOk();
@@ -117,6 +111,7 @@ public class ExportaArquivosWS {
 								String arq = arquivo.toString();
 
 								if (arq.contains(".jpg")) {
+									
 									Bitmap bitmap = decodeSampledBitmapFromResource("" + arquivo, 800, 600);
 									if (bitmap != null) {
 										BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
@@ -209,7 +204,8 @@ public class ExportaArquivosWS {
 	private void iniciaProgressDialog() {
 
 		progressDialog = new ProgressDialog(context);
-		progressDialog.setCanceledOnTouchOutside(false);
+		//progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.setCancelable(false);
 		progressDialog.setMessage("Enviando arquivos...");
 		progressDialog.show();
 	}

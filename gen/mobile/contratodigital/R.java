@@ -562,7 +562,6 @@ public final class R {
         public static final int desejaAtualizar=0x7f0a0018;
         public static final int dez=0x7f0a0001;
         public static final int editTextIdPda=0x7f0a000e;
-        public static final int edite=0x7f0a0021;
         public static final int ifView=0x7f0a0020;
         public static final int imageView_cliente=0x7f0a0010;
         public static final int layout=0x7f0a0003;

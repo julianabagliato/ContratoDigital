@@ -38,12 +38,10 @@ import java.io.FileNotFoundException;
 
 public abstract class GeraWord {
 
-	//private TrabalhaComImagens trabalhaComImagens = new TrabalhaComImagens();
 	private final String FONTSIZE_TITULO = "9";
 	private final String FONTSIZE_CONTEUDO = "9";
 	private TextoContratos textoContratos;
 	private Context context;
-	//private Movimento movimento3;
 
 	public GeraWord(Context _context) {
 		this.context = _context;
@@ -322,14 +320,16 @@ public abstract class GeraWord {
 	    
 	    Table tbl = new Table(); 
 	    
-	    tbl.addTableEle(TableEle.TD,  escreveConteudoEmTabela("#Assinatura_empresa#"),devolveImagem(assinatura_1.getRecebeAssinatura(), height_img, width_img));    
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("#Assinatura_empresa#"),devolveImagem(assinatura_1.getRecebeAssinatura(), height_img, width_img));    
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(assinatura_1.getRazaoSocial()));
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cliente: "+assinatura_1.getNome()));
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cargo: "+assinatura_1.getCargo()));   
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_1.getRg()));   
 	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_1.getCpf()));   
 
-	    if(assinatura_0.getRecebeAssinatura() != null) { 	
+	    if(assinatura_0.getRecebeAssinatura() == null) { 
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("<Testemunha_1>"), escreveConteudoEmTabela(""));
+	    }else {
 	    	tbl.addTableEle(TableEle.TD, devolveImagem(assinatura_0.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));      
 	    }
 	    if(assinatura_0.getNome() != null) {
@@ -343,7 +343,9 @@ public abstract class GeraWord {
 	    }
 
 
-	    if(assinatura_2.getRecebeAssinatura() != null) { 	
+	    if(assinatura_2.getRecebeAssinatura() == null) { 
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("<Testemunha_2>"));
+	    }else {
 	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(assinatura_2.getRecebeAssinatura(), height_img, width_img));      
 	    }
 	    if(assinatura_2.getNome() != null) {

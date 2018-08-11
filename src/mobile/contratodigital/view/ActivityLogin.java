@@ -299,8 +299,9 @@ public class ActivityLogin extends Activity {
 					@Override
 					public void onClick(View v) {
 
-						ExportarDadosWS botaoExportar = new ExportarDadosWS(context, URLescolhida);
-						botaoExportar.exportar();
+						//implementar essa funcionalidade
+						//ExportarDadosWS exportarDadosWS = new ExportarDadosWS(context, URLescolhida);
+										//exportarDadosWS.exportar(nrVisita);
 
 						alertDialog.dismiss();
 					}

@@ -76,7 +76,6 @@ public class ActivityListaClientes extends Activity {
 		LayoutParams layoutParams_MATCH_MATCH = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
 		LinearLayout linearLayoutTela = telaBuilder.cria_LL(layoutParams_MATCH_MATCH, R.color.plano_de_fundo_layout);
-
 		
 		listView = telaBuilder.cria_LV();
 		listView.setAdapter(adapterCliente);
@@ -143,12 +142,13 @@ public class ActivityListaClientes extends Activity {
 		
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 		   alertDialog.setTitle("Atenção");
-	       alertDialog.setMessage("Deseja realmente deletar o cliente "+movimento.getInformacao_1()+" ?");
+	       alertDialog.setMessage("Deseja deletar o cliente "+movimento.getInformacao_1()+" ?");
 	       alertDialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
 					
-					deletaCliente(movimento);
+					ContratoUtil contratoUtil = new ContratoUtil(dao, context);
+								 contratoUtil.deletaCliente(movimento, listaComMovimentos, adapterCliente);
 				}
 			});
 	        alertDialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -157,25 +157,6 @@ public class ActivityListaClientes extends Activity {
 				}
 			});	        
 	        alertDialog.show();
-	}
-
-	private void deletaCliente(Movimento movimento) {
-	
-		
-		ContratoUtil contratoUtil = new ContratoUtil(dao, context);
-		
-		String srcContrato = contratoUtil.devolveDiretorioAserUtilizado(movimento.getNr_visita());
-		
-		TrabalhaComArquivos trabalhaComArquivos = new TrabalhaComArquivos();
-							trabalhaComArquivos.removeDiretorioDoCliente(context, srcContrato);
-
-							
-		listaComMovimentos.remove(movimento);
-							
-		adapterCliente.notifyDataSetChanged();	
-							
-		dao.deletaObjeto(Movimento.class, Movimento.COLUMN_INTEGER_NR_VISITA, movimento.getNr_visita());
-
 	}
 	
 	private void acaoAposCliqueNoBotaoCadastrarNovoCliente(){
@@ -202,8 +183,6 @@ public class ActivityListaClientes extends Activity {
 		
 		Bundle bundle = new Bundle();	
 	   	       bundle.putSerializable("movimento", movimento);
-
-	   	       
 
 	   	Intent intent = new Intent(context, FragActivityOcorrencia.class);
     	   	   intent.putExtras(bundle);

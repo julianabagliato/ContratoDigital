@@ -10,7 +10,10 @@ public class TrabalhaComArquivos {
 		boolean deletou = false;
 
 		File pastaDoCliente = new File(diretorioDoCliente);
-
+		if(!pastaDoCliente.exists()) {
+			pastaDoCliente.mkdirs();
+		}
+		
 		for (File arquivo : pastaDoCliente.listFiles()) {
 	
 			deletou = arquivo.delete();

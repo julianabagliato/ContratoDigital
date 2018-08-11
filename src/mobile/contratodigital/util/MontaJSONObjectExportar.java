@@ -20,7 +20,7 @@ public class MontaJSONObjectExportar {
 		this.context = _context;
 	}
 
-	public JSONObject montaJSONObject() {
+	public JSONObject montaJSONObject(int nrVisita) {
 
 		JSONObject jSONObject_retorno = new JSONObject();
 
@@ -48,7 +48,8 @@ public class MontaJSONObjectExportar {
 				}
 
 				for (Movimento movimento : dao.listaTodaTabela(Movimento.class, 
-															   Movimento.COLUMN_INTEGER_NR_LAYOUT, layout.getNr_layout())) {
+															   Movimento.COLUMN_INTEGER_NR_LAYOUT, layout.getNr_layout(),
+															   Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita)) {
 
 					jSONArray_listaComMovimentos.put(devolveJsonObjectDeUmaClasse(movimento));
 				}

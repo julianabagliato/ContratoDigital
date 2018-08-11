@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mobile.contratodigital"
     android:versionCode="1"
     android:versionName="1.0" >
@@ -11,82 +10,73 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-   <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.GLOBAL_SEARCH" />
-    
-       <application
-        
+
+    <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-           
-                <provider
+        <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="mobile.contratodigital"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-    
+
         <activity
             android:name="mobile.contratodigital.view.ActivityMain"
-            android:label="@string/app_name"
-            >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-     
-       <activity
+        <activity
             android:name="mobile.contratodigital.view.ActivitySimulador"
             android:label="ActivitySimuladorDePrecos" >
         </activity>
-           <activity
+        <activity
             android:name="mobile.contratodigital.view.VisualizadorDeImagem"
             android:label="VisualizadorDeImagem" >
         </activity>
-        
         <activity
             android:name="mobile.contratodigital.view.ActivityAnexoContaSIM"
             android:label="ActivityAnexoPadrao" >
         </activity>
-     
         <activity
             android:name="mobile.contratodigital.view.ActivityAnexoPadrao"
             android:label="ActivityAnexoPadrao" >
         </activity>
-        
         <activity
             android:name="mobile.contratodigital.view.ActivityContratoPadrao"
             android:label="ActivityContratoPadrao" >
         </activity>
-        
         <activity
             android:name="mobile.contratodigital.view.ActivityContratoContaSIM"
             android:label="ActivityContratoContaSIM" >
         </activity>
-        
         <activity
             android:name="mobile.contratodigital.view.FragActivityOcorrencia"
             android:label="FragActivityOcorrencia"
-            android:screenOrientation="portrait">
-             <intent-filter>
-        <action android:name="org.openintents.action.PICK_FILE" />
-        <category android:name="android.intent.category.DEFAULT" />
-    </intent-filter>
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="org.openintents.action.PICK_FILE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-        
         <activity
             android:name="mobile.contratodigital.view.ActivityLimparReferencia"
             android:label="ActivityLimparReferencia" >
@@ -97,10 +87,6 @@
             android:label="ActivityDashboard" >
         </activity>
         <activity
-            android:name="mobile.contratodigital.view.ActivityExportar"
-            android:label="ActivityExportar" >
-        </activity>
-        <activity
             android:name="mobile.contratodigital.view.ActivityListaClientes"
             android:label="ActivityListaClientes" >
         </activity>
@@ -108,68 +94,45 @@
             android:name="mobile.contratodigital.view.ActivityListaClientesExportacao"
             android:label="Exportar Dados dos Clientes" >
         </activity>
-    
         <activity
             android:name="mobile.contratodigital.view.ActivityLogin"
             android:label="ActivityLogin" >
         </activity>
-             <activity
+        <activity
             android:name="mobile.contratodigital.view.WebViewCNPJ"
             android:label="Webview_Cnpj" >
         </activity>
-           <activity
+        <activity
             android:name="mobile.contratodigital.view.WebviewInscricaoEstadual"
             android:label="Webview_Inscricao" >
         </activity>
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context="Camera">
-    <WebView
-        android:id="@+id/ifView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</RelativeLayout>
-             
-         
-             <activity
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            tools:context="Camera" >
+            <WebView
+                android:id="@+id/ifView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <activity
             android:name="mobile.contratodigital.view.ActivityCamera"
             android:label="ActivityCamera" >
             <category android:name="android.intent.category.LAUNCHER" />
         </activity>
-        
-         <activity
+        <activity
             android:name="mobile.contratodigital.view.Camera"
             android:label="Camera" >
             <category android:name="android.intent.category.LAUNCHER" />
         </activity>
-        
-        <activity
-            android:name="mobile.contratodigital.view.ActivityPecas"
-            android:label="ActivityPecas" >
-                <EditText 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edite"/>
-        </activity>
-      
         <activity
             android:name="mobile.contratodigital.view.ActivityPecasNew"
-            android:label="Pecas New" >
+            android:label="Peças" >
         </activity>
-      
-     
-        <!-- 
-         <activity
-            android:name="mobile.contratodigital.view.Camera"
-            android:label="Camera" >
-        </activity>
-         -->
-         
-        
-        
-         
     </application>
-    
+
 </manifest>

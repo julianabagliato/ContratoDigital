@@ -33,6 +33,7 @@ import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.enums.IpRS;
 import mobile.contratodigital.enums.VersaoApp;
+import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.RecebeJSON;
 import mobile.contratodigital.util.RecebeJSONObjectimportar;
 import mobile.contratodigital.ws.VolleySingleton;
@@ -160,31 +161,35 @@ public class ActivityDashboard extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		switch(item.getItemId()){
+
 		case 0: URLescolhida = IpRS.acaoLinkOi(menu);
 		return true;
-	
+		
 		case 1: URLescolhida = IpRS.acaoLinkvogel(menu);
 		return true;
 		
-		case 2:
-			 URLescolhida = IpRS.acaoLinWCS(menu);
-			return true;
-			
-		case 3:
-			 URLescolhida = IpRS.acaoLinkLocal(menu);
+		case 2: URLescolhida = IpRS.acaoLinWCS(menu);
 		return true;
-		case 4: 
-			mostraDetalhes();
 		
+		case 3: URLescolhida = IpRS.acaoLinkLocal(menu);
 		return true;
-		case 5:
-			Dao crudSqliteDAO = new Dao(context);
-
-			int codigoRepresentante = crudSqliteDAO.selectDistinct_codRep(Representante.class);
-			buscarNoWebService2(codigoRepresentante);
+		
+		case 4: mostraDetalhes();
+		return true;
+		
+		case 5: criarFluxo();
+		return true;
 		}
 		return super.onOptionsItemSelected(item);
 
+	}
+	
+	private void criarFluxo() {
+		
+		new MeuAlerta("Este fluxo ainda não foi definido", null, context).meuAlertaOk();
+
+		//talvez usar:
+		//buscarNoWebService2();
 	}
 	
 	public void mostraDetalhes(){
@@ -279,11 +284,16 @@ public class ActivityDashboard extends Activity {
 		
 							builder.show();
 	}
-	private void buscarNoWebService2(final int cod_rep) {
+	
+	private void buscarNoWebService2() {
+
+		Dao crudSqliteDAO = new Dao(context);
+
+		int codigoRepresentante = crudSqliteDAO.selectDistinct_codRep(Representante.class);
 
 		try {
 			JSONObject jSONObject_params = new JSONObject();
-			jSONObject_params.put("cod_rep", cod_rep);
+			jSONObject_params.put("cod_rep", codigoRepresentante);
 
 			String url =URLescolhida + RESOURCE_REST_AUTENTICAR;
 
@@ -303,20 +313,14 @@ public class ActivityDashboard extends Activity {
 							try {
 								if (resposta.getInt("achou_cod_rep") == Generico.ENCONTROU_REPRESENTANTE.getValor()) {
 
-									//RecebeJSONObjectimportar recebeJSONObjectImportar = new RecebeJSONObjectimportar(context);
-									//String teste = resposta.toString();
-									//boolean deuErro = recebeJSONObjectImportar.inserePdaComTodasTabelas(resposta);
 									boolean deuErro = new RecebeJSON().recebeDados(context, resposta);
 									
 									if (!deuErro) {
 
 										encerraProgressDialog();
-									//	abrirSistema();
 									}
 								} else if (resposta.getInt("achou_cod_rep") == Generico.NAO_ENCONTROU_REPRESENTANTE
 										.getValor()) {
-
-//									editText_idPda.setText("");
 
 									encerraProgressDialog();
 

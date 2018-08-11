@@ -3,14 +3,7 @@ package mobile.contratodigital.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-/**
- * Classe criada para tratar alertas 
- * 
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
+
 public class MeuAlerta {
 
 	private String titulo;
@@ -23,7 +16,6 @@ public class MeuAlerta {
 		this.context = _context;
 	}
 	
-
 	public void meuAlertaOk() {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(context, 1);
@@ -37,7 +29,6 @@ public class MeuAlerta {
 		   	   });
 		builder.show();
 	}
-	
 	
 	public void meuAlertaSimNao(final AcaoAlertDialog acaoAlertDialog){
 		

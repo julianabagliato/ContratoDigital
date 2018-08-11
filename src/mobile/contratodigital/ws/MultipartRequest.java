@@ -7,19 +7,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+
+import android.util.Log;
+import android.widget.Toast;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
-/**
- * Classe para tratamento de bytes e envio via webservice
- * @author Ana Carolina Oliveira Barbosa - Mir Consultoria - 2018 & Fernando
- *         Pereira Santos - Consigaz -2017
- * 
- * @version 1.0
- */
+
 public class MultipartRequest extends Request<NetworkResponse> {
 	
     private final String doisTracos = "--";
@@ -106,7 +104,7 @@ public class MultipartRequest extends Request<NetworkResponse> {
 
     @Override
     public void deliverError(VolleyError error) {
-        mErrorListener.onErrorResponse(error);
+   		mErrorListener.onErrorResponse(error);
     }
  
     private void textParse(DataOutputStream dataOutputStream, Map<String, String> params, String encoding) throws IOException {

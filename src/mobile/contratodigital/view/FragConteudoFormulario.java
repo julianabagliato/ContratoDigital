@@ -1260,7 +1260,7 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 			case 1:
 				//aplicaOnLongClickParaValidar(botao, editText, "buscaCEP");
 				//Mascaras.adicionaMascaraCEP(editText, "valid");
-				editText.setHint("Informe o nome do condominio a ser representado");
+				editText.setHint("Informe o nome do condomínio a ser representado");
 				break;
 			}
 		}
@@ -1284,7 +1284,7 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 				break;
 			case 6:
 				editText.setTag("cepcidade");
-				editText.setHint("Digite um trecho, Pressione e segure o campo para pesquisar!");
+				editText.setHint(msgTocarNaLupaParaPesquisar());
 
 				aplicaOnLongClickParaListar(botao, item.getDescricao(), Cidade_getLista(), editText, "BuscaCidade");
 
@@ -1307,11 +1307,11 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 			switch (item.getNr_ordem()) {
 			
 		case 10:
-			editText.setHint("Digite um trecho, Pressione e segure o campo para pesquisar!");
+			editText.setHint(msgTocarNaLupaParaPesquisar());
 			aplicaOnLongClickParaListar(botao, item.getDescricao(), cad_canal_venda_getLista(), editText, "BuscaCanal");
 			break;
 		case 11:
-			editText.setHint("Digite um trecho, Pressione e segure o campo para pesquisar!");
+			editText.setHint(msgTocarNaLupaParaPesquisar());
 
 			aplicaOnLongClickParaListar(botao, item.getDescricao(), Atividade_getLista(), editText, "BuscaAtividade");
 			break;
@@ -1347,7 +1347,7 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 				editText.setTag("cepcidade");
 				editText.setText(endereco_temp.getCid());
 
-				editText.setHint("Digite um trecho, Pressione e segure o campo para pesquisar!");
+				editText.setHint(msgTocarNaLupaParaPesquisar());
 
 				aplicaOnLongClickParaListar(botao, item.getDescricao(), Cidade_getLista(), editText, "BuscaCidade");
 
@@ -1402,7 +1402,7 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 			switch (item.getNr_ordem()) {
 
 			case 3:
-				editText.setHint("Digite um trecho, Pressione e segure o campo para pesquisar!");
+				editText.setHint(msgTocarNaLupaParaPesquisar());
 				aplicaOnLongClickParaListar(botao, item.getDescricao(), cad_grupo_empres_getLista(), editText, "BuscaGrupo");
 				break;
 			
@@ -1427,6 +1427,10 @@ public class FragConteudoFormulario extends Fragment implements View.OnClickList
 		return editText;
 	}
 
+	private String msgTocarNaLupaParaPesquisar() {
+		return "Digite um trecho e toque na lupa para pesquisar.";
+	}
+	
 	private void aplicaOnLongClickParaValidar(Button botao, final EditText editText, final String acaoAserExecutada) {
 
 		botao.setVisibility(View.VISIBLE);

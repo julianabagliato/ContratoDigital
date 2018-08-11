@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -17,19 +19,24 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
+import mobile.contratodigital.enums.IpRS;
+import mobile.contratodigital.model.ContratoUtil;
+import mobile.contratodigital.util.AcaoAlertDialog;
+import mobile.contratodigital.util.AcaoExportarArquivosEDados;
+import mobile.contratodigital.util.Aviso;
+import mobile.contratodigital.util.MeuAlerta;
 import mobile.contratodigital.util.TelaBuilder;
 import sharedlib.contratodigital.model.*;
 import sharedlib.contratodigital.util.Generico;
 
-public class ActivityListaClientesExportacao extends Activity {
+public class ActivityListaClientesExportacao extends Activity implements Aviso{
 
+	private Dao dao;
+	private Menu menu;
 	private Context context;
-	//private ActionBar actionBar;
-	//private ListView listView;
 	private List<Movimento> listaComMovimentos;	
-	//private Dao dao;
 	private ArrayAdapterCliente adapterCliente;
-	//private Layout layout;
+	private static String URLescolhida = IpRS.URL_SIVA_REST;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +44,7 @@ public class ActivityListaClientesExportacao extends Activity {
 
 		context = ActivityListaClientesExportacao.this;
 			
-		Dao dao = new Dao(context);
+		dao = new Dao(context);
 		
 		Layout layout = (Layout) dao.devolveObjeto(Layout.class, 
 											Layout.COLUMN_INTEGER_OBRIGATORIO, Generico.LAYOUT_OBRIGATORIO_SIM.getValor());
@@ -45,8 +52,7 @@ public class ActivityListaClientesExportacao extends Activity {
 		if(layout == null){
 			
 			listaComMovimentos = new ArrayList<Movimento>();
-		}
-		else{
+		}else{
 			listaComMovimentos = dao.listaTodaTabela_GroupBy_NrVisita(Movimento.class, layout.getNr_layout());
 		}	
 		
@@ -54,7 +60,7 @@ public class ActivityListaClientesExportacao extends Activity {
 	 	
 	 	ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
-		actionBar.setTitle("Exportar Informação dos Clientes");		
+		actionBar.setTitle("Comunicar");		
 
 		setContentView(constroiTelaInicial());
 	}
@@ -73,15 +79,7 @@ public class ActivityListaClientesExportacao extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				for (Movimento movimento : listaComMovimentos) {
-
-					if (movimento.getNr_visita() == view.getId()) {
-						
-						abreActivityExportar(movimento, view.getId());
-						
-						break;
-					}
-				}
+				clicouEmUmItemDaLista(view);
 			}
 		});
 		linearLayoutTela.addView(listView);
@@ -89,29 +87,67 @@ public class ActivityListaClientesExportacao extends Activity {
 		return linearLayoutTela;
 	}
 	
-	private void abreActivityExportar(Movimento movimento, int viewId){
+	private void clicouEmUmItemDaLista(View view) {
 		
-		Bundle bundle = new Bundle();	
-	   	       bundle.putSerializable("movimento", movimento);
+		for (Movimento movimento : listaComMovimentos) {
 
-	   	Intent intent = new Intent(context, ActivityExportar.class);
-    	   	   intent.putExtras(bundle);
+			if (movimento.getNr_visita() == view.getId()) {
+				
+				AcaoAlertDialog acaoExportar = new AcaoExportarArquivosEDados(movimento, dao, context, URLescolhida);
+				
+				MeuAlerta meuAlerta = new MeuAlerta("Atenção", "Confirma comunicação do cliente: "
+															   +movimento.getInformacao_1()+" ?", context);
+						  meuAlerta.meuAlertaSimNao(acaoExportar);
+				
+				break;
+			}
+		}
+	}
 
-    	startActivityForResult(intent, viewId);		
+	@Override
+	public void avisaQueTerminou(Movimento movimento) {
+
+		ContratoUtil contratoUtil = new ContratoUtil(dao, context);
+					 contratoUtil.deletaCliente(movimento, listaComMovimentos, adapterCliente);
 	}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-
-		if (intent != null) {
-			//adapter.notifyDataSetChanged();			
+	public boolean onCreateOptionsMenu(Menu menuinterno) {
+		menu = menuinterno;
+		
+		menu.add(0,0,0, "Oi");
+		menu.add(0,1,0, "Vogel");
+		menu.add(0,2,0, "WCS");
+		menu.add(0,3,0, "Local");
+		menu.getItem(0).setEnabled(false);
+		
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch(item.getItemId()){
+		
+		case 0: URLescolhida = IpRS.acaoLinkOi(menu);
+			return true;
+	
+		case 1: URLescolhida = IpRS.acaoLinkvogel(menu);
+			return true;
+		
+		case 2: URLescolhida = IpRS.acaoLinWCS(menu);
+			return true;
+			
+		case 3: URLescolhida = IpRS.acaoLinkLocal(menu);
+			return true;
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	public void onBackPressed() {
 
-		startActivity(new Intent(ActivityListaClientesExportacao.this, ActivityDashboard.class));
+		startActivity(new Intent(context, ActivityDashboard.class));
 		finish();
 	}
 

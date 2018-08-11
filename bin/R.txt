@@ -539,7 +539,6 @@ int id datePickerTitulo 0x7f0a0013
 int id desejaAtualizar 0x7f0a0018
 int id dez 0x7f0a0001
 int id editTextIdPda 0x7f0a000e
-int id edite 0x7f0a0021
 int id ifView 0x7f0a0020
 int id imageView_cliente 0x7f0a0010
 int id layout 0x7f0a0003
