@@ -27,8 +27,7 @@ public class GeraWord_anexoPadrao extends GeraWord {
 	protected void desenhaCorpo(IDocument iDocument, ArrayList<Movimento> listaComMovimentos, List<Assinatura> listaComAssinaturas) {
 		
 		try {
-			Table table1 = adicionaTituloComConteudoComEndereco(iDocument, listaComMovimentos, "AnexoPadrao");
-		  	iDocument.addEle(table1);	  	    	  	
+			adicionaTituloComConteudoComEndereco(iDocument, listaComMovimentos, "AnexoPadrao");
 			iDocument.addEle(BreakLine.times(1).create());
 
 		} catch (DocumentException e) {			

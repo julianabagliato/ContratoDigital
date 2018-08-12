@@ -17,6 +17,7 @@ import sharedlib.contratodigital.model.Movimento;
 import word.api.interfaces.IDocument;
 import word.w2004.Document2004;
 import word.w2004.Document2004.Encoding;
+import word.w2004.elements.BreakLine;
 import word.w2004.elements.Image;
 import word.w2004.elements.Paragraph;
 import word.w2004.elements.ParagraphPiece;
@@ -81,35 +82,25 @@ public abstract class GeraWord {
 		writer.close();
 	}
 
-	private String devolveunderline1() {
-		return "________________________________________________________________________________________";
-	}
-
-	protected Table adicionaTituloComConteudoComEndereco(IDocument iDocument, ArrayList<Movimento> listaComMovimentos, String tipoAnexo) throws DocumentException {
+	protected void adicionaTituloComConteudoComEndereco(IDocument iDocument, ArrayList<Movimento> listaComMovimentos, String tipoAnexo) throws DocumentException {
 
 		escreveTituloPrincipal(iDocument, "Anexo I");
 
-		Table table1 = new Table();
-		table1.addTableEle(TableEle.TD, escreveUnderline1(devolveunderline1()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(textoContratos.devolveTextoAnexo()));
+		//table1.addTableEle(TableEle.TD, escreveUnderline1(devolveunderline1()));
+		//table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(textoContratos.devolveTextoAnexo()));
+		escreveConteudoJust(iDocument, textoContratos.devolveTextoAnexo());
+		
+		Table table1 = new Table(false);
 		table1.addTableEle(TableEle.TD, "");
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getLogradouro_titulo()
-				+ PrecoPrazoConsumoPagamento.getLogradouro_conteudo()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(
-				PrecoPrazoConsumoPagamento.getNumero_titulo() + PrecoPrazoConsumoPagamento.getNumero_conteudo()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(
-				PrecoPrazoConsumoPagamento.getBairro_titulo() + PrecoPrazoConsumoPagamento.getBairro_conteudo()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(
-				PrecoPrazoConsumoPagamento.getCidade_titulo() + PrecoPrazoConsumoPagamento.getCidade_conteudo()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(
-				PrecoPrazoConsumoPagamento.getEstado_titulo() + PrecoPrazoConsumoPagamento.getEstado_conteudo()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(
-				PrecoPrazoConsumoPagamento.getCep_titulo() + PrecoPrazoConsumoPagamento.getCep_conteudo()));
+		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getLogradouro_titulo()+ PrecoPrazoConsumoPagamento.getLogradouro_conteudo()));
+		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getNumero_titulo() + PrecoPrazoConsumoPagamento.getNumero_conteudo()));
+		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getBairro_titulo() + PrecoPrazoConsumoPagamento.getBairro_conteudo()));
+		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getCidade_titulo() + PrecoPrazoConsumoPagamento.getCidade_conteudo()));
+		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getEstado_titulo() + PrecoPrazoConsumoPagamento.getEstado_conteudo()));
+		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getCep_titulo() + PrecoPrazoConsumoPagamento.getCep_conteudo()));
 		table1.addTableEle(TableEle.TD, "");
 		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getPrecoNegociado()));
-
 		if (tipoAnexo.equals("AnexoContaSIM")) {
-
 			table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getTaxaServico()));
 			table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getTaxaReligue()));
 		}
@@ -121,7 +112,6 @@ public abstract class GeraWord {
 		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getConsumoPrevistoEmKg()));
 		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getPrevConsumoAteFimContrato()));
 		table1.addTableEle(TableEle.TD, "");
-		
 		
 	    Movimento mov_equipamentosSimulados = listaComMovimentos.get(SequenciaMovAddedEmLista.mov_equipamentosSimulados.getPosicao());
 
@@ -135,114 +125,85 @@ public abstract class GeraWord {
 		 
 		//INICIO: ordenaItensAntesDeAdicionarNaView();
 		for(String equipamento : Reflexao.devolveListaComEquipamentosAdicionados(mov_equipamentosSimulados)){
-			
 			if(equipamento.contains("TANQUES")) {
-				
 				listaTanques.add(equipamento);
-			}
-			else if(equipamento.contains("CILINDROS")) {
-				
+			}else if(equipamento.contains("CILINDROS")) {
 				listaCilindros.add(equipamento);
-			}
-			else if(equipamento.contains("EQUIPAMENTOS")) {
-		
+			}else if(equipamento.contains("EQUIPAMENTOS")) {
 				listaEquipamentos.add(equipamento);
-			}
-			else if(equipamento.contains("CENTRAL")) {
-				
+			}else if(equipamento.contains("CENTRAL")) {
 				listaCentral.add(equipamento);
-			}
-			else if(equipamento.contains("REDE")) {
-				
+			}else if(equipamento.contains("REDE")) {
 				listaRede.add(equipamento);
-			}
-			else if(equipamento.contains("investimentos especiais")) {
-				
+			}else if(equipamento.contains("investimentos especiais")) {
 				listaInvestimentosEspeciais.add(equipamento);
-			}	
-			else {
+			}else {
 				listaOutros.add(equipamento);		
 			}
 		}
 		//FIM ordenaItensAntesDeAdicionarNaView
 		
-		
-		//ll_holder5.addView(telaBuilder.cria_LL_TVtitulo_TVconteudo("Equipamentos objeto de comodato", ":"));	
-	    //document.add(devolveConteudo1("Equipamentos Objetos em comodato:"));
-		table1.addTableEle(TableEle.TD, escreveTituloEmTabela1("Equipamentos Objetos de Comodato:"));
-
-		
-		double subtotalTanques = adicionaItensNaActivityConformeListaRecebida(listaTanques, table1);
-		double subtotalCilindros = adicionaItensNaActivityConformeListaRecebida(listaCilindros, table1);
-		double subtotalEquipamentos = adicionaItensNaActivityConformeListaRecebida(listaEquipamentos, table1);
-		
-
+		Table table2 = new Table(false); 
+		table2.addTableEle(TableEle.TD, escreveUnderline1("____________________________________________________________________"));
+		table2.addTableEle(TableEle.TD, escreveTituloEmTabelaBoldLeft("Equipamentos Objetos de Comodato:"), escreveConteudoEmTabela(""));
+					
+		Table table3 = new Table(true); 
+		double subtotalTanques = adicionaItensNaActivityConformeListaRecebida(listaTanques, table3);
+		double subtotalCilindros = adicionaItensNaActivityConformeListaRecebida(listaCilindros, table3);
+		double subtotalEquipamentos = adicionaItensNaActivityConformeListaRecebida(listaEquipamentos, table3);
 		double subtotal1 = subtotalTanques + subtotalCilindros + subtotalEquipamentos;
-				
 		MoedaRS moedaRS = new MoedaRS();
-		
 		String subtotalEmExtenso1 = moedaRS.converteNumeroParaExtensoReais(subtotal1);
-
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(""));	
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(" Subtotal A: "+subtotalEmExtenso1));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(""));
+		table3.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(""));
+		table3.addTableEle(TableEle.TD, escreveConteudoEmTabela("Subtotal A:"), escreveConteudoEmTabela(subtotalEmExtenso1));
 		
-
-		
-		//INICIO: a tratativa abaixo é apenas por causa dos equipamentos especiais
 		String eqpEspecial = listaInvestimentosEspeciais.get(0);
-		
 		int posicaoDivisoria = eqpEspecial.indexOf(":");
-		
 		String titulo = eqpEspecial.substring(0, posicaoDivisoria + 1);
 		String linhaComItemEValor = eqpEspecial.substring(posicaoDivisoria + 1, eqpEspecial.length());
 		
-		
-		table1.addTableEle(TableEle.TD, escreveTituloEmTabela1(""+titulo));
-		
-		double subtotalCentral = adicionaItensNaActivityConformeListaRecebida(listaCentral, table1);
-		double subtotalRede = adicionaItensNaActivityConformeListaRecebida(listaRede, table1);
-		double valorDoEquipamentoEspecial = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, table1);	
-		
+		Table table4 = new Table(false); 
+		table4.addTableEle(TableEle.TD, escreveTituloEmTabelaBoldLeft(""), escreveConteudoEmTabela(""));
+		table4.addTableEle(TableEle.TD, escreveTituloEmTabelaBoldLeft(titulo), escreveConteudoEmTabela(""));
+			
+		Table table5 = new Table(true); 
+		double subtotalCentral = adicionaItensNaActivityConformeListaRecebida(listaCentral, table5);
+		double subtotalRede = adicionaItensNaActivityConformeListaRecebida(listaRede, table5);
+		double valorDoEquipamentoEspecial = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, table5);	
 		double subtotal2 = subtotalCentral + subtotalRede + valorDoEquipamentoEspecial;
-		
 		String subtotal2EmExtenso = moedaRS.converteNumeroParaExtensoReais(subtotal2);
-
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(""));	
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(" Subtotal B: "+subtotal2EmExtenso));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(""));
+		table5.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(""));
+		table5.addTableEle(TableEle.TD, escreveConteudoEmTabela("Subtotal B:"), escreveConteudoEmTabela(subtotal2EmExtenso));
 	
+		Table table6 = new Table(false); 
+		table6.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(""));
 		
-		
-		//FIM:   a tratativa abaixo é apenas por causa dos equipamentos especiais
-		
-		//INICIO: a lista <OUTROS> apenas serve para caso sobre alguma sujeira nao planejada
-		adicionaItensNaActivityConformeListaRecebida(listaOutros, table1);
-		//FIM:    a lista <OUTROS> apenas serve para caso sobre alguma sujeira nao planejada
+	    Table table7 = new Table(true); 
+		String totalInvestimento = PrecoPrazoConsumoPagamento.getCustoTotalInvestimento();
+		String[] lista = totalInvestimento.split(":");
+		table7.addTableEle(TableEle.TD, escreveConteudoEmTabela(lista[0]+":"), escreveConteudoEmTabela(lista[1]));
 
+	    Table table8 = new Table(false); 
+		table8.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getObservacoes_titulo() + PrecoPrazoConsumoPagamento.getObservacoes_conteudo()));
+		table8.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabelaRight(textoContratos.devolveDataAtualFormatada()));
 		
-		
-		
-		
-		
-		
-		table1.addTableEle(TableEle.TD, "");
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getCustoTotalInvestimento()));
-		table1.addTableEle(TableEle.TD, "");
-
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(PrecoPrazoConsumoPagamento.getObservacoes_titulo() + PrecoPrazoConsumoPagamento.getObservacoes_conteudo()));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela_AlignRIGHT(textoContratos.devolveDataAtualFormatada()));
-
-		return table1;
+	  	iDocument.addEle(table1);	    
+	  	iDocument.addEle(table2);	    
+	  	iDocument.addEle(table3);
+	  	iDocument.addEle(table4);	    
+	  	iDocument.addEle(table5);	    
+	  	iDocument.addEle(table6);
+	  	iDocument.addEle(table7);	    
+	  	iDocument.addEle(table8);
 	}
 	
-	private double adicionaItensNaActivityConformeListaRecebida(List<String> lista, Table table1) throws DocumentException {
+	private double adicionaItensNaActivityConformeListaRecebida(List<String> lista, Table tableX) throws DocumentException {
 		
 		double subtotal = 0.0;
 		
 		for(String linhaComItemEValor : lista) {
 
-			double valorDoItem = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, table1);		
+			double valorDoItem = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, tableX);		
 			
 			subtotal = subtotal + valorDoItem;
 		}
@@ -250,7 +211,7 @@ public abstract class GeraWord {
 		return subtotal;
 	}
 
-	private double separaItemDeValorEAdicionaNoLinearLayout(String linhaComItemEValor, Table table1) throws DocumentException {
+	private double separaItemDeValorEAdicionaNoLinearLayout(String linhaComItemEValor, Table tableX) throws DocumentException {
 		
 		double valorDoItem = 0.0;
 		
@@ -259,40 +220,26 @@ public abstract class GeraWord {
 		String item = linhaComItemEValor.substring(0, posicaoDaDivisoria);
 		String valor = linhaComItemEValor.substring(posicaoDaDivisoria - 1, linhaComItemEValor.length());
 
-		
-		
 		try {
-					
 			int posicaoDosCentavos = valor.indexOf("(");
-			
 			String numerosComPontoVirgulaRS = valor.substring(0, posicaoDosCentavos);
-			
 			String numerosComPontoVirgula = numerosComPontoVirgulaRS.replace("R$", "");
-			
 			String numerosComVirgula = numerosComPontoVirgula.replace(".", "");
-			
 			String valorProntoParaUso = numerosComVirgula.replace(",", ".");
-			
 			valorDoItem = Double.parseDouble(valorProntoParaUso);	
 		}
 		catch(Exception erro) {
-			
-
 			Log.i("tag","nao conseguiu calcular o sub total: "+erro);			
 		}
-		
-		//ll_holder.addView(telaBuilder.cria_LL_LLTVtitulo_LLTVconteudo(" "+item, " "+valor));
-	    //document.add(devolveConteudo(""+item+"                           "+valor));
-		table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(""+item+"                           "+valor));
+		//table1.addTableEle(TableEle.TD, escreveConteudoEmTabela(""+item+"                           "+valor));	
+		tableX.addTableEle(TableEle.TD, escreveConteudoEmTabela(item), escreveConteudoEmTabela(valor));
 		
 		return valorDoItem;
 	}
 
-
 	protected Paragraph escreveUnderline1(String underline) {
 
-		return (Paragraph) Paragraph.withPieces(ParagraphPiece.with(underline).withStyle().textColor("FFFFFF").create())
-				.withStyle().align(word.w2004.style.ParagraphStyle.Align.CENTER).create();
+		return (Paragraph) Paragraph.withPieces(ParagraphPiece.with(underline).withStyle().textColor("FFFFFF").create()).withStyle().align(word.w2004.style.ParagraphStyle.Align.CENTER).create();
 	}
 
 	private void desenhaCabecalho(Context context, IDocument iDocument) {
@@ -313,49 +260,42 @@ public abstract class GeraWord {
 
 	protected abstract void organizaSequencia(IDocument iDocument, List<Assinatura> listaComAssinaturas);
 	
-	protected void desenhaAssinaturas(IDocument iDocument, Assinatura assinatura_0, Assinatura assinatura_1, Assinatura assinatura_2) {
+	protected void desenhaAssinaturas(IDocument iDocument, Assinatura ass_0, Assinatura ass_1, Assinatura ass_2) {
 				 
 	    String height_img = String.valueOf(TamanhoAssinatura.ALTURA.getTamanho());
 	    String width_img = String.valueOf(TamanhoAssinatura.LARGURA.getTamanho());
 	    
-	    Table tbl = new Table(); 
+	    Table tbl = new Table(false); 
 	    
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("#Assinatura_empresa#"),devolveImagem(assinatura_1.getRecebeAssinatura(), height_img, width_img));    
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(assinatura_1.getRazaoSocial()));
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cliente: "+assinatura_1.getNome()));
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cargo: "+assinatura_1.getCargo()));   
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_1.getRg()));   
-	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_1.getCpf()));   
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("#Assinatura_empresa#"),devolveImagem(ass_1.getRecebeAssinatura(), height_img, width_img));    
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela(ass_1.getRazaoSocial()));
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cliente: "+ass_1.getNome()));
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Cargo: "+ass_1.getCargo()));   
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+ass_1.getRg()));   
+	    tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+ass_1.getCpf()));   
 
-	    if(assinatura_0.getRecebeAssinatura() == null) { 
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("<Testemunha_1>"), escreveConteudoEmTabela(""));
+	    if(ass_0.getRecebeAssinatura() == null) { 
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("#Testemunha_1#"), escreveConteudoEmTabela(""));
 	    }else {
-	    	tbl.addTableEle(TableEle.TD, devolveImagem(assinatura_0.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));      
-	    }
-	    if(assinatura_0.getNome() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("Testemunha: "+assinatura_0.getNome()), escreveConteudoEmTabela(""));
-	    }
-	    if(assinatura_0.getRg() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("RG: "+assinatura_0.getRg()), escreveConteudoEmTabela(""));   
-	    }
-	    if(assinatura_0.getCpf() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("CPF: "+assinatura_0.getCpf()), escreveConteudoEmTabela(""));   
+	    	tbl.addTableEle(TableEle.TD, devolveImagem(ass_0.getRecebeAssinatura(), height_img, width_img), escreveConteudoEmTabela(""));      
+	    }if(ass_0.getNome() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("Testemunha: "+ass_0.getNome()), escreveConteudoEmTabela(""));
+	    }if(ass_0.getRg() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("RG: "+ass_0.getRg()), escreveConteudoEmTabela(""));   
+	    }if(ass_0.getCpf() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela("CPF: "+ass_0.getCpf()), escreveConteudoEmTabela(""));   
 	    }
 
-
-	    if(assinatura_2.getRecebeAssinatura() == null) { 
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("<Testemunha_2>"));
+	    if(ass_2.getRecebeAssinatura() == null) { 
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("#Testemunha_2#"));
 	    }else {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(assinatura_2.getRecebeAssinatura(), height_img, width_img));      
-	    }
-	    if(assinatura_2.getNome() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Testemunha: "+assinatura_2.getNome()));
-	    }
-	    if(assinatura_2.getRg() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+assinatura_2.getRg()));   
-	    }
-	    if(assinatura_2.getCpf() != null) {
-	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+assinatura_2.getCpf()));   
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), devolveImagem(ass_2.getRecebeAssinatura(), height_img, width_img));      
+	    }if(ass_2.getNome() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("Testemunha: "+ass_2.getNome()));
+	    }if(ass_2.getRg() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("RG: "+ass_2.getRg()));   
+	    }if(ass_2.getCpf() != null) {
+	    	tbl.addTableEle(TableEle.TD, escreveConteudoEmTabela(""), escreveConteudoEmTabela("CPF: "+ass_2.getCpf()));   
 	    }
 
 	    iDocument.addEle(tbl);
@@ -373,8 +313,14 @@ public abstract class GeraWord {
 				Paragraph.withPieces(ParagraphPiece.with(texto).withStyle().fontSize(FONTSIZE_TITULO).bold().create())
 						.withStyle().align(word.w2004.style.ParagraphStyle.Align.CENTER).create());
 	}
+	protected void escreveTituloBoldLeft(IDocument iDocument, String texto) {
 
-	protected void escreveConteudo(IDocument iDocument, String texto) {
+		iDocument.addEle(
+				Paragraph.withPieces(ParagraphPiece.with(texto).withStyle().fontSize(FONTSIZE_TITULO).bold().create())
+						.withStyle().align(word.w2004.style.ParagraphStyle.Align.LEFT).create());
+	}
+	
+	protected void escreveConteudoJust(IDocument iDocument, String texto) {
 
 		iDocument.addEle(Paragraph.withPieces(ParagraphPiece.with(texto).withStyle().fontSize(FONTSIZE_TITULO).create())
 				.withStyle().align(word.w2004.style.ParagraphStyle.Align.JUSTIFIED).create());
@@ -443,11 +389,10 @@ public abstract class GeraWord {
 
 	}
 
-	protected Paragraph escreveConteudoEmTabela_AlignRIGHT(String paragrafo) {
-
+	protected Paragraph escreveConteudoEmTabelaRight(String paragrafo) {
 		return (Paragraph) Paragraph
 				.withPieces(ParagraphPiece.with(paragrafo).withStyle().fontSize(FONTSIZE_CONTEUDO).create()).withStyle()
-				.align(Align.LEFT).create();
+				.align(Align.RIGHT).create();
 	}
 
 	protected Paragraph escreveUnderline() {
@@ -458,18 +403,23 @@ public abstract class GeraWord {
 				.withStyle().align(word.w2004.style.ParagraphStyle.Align.CENTER).create();
 	}
 
-	protected Paragraph escreveTituloEmTabela(String paragrafo) {
+	protected Paragraph escreveTituloEmTabelaBoldCenter(String paragrafo) {
 
 		return (Paragraph) Paragraph
 				.withPieces(ParagraphPiece.with(paragrafo).withStyle().fontSize(FONTSIZE_TITULO).bold().create())
 				.withStyle().align(word.w2004.style.ParagraphStyle.Align.CENTER).create();
 	}
-	protected Paragraph escreveTituloEmTabela1(String paragrafo) {
-
+	protected Paragraph escreveTituloEmTabelaBoldJust(String paragrafo) {
 		return (Paragraph) Paragraph
 				.withPieces(ParagraphPiece.with(paragrafo).withStyle().fontSize(FONTSIZE_TITULO).bold().create())
 				.withStyle().align(word.w2004.style.ParagraphStyle.Align.JUSTIFIED).create();
 	}
+	protected Paragraph escreveTituloEmTabelaBoldLeft(String paragrafo) {
+		return (Paragraph) Paragraph
+				.withPieces(ParagraphPiece.with(paragrafo).withStyle().fontSize(FONTSIZE_TITULO).bold().create())
+				.withStyle().align(word.w2004.style.ParagraphStyle.Align.LEFT).create();
+	}
+	
 
 	private String devolveZero_double_CasoEstejaVazia(String valor) {
 		if (valor.isEmpty() || valor.equals(".")) {

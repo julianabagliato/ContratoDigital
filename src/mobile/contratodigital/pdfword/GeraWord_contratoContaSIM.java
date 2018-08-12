@@ -109,7 +109,7 @@ public class GeraWord_contratoContaSIM extends GeraWord{
 		
 		String[] paragrafos = new String[QTD_PARAGRAFOS];
 	    
-	    Table table = new Table(); 
+	    Table table = new Table(false); 
 	  	  	  table.addTableEle(TableEle.TD, escreveUnderline()); 
 
 	    for(int i=1; i<QTD_PARAGRAFOS - 1; i++){

@@ -14,6 +14,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import android.content.Context;
@@ -29,6 +31,8 @@ import mobile.contratodigital.util.Reflexao;
 import mobile.contratodigital.util.TextoContratos;
 import mobile.contratodigital.util.TrabalhaComImagens;
 import sharedlib.contratodigital.model.Movimento;
+import word.w2004.elements.Table;
+import word.w2004.elements.tableElements.TableEle;
 
 public abstract class GeraPDF {
 	
@@ -93,9 +97,7 @@ public abstract class GeraPDF {
         document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getCep_titulo() + PrecoPrazoConsumoPagamento.getCep_conteudo()));
         document.add(devolveConteudo("\n"));
         document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getPrecoNegociado()));
-		
         if(tipoAnexo.equals("AnexoContaSIM")){
-   		
 			document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getTaxaServico()));
 			document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getTaxaReligue()));
 		}
@@ -120,53 +122,42 @@ public abstract class GeraPDF {
 		 
 		//INICIO: ordenaItensAntesDeAdicionarNaView();
 		for(String equipamento : Reflexao.devolveListaComEquipamentosAdicionados(mov_equipamentosSimulados)){
-			
 			if(equipamento.contains("TANQUES")) {
-				
 				listaTanques.add(equipamento);
-			}
-			else if(equipamento.contains("CILINDROS")) {
-				
+			}else if(equipamento.contains("CILINDROS")) {
 				listaCilindros.add(equipamento);
-			}
-			else if(equipamento.contains("EQUIPAMENTOS")) {
-		
+			}else if(equipamento.contains("EQUIPAMENTOS")) {
 				listaEquipamentos.add(equipamento);
-			}
-			else if(equipamento.contains("CENTRAL")) {
-				
+			}else if(equipamento.contains("CENTRAL")) {
 				listaCentral.add(equipamento);
-			}
-			else if(equipamento.contains("REDE")) {
-				
+			}else if(equipamento.contains("REDE")) {
 				listaRede.add(equipamento);
-			}
-			else if(equipamento.contains("investimentos especiais")) {
-				
+			}else if(equipamento.contains("investimentos especiais")) {
 				listaInvestimentosEspeciais.add(equipamento);
-			}	
-			else {
+			}else {
 				listaOutros.add(equipamento);		
 			}
 		}
 		//FIM ordenaItensAntesDeAdicionarNaView
 		
-		//ll_holder5.addView(telaBuilder.cria_LL_TVtitulo_TVconteudo("Equipamentos objeto de comodato", ":"));	
 	    document.add(devolveConteudo1("Equipamentos Objetos em comodato:"));
-		
-		double subtotalTanques = adicionaItensNaActivityConformeListaRecebida(listaTanques, document);
-		double subtotalCilindros = adicionaItensNaActivityConformeListaRecebida(listaCilindros, document);
-		double subtotalEquipamentos = adicionaItensNaActivityConformeListaRecebida(listaEquipamentos, document);
 
+	    float larguraColuna1 = 251;
+	    float larguraColuna2 = 251;
+	    
+	    PdfPTable table1 = new PdfPTable(2);
+        table1.setTotalWidth(new float[]{ larguraColuna1, larguraColuna2 });
+        table1.setLockedWidth(true);
+        
+		double subtotalTanques = adicionaItensNaActivityConformeListaRecebida(listaTanques, table1);
+		double subtotalCilindros = adicionaItensNaActivityConformeListaRecebida(listaCilindros, table1);
+		double subtotalEquipamentos = adicionaItensNaActivityConformeListaRecebida(listaEquipamentos, table1);
 		double subtotal1 = subtotalTanques + subtotalCilindros + subtotalEquipamentos;
-				
 		MoedaRS moedaRS = new MoedaRS();
-		
 		String subtotalEmExtenso1 = moedaRS.converteNumeroParaExtensoReais(subtotal1);
-
-		document.add(devolveConteudo("\n"));
-		document.add(devolveConteudo(" Subtotal A: "+subtotalEmExtenso1));
-		document.add(devolveConteudo("\n"));
+        table1.addCell(new PdfPCell(new Phrase(".", font_conteudo)));table1.addCell(new PdfPCell(new Phrase(".", font_conteudo)));
+        table1.addCell(new PdfPCell(new Phrase("Subtotal A:", font_conteudo)));table1.addCell(new PdfPCell(new Phrase(subtotalEmExtenso1, font_conteudo)));
+		document.add(table1);
 		
 		//INICIO: a tratativa abaixo é apenas por causa dos equipamentos especiais
 		String eqpEspecial = listaInvestimentosEspeciais.get(0);
@@ -177,40 +168,40 @@ public abstract class GeraPDF {
 		String linhaComItemEValor = eqpEspecial.substring(posicaoDivisoria + 1, eqpEspecial.length());
 		
 		document.add(devolveConteudo1(""+titulo));
-	
-		double subtotalCentral = adicionaItensNaActivityConformeListaRecebida(listaCentral, document);
-		double subtotalRede = adicionaItensNaActivityConformeListaRecebida(listaRede, document);
-		double valorDoEquipamentoEspecial = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, document);	
-		
+
+	    PdfPTable table2 = new PdfPTable(2);
+        table2.setTotalWidth(new float[]{ larguraColuna1, larguraColuna2 });
+        table2.setLockedWidth(true);
+		double subtotalCentral = adicionaItensNaActivityConformeListaRecebida(listaCentral, table2);
+		double subtotalRede = adicionaItensNaActivityConformeListaRecebida(listaRede, table2);
+		double valorDoEquipamentoEspecial = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, table2);	
 		double subtotal2 = subtotalCentral + subtotalRede + valorDoEquipamentoEspecial;
-		
 		String subtotal2EmExtenso = moedaRS.converteNumeroParaExtensoReais(subtotal2);
-
-		document.add(devolveConteudo("\n"));
-		document.add(devolveConteudo(" Subtotal B: "+subtotal2EmExtenso));
+		table2.addCell(new PdfPCell(new Phrase(".", font_conteudo)));table2.addCell(new PdfPCell(new Phrase(".", font_conteudo)));
+        table2.addCell(new PdfPCell(new Phrase("Subtotal B:", font_conteudo)));table2.addCell(new PdfPCell(new Phrase(subtotal2EmExtenso, font_conteudo)));
+		document.add(table2);
+		
 		document.add(devolveConteudo("\n"));
 		
-		//FIM:   a tratativa abaixo é apenas por causa dos equipamentos especiais
-		
-		//INICIO: a lista <OUTROS> apenas serve para caso sobre alguma sujeira nao planejada
-		adicionaItensNaActivityConformeListaRecebida(listaOutros, document);
-		//FIM:    a lista <OUTROS> apenas serve para caso sobre alguma sujeira nao planejada
-
-        document.add(devolveConteudo("\n"));
-		document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getCustoTotalInvestimento()));
-		document.add(devolveConteudo("\n"));
+	    PdfPTable table3 = new PdfPTable(2);
+        table3.setTotalWidth(new float[]{ larguraColuna1, larguraColuna2 });
+        table3.setLockedWidth(true);
+		String totalInvestimento = PrecoPrazoConsumoPagamento.getCustoTotalInvestimento();
+		String[] lista = totalInvestimento.split(":");
+        table3.addCell(new PdfPCell(new Phrase(lista[0]+":", font_conteudo)));table3.addCell(new PdfPCell(new Phrase(lista[1], font_conteudo)));
+		document.add(table3);
 		
         document.add(devolveConteudo(PrecoPrazoConsumoPagamento.getObservacoes_titulo() + PrecoPrazoConsumoPagamento.getObservacoes_conteudo()));
         document.add(devolveData());		
 	}
 		
-	private double adicionaItensNaActivityConformeListaRecebida(List<String> lista, Document document) throws DocumentException {
+	private double adicionaItensNaActivityConformeListaRecebida(List<String> lista, PdfPTable table) throws DocumentException {
 		
 		double subtotal = 0.0;
 		
 		for(String linhaComItemEValor : lista) {
 
-			double valorDoItem = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, document);		
+			double valorDoItem = separaItemDeValorEAdicionaNoLinearLayout(linhaComItemEValor, table);		
 			
 			subtotal = subtotal + valorDoItem;
 		}
@@ -218,7 +209,7 @@ public abstract class GeraPDF {
 		return subtotal;
 	}
 	
-	private double separaItemDeValorEAdicionaNoLinearLayout(String linhaComItemEValor, Document document) throws DocumentException {
+	private double separaItemDeValorEAdicionaNoLinearLayout(String linhaComItemEValor, PdfPTable table) throws DocumentException {
 		
 		double valorDoItem = 0.0;
 		
@@ -250,7 +241,9 @@ public abstract class GeraPDF {
 		}
 		
 		//ll_holder.addView(telaBuilder.cria_LL_LLTVtitulo_LLTVconteudo(" "+item, " "+valor));
-	    document.add(devolveConteudo(""+item+"                           "+valor));
+	    //document.add(devolveConteudo(""+item+"                           "+valor));
+        table.addCell(new PdfPCell(new Phrase(item, font_conteudo)));table.addCell(new PdfPCell(new Phrase(valor, font_conteudo)));
+        //document.add(table);
 
 		return valorDoItem;
 	}
@@ -288,14 +281,15 @@ public abstract class GeraPDF {
 	    float posicaoLinha10 = posicaoLinha07 - (espacoEntreLinhas * 3);
 	    float posicaoLinha11 = posicaoLinha07 - (espacoEntreLinhas * 4);
 	    float posicaoLinha12 = posicaoLinha07 - (espacoEntreLinhas * 5);
+	    float posicaoLinha13 = posicaoLinha07 - (espacoEntreLinhas * 6);
+	    float posicaoLinha14 = posicaoLinha07 - (espacoEntreLinhas * 7);
 		
-        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Assinatura_empresa>", font_conteudo), posicaoInicialColuna1, posicaoLinha1, rotacao);
+        ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("#Assinatura_empresa#", font_conteudo), posicaoInicialColuna1, posicaoLinha1, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("FORNECEDORAS (CONSIGAZ, GASBALL E PROPANGÁS)", font_conteudo), posicaoInicialColuna1, posicaoLinha2, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha3, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha4, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha5, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("", font_conteudo), posicaoInicialColuna1, posicaoLinha6, rotacao);
-        
 
 		geraImagem(pdfContentByte, assinatura_1.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha1);        
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase(assinatura_1.getRazaoSocial(), font_conteudo), posicaoInicialColuna2, posicaoLinha2, rotacao);
@@ -303,37 +297,29 @@ public abstract class GeraPDF {
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Cargo: "+assinatura_1.getCargo(), font_conteudo), posicaoInicialColuna2, posicaoLinha4, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_1.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha5, rotacao);
         ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_1.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha6, rotacao);
- 
         
         if(assinatura_0.getRecebeAssinatura() == null) { 	
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Testemunha_1>", font_conteudo), posicaoInicialColuna2, posicaoLinha07, rotacao);
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("#Testemunha_1#", font_conteudo), posicaoInicialColuna1, posicaoLinha07, rotacao);
         }else {
-        	geraImagem(pdfContentByte, assinatura_0.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha07);
+        	geraImagem(pdfContentByte, assinatura_0.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna1, posicaoLinha07);
+        }if(assinatura_0.getNome() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_0.getNome(), font_conteudo), posicaoInicialColuna1, posicaoLinha08, rotacao);
+        }if(assinatura_0.getRg() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_0.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha09, rotacao);
+        }if(assinatura_0.getCpf() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_0.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);
         }
-        if(assinatura_0.getNome() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_0.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha08, rotacao);
-        }
-        if(assinatura_0.getRg() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_0.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha09, rotacao);
-        }
-        if(assinatura_0.getCpf() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_0.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha10, rotacao);
-        }
-
 
         if(assinatura_2.getRecebeAssinatura() == null) { 	
-         	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("<Testemunha_2>", font_conteudo), posicaoInicialColuna1, posicaoLinha07, rotacao);
+         	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("#Testemunha_2#", font_conteudo), posicaoInicialColuna2, posicaoLinha11, rotacao);
         }else {
-        	geraImagem(pdfContentByte, assinatura_2.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna1, posicaoLinha07);
-        }
-        if(assinatura_2.getNome() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_2.getNome(), font_conteudo), posicaoInicialColuna1, posicaoLinha08, rotacao);
-        }
-        if(assinatura_2.getRg() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_2.getRg(), font_conteudo), posicaoInicialColuna1, posicaoLinha09, rotacao);	
-        }
-        if(assinatura_2.getCpf() != null) {
-        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_2.getCpf(), font_conteudo), posicaoInicialColuna1, posicaoLinha10, rotacao);	
+        	geraImagem(pdfContentByte, assinatura_2.getRecebeAssinatura(), 0, width, height, posicaoInicialColuna2, posicaoLinha11);
+        }if(assinatura_2.getNome() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("Testemunha: "+assinatura_2.getNome(), font_conteudo), posicaoInicialColuna2, posicaoLinha12, rotacao);
+        }if(assinatura_2.getRg() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("RG: "+assinatura_2.getRg(), font_conteudo), posicaoInicialColuna2, posicaoLinha13, rotacao);	
+        }if(assinatura_2.getCpf() != null) {
+        	ColumnText.showTextAligned(pdfContentByte, Element.ALIGN_LEFT, new Phrase("CPF: "+assinatura_2.getCpf(), font_conteudo), posicaoInicialColuna2, posicaoLinha14, rotacao);	
         }
 
     }

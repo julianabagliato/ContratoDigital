@@ -27,8 +27,7 @@ public class GeraWord_anexoContaSIM extends GeraWord {
 	
 		try {
 			
-			Table table1 = adicionaTituloComConteudoComEndereco(iDocument, listaComMovimentos, "AnexoContaSIM");
-		  	iDocument.addEle(table1);	    
+			adicionaTituloComConteudoComEndereco(iDocument, listaComMovimentos, "AnexoContaSIM");
 			iDocument.addEle(BreakLine.times(1).create());
 			
 		} catch (DocumentException e) {
