@@ -37,12 +37,12 @@ public class MontaJSONObjectExportar {
 
 			for (Layout layout : dao.listaTodaTabela(Layout.class)) {
 			
-				if (layout.getNr_layout() == NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero()) {
+				if (layout.getNr_layout() == NomeLayout.SIMULADOR_FER.getNumero()) {
 
 					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));	
 				}
 				
-				if (layout.getNr_layout() == NomeLayout.SIMULADOR2.getNumero()) {
+				if (layout.getNr_layout() == NomeLayout.SIMULADOR_ANA.getNumero()) {
 
 					jSONArray_listaComLayouts.put(devolveJsonObjectDeUmaClasse(layout));					
 				}

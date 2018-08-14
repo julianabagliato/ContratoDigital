@@ -303,11 +303,11 @@ public class Dao extends BancoSQLiteOpenHelper {
 
 		Movimento mov_equipamentosSimulados = (Movimento) devolveObjeto(Movimento.class, 
 																		Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita, 
-																		Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
+																		Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_FER.getNumero());
 
 		Movimento mov_simulador = (Movimento) devolveObjeto(Movimento.class, 
 															Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita, 
-															Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR2.getNumero());
+															Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_ANA.getNumero());
 		//estrava nulo
 		Movimento mov_pecas = (Movimento) devolveObjeto(Movimento.class, 
 														Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita,
@@ -315,7 +315,7 @@ public class Dao extends BancoSQLiteOpenHelper {
 
 		Movimento mov_dadosDatasul = (Movimento) devolveObjeto(Movimento.class, 
 															   Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita, 
-															   Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.DADOS_DATASUL.getNumero());
+															   Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_DATASUL.getNumero());
 		
 		Movimento mov_dadosCadastro = (Movimento) devolveObjeto(Movimento.class, 
 																Movimento.COLUMN_INTEGER_NR_VISITA, nrVisita,

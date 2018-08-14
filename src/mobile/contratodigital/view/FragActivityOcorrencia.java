@@ -543,7 +543,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 
 		for (Movimento movimento : listaComMovimentos_NAO_obrigatorios) {
 			
-			if (movimento.getNr_layout() != NomeLayout.DADOS_DATASUL.getNumero() && movimento.getNr_layout() != NomeLayout.SIMULADOR2.getNumero()) {
+			if (movimento.getNr_layout() != NomeLayout.SIMULADOR_DATASUL.getNumero() && movimento.getNr_layout() != NomeLayout.SIMULADOR_ANA.getNumero()) {
 				
 				criaLayoutDinamicamente(movimento.getNr_programacao(), movimento.getNr_layout(), Generico.LAYOUT_OBRIGATORIO_NAO.getValor());
 			}
@@ -656,12 +656,12 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	private boolean formularioEquipamentosSimuladosFoiPreenchido() {
 		
 		Movimento mov_equipamentosSimulados = (Movimento) dao.devolveObjeto(Movimento.class,
-																Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(),
+																Movimento.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_FER.getNumero(),
 																Movimento.COLUMN_INTEGER_NR_VISITA, movimento1.getNr_visita());
 
 		if(mov_equipamentosSimulados == null) {
 			
-			contratoUtil.avisaQformularioObrigatorioNaoFoiPreenchido(NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
+			contratoUtil.avisaQformularioObrigatorioNaoFoiPreenchido(NomeLayout.SIMULADOR_FER.getNumero());
 			
 			return false;
 		}else {

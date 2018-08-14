@@ -76,8 +76,8 @@ public class ActivitySimulador extends Activity{
 	private double precoLucroZeroGerencial;
 	private double valorFuturoGerencial;
 	private double payBackMesesGerencial;
-	private String valorEquipamentosEspeciais;
-	private String nomeEquipamentosEspeciais;
+	private String VALOR_EquipamentosEspeciais;
+	private String NOME_EquipamentosEspeciais;
 	private String rede;
 	private String comodato;	
 	private static final int VAZIO = 0;
@@ -86,8 +86,7 @@ public class ActivitySimulador extends Activity{
 	private AnaliseOficial analiseOficial;	
 	private String ultimoDiametroEscolhido = "";
 	public static final int REQUISICAO_SIMULADOR = 444;
-
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,12 +95,10 @@ public class ActivitySimulador extends Activity{
 		
 		movimento1 = (Movimento) bundle.getSerializable("movimento");
 		
-		rede = "2;0;0";
-		//valort = 0;
-		//valtemp2 = "0";
+		rede = "2;0;0";	
 		comodato = "2";
-		nomeEquipamentosEspeciais ="Nenhum";
-		valorEquipamentosEspeciais ="0";
+		NOME_EquipamentosEspeciais ="Nenhum";
+		VALOR_EquipamentosEspeciais ="0";
 	
 		context = ActivitySimulador.this;
 
@@ -129,14 +126,10 @@ public class ActivitySimulador extends Activity{
 			
 			return;
 		}else {
-		
 			analiseGerencial = new AnaliseGerencial(Double.parseDouble(cad_preco.getPreco_gerencial()), Double.parseDouble(cad_preco.getCusto_gerencial()), Double.parseDouble(cad_preco.getTaxa_juros()));
-		
 			analiseOficial = new AnaliseOficial(Double.parseDouble(cad_preco.getPreco_oficial()), Double.parseDouble(cad_preco.getCusto_oficial()), Double.parseDouble(cad_preco.getTaxa_juros()));	
 		}
 			
-		
-		
 		Cilindro cilindro = new Cilindro(context);
 		ArrayList<Produto> listaDeCilindros = cilindro.getLista();
 		
@@ -247,61 +240,53 @@ public class ActivitySimulador extends Activity{
 									   double consumoPrevistoEmKG, int condicaoPagamento, String taxaServico, String taxaReligacao, String valorOS2){
 	
 		Dao dao = new Dao(context);
-		Dao dao2 = new Dao(context);
-		Dao dao3 = new Dao(context);
 
 		Representante representante = (Representante) dao.devolveObjeto(Representante.class);
 		//Layout layoutObrigatorio = (Layout) dao.devolveObjeto(Layout.class, Layout.COLUMN_INTEGER_OBRIGATORIO, Generico.LAYOUT_OBRIGATORIO_SIM.getValor());
-				Layout layout_simulador = new Layout();
-					 layout_simulador.setNr_layout(NomeLayout.SIMULADOR2.getNumero());
-					 layout_simulador.setInd_tip_layout(TipoView.LAYOUT_CONSULTA.getValor());
-					 layout_simulador.setDescricao("SIMULADOR");
-					 layout_simulador.setObrigatorio(0);
-					 layout_simulador.setInd_tip_visualiz(TipoView.VISUALIZACAO_NORMAL.getValor());
+		Layout layout_simuladorANA = new Layout();
+		layout_simuladorANA.setNr_layout(NomeLayout.SIMULADOR_ANA.getNumero());
+		layout_simuladorANA.setInd_tip_layout(TipoView.LAYOUT_CONSULTA.getValor());
+		layout_simuladorANA.setDescricao("SIMULADOR");
+		layout_simuladorANA.setObrigatorio(0);
+		layout_simuladorANA.setInd_tip_visualiz(TipoView.VISUALIZACAO_NORMAL.getValor());
 					 
-		dao.insereOUatualiza(layout_simulador, Layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR2.getNumero());
+		dao.insereOUatualiza(layout_simuladorANA, Layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_ANA.getNumero());
 		
-		dao.deletaObjeto(Item_layout.class, Item_layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR2.getNumero());
-	
+		dao.deletaObjeto(Item_layout.class, Item_layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_ANA.getNumero());
 
-		Representante representante2 = (Representante) dao2.devolveObjeto(Representante.class);
-			
+		Representante representante2 = (Representante) dao.devolveObjeto(Representante.class);
 		
-		Layout layout_equipamentosSimulados = new Layout();
-		 layout_equipamentosSimulados.setNr_layout(NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
-		 layout_equipamentosSimulados.setInd_tip_layout(TipoView.LAYOUT_CONSULTA.getValor());
-		 layout_equipamentosSimulados.setDescricao("EQUIPAMENTOS SIMULADOS");
-		 layout_equipamentosSimulados.setObrigatorio(0);
-		 layout_equipamentosSimulados.setInd_tip_visualiz(TipoView.VISUALIZACAO_NORMAL.getValor());
-		
+		Layout layout_simuladorFER = new Layout();
+		layout_simuladorFER.setNr_layout(NomeLayout.SIMULADOR_FER.getNumero());
+		layout_simuladorFER.setInd_tip_layout(TipoView.LAYOUT_CONSULTA.getValor());
+		layout_simuladorFER.setDescricao("EQUIPAMENTOS SIMULADOS");
+		layout_simuladorFER.setObrigatorio(0);
+		layout_simuladorFER.setInd_tip_visualiz(TipoView.VISUALIZACAO_NORMAL.getValor());
 		 
-		dao2.insereOUatualiza(layout_equipamentosSimulados, Layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
+		dao.insereOUatualiza(layout_simuladorFER, Layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_FER.getNumero());
 
-		dao2.deletaObjeto(Item_layout.class, Item_layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());
+		dao.deletaObjeto(Item_layout.class, Item_layout.COLUMN_INTEGER_NR_LAYOUT, NomeLayout.SIMULADOR_FER.getNumero());
 
-
-
-		Movimento mov_simulador = new Movimento();
-				  mov_simulador.setNr_programacao(movimento1.getNr_programacao());
-				  mov_simulador.setNr_layout(NomeLayout.SIMULADOR2.getNumero());		   
-				  mov_simulador.setNr_visita(movimento1.getNr_visita());
-				  mov_simulador.setCod_rep(representante.getCod_rep());
-				  mov_simulador.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());						  
-
+		Movimento mov_simuladorANA = new Movimento();
+		mov_simuladorANA.setNr_programacao(movimento1.getNr_programacao());
+		mov_simuladorANA.setNr_layout(NomeLayout.SIMULADOR_ANA.getNumero());		   
+		mov_simuladorANA.setNr_visita(movimento1.getNr_visita());
+		mov_simuladorANA.setCod_rep(representante.getCod_rep());
+		mov_simuladorANA.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());						  
 				  
-	   Movimento mov_equipamentosSimulados = new Movimento();
-				 mov_equipamentosSimulados.setNr_programacao(movimento1.getNr_programacao());
-				 mov_equipamentosSimulados.setNr_layout(NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero());		   
-				 mov_equipamentosSimulados.setNr_visita(movimento1.getNr_visita());
-				 mov_equipamentosSimulados.setCod_rep(representante2.getCod_rep());
-				 mov_equipamentosSimulados.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());						  
+	    Movimento mov_simuladosFER = new Movimento();
+		mov_simuladosFER.setNr_programacao(movimento1.getNr_programacao());
+		mov_simuladosFER.setNr_layout(NomeLayout.SIMULADOR_FER.getNumero());		   
+		mov_simuladosFER.setNr_visita(movimento1.getNr_visita());
+		mov_simuladosFER.setCod_rep(representante2.getCod_rep());
+		mov_simuladosFER.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());						  
 
-	  Movimento mov_dadosDatasul = new Movimento();
-				 mov_dadosDatasul.setNr_programacao(movimento1.getNr_programacao());
-				 mov_dadosDatasul.setNr_layout(NomeLayout.DADOS_DATASUL.getNumero());		   
-				 mov_dadosDatasul.setNr_visita(movimento1.getNr_visita());
-				 mov_dadosDatasul.setCod_rep(representante2.getCod_rep());
-				 mov_dadosDatasul.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());						  
+	    Movimento mov_equipamentos = new Movimento();
+		mov_equipamentos.setNr_programacao(movimento1.getNr_programacao());
+		mov_equipamentos.setNr_layout(NomeLayout.SIMULADOR_DATASUL.getNumero());		   
+		mov_equipamentos.setNr_visita(movimento1.getNr_visita());
+		mov_equipamentos.setCod_rep(representante2.getCod_rep());
+		mov_equipamentos.setData_cadastro(new DataPersonalizada().pegaDataAtual_DDMMYYYY_HHMMSS());						  
 		  		  
 		int nr_ordem = 1;
 		int nr_ordem2 = 1;
@@ -334,10 +319,10 @@ public class ActivitySimulador extends Activity{
 					info2 = produto.getNome()+";" +String.valueOf(produto.getQuantidade()) + ";"+ produto.getValorTotal();
 				}
 	
-				preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2, produto.getApelido()+": "+info);
-				preencheNoObjetoOcampoInformacao(mov_dadosDatasul, nr_ordem3, info2);
+				preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2, produto.getApelido()+": "+info);
+				preencheNoObjetoOcampoInformacao(mov_equipamentos, nr_ordem3, info2);
 
-				insereItemLayout2(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2, "|");
+				insereItemLayout2(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2, "|");
 //				insereItemLayout2(dao3, NomeLayout.DADOS_DATASUL.getNumero(), nr_ordem3, "|");
 
 				nr_ordem2++;
@@ -345,94 +330,81 @@ public class ActivitySimulador extends Activity{
 
 			}			
 		}		
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+8, String.valueOf(valorOS));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+8, String.valueOf(valorOS));
 
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2,   "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+1, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+2, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+3, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+4, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+5, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+6, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+7, "|");
-		insereItemLayout(dao2, NomeLayout.EQUIPAMENTOS_SIMULADOS.getNumero(), nr_ordem2+8, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2,   "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+1, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+2, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+3, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+4, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+5, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+6, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+7, "|");
+		insereItemLayout(dao, NomeLayout.SIMULADOR_FER.getNumero(), nr_ordem2+8, "|");
 				
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2,   "Custo total do investimento (A+B): "+reais.converteNumeroParaExtensoReais(custoTotalDoInvestimento));
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+1, "Preço negociado por KG: R$:"+precoNegociadoPorKG);
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+2, "Prazo contratual: "+reais.converteNumeroParaExtensoInteiro(prazoContratualMeses) + " meses");
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+3, "Consumo previsto por mês: "+reais.converteNumeroParaExtensoInteiro((int)consumoPrevistoEmKG) + " kg");
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+4, "Condição pagamento: "+reais.converteNumeroParaExtensoInteiro(condicaoPagamento) + " dias");		
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+5, "Previsão de consumo até o fim do contrato: "+reais.converteNumeroParaExtensoInteiro(calculaPrevConsumoAtehFimContrato((int)consumoPrevistoEmKG, prazoContratualMeses)) + " kg");
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+6, "Taxa de serviço: R$: "+taxaServico);
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+7, "Taxa de religação: R$: "+taxaReligacao);
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2,   "Custo total do investimento (A+B): "+reais.converteNumeroParaExtensoReais(custoTotalDoInvestimento));
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+1, "Preço negociado por KG: R$:"+precoNegociadoPorKG);
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+2, "Prazo contratual: "+reais.converteNumeroParaExtensoInteiro(prazoContratualMeses) + " meses");
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+3, "Consumo previsto por mês: "+reais.converteNumeroParaExtensoInteiro((int)consumoPrevistoEmKG) + " kg");
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+4, "Condição pagamento: "+reais.converteNumeroParaExtensoInteiro(condicaoPagamento) + " dias");		
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+5, "Previsão de consumo até o fim do contrato: "+reais.converteNumeroParaExtensoInteiro(calculaPrevConsumoAtehFimContrato((int)consumoPrevistoEmKG, prazoContratualMeses)) + " kg");
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+6, "Taxa de serviço: R$: "+taxaServico);
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+7, "Taxa de religação: R$: "+taxaReligacao);	
+															  String valorEquipamentosEspeciais = "0.00,00";
+															  String tt = valorEquipamentosEspeciais.replace(".","").replace(",", ".");
+															  double ff = devolveZeroDoubleCasoEstejaVazia(tt);
+		preencheNoObjetoOcampoInformacao(mov_simuladosFER, nr_ordem2+8, "Equipamentos e investimentos especiais: "+NOME_EquipamentosEspeciais+" "+reais.converteNumeroParaExtensoReais(ff));
 		
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem,   "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+1, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+2, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+3, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+4, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+5, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+6, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+7, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+8, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+9, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+10, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+11, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+12, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+13, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+14, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+15, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+16, "|");
+		insereItemLayout3(dao, NomeLayout.SIMULADOR_ANA.getNumero(), nr_ordem+17, "|");
 		
+		DecimalFormat decimalFormat = new DecimalFormat("#0.0000");
 		
-																																											
-																																									String tt = valorEquipamentosEspeciais.replace(".","").replace(",", ".");
-																																									double ff = devolveZeroDoubleCasoEstejaVazia(tt);
-																																									
-		preencheNoObjetoOcampoInformacao(mov_equipamentosSimulados, nr_ordem2+8, "Equipamentos e investimentos especiais: "+nomeEquipamentosEspeciais+" "+reais.converteNumeroParaExtensoReais(ff));
+		String d1 =	decimalFormat.format(Double.parseDouble(String.valueOf(precoLucroZeroOficial)));
+		String d2 =	decimalFormat.format(Double.parseDouble(String.valueOf(valorFuturoOficial)));
+		String d3 =	decimalFormat.format(Double.parseDouble(String.valueOf(payBackMesesOficial)));
+		String d4 =	decimalFormat.format(Double.parseDouble(String.valueOf(precoLucroZeroGerencial)));
+		String d5 =	decimalFormat.format(Double.parseDouble(String.valueOf(valorFuturoGerencial)));
+		String d6 =	decimalFormat.format(Double.parseDouble(String.valueOf(payBackMesesGerencial)));
 		
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem,   "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+1, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+2, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+3, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+4, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+5, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+6, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+7, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+8, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+9, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+10, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+11, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+12, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+13, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+14, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+15, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+16, "|");
-		insereItemLayout3(dao, NomeLayout.SIMULADOR2.getNumero(), nr_ordem+17, "|");
-
-
-
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem,    String.valueOf((custoTotalDoInvestimento)));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+1,  String.valueOf((precoNegociadoPorKG.replace(".","").replace(",", "."))));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+2,  String.valueOf((prazoContratualMeses)));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+3,  String.valueOf(((int)consumoPrevistoEmKG)));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+4,  String.valueOf((condicaoPagamento)));		
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+5,  String.valueOf((calculaPrevConsumoAtehFimContrato((int)consumoPrevistoEmKG, prazoContratualMeses))).replace(".","").replace(",", "."));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+6,  String.valueOf((taxaServico.replace(".","").replace(",", "."))));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+7,  String.valueOf((taxaReligacao.replace(".","").replace(",", "."))));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+8,  String.valueOf(valorOS.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+9,  String.valueOf(d1.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+10, String.valueOf(d2.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+11, String.valueOf(d3.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+12, String.valueOf(d4.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+13, String.valueOf(d5.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+14, String.valueOf(d6.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+15, String.valueOf(NOME_EquipamentosEspeciais+";"+VALOR_EquipamentosEspeciais.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+16, String.valueOf(comodato.replace(".","").replace(",", ".")));
+		preencheNoObjetoOcampoInformacao(mov_simuladorANA, nr_ordem+17, String.valueOf(rede.replace(".","").replace(",", ".")));
 		
-		DecimalFormat df = new DecimalFormat("#0.0000");
-		
-		String d1 =	df.format(Double.parseDouble(String.valueOf(precoLucroZeroOficial)));
-		
-		String d2 =	df.format(Double.parseDouble(String.valueOf(valorFuturoOficial)));
-		
-		String d3 =	df.format(Double.parseDouble(String.valueOf(payBackMesesOficial)));
-		
-		String d4 =	df.format(Double.parseDouble(String.valueOf(precoLucroZeroGerencial)));
-		
-		String d5 =	df.format(Double.parseDouble(String.valueOf(valorFuturoGerencial)));
-		
-		String d6 =	df.format(Double.parseDouble(String.valueOf(payBackMesesGerencial)));
-
-		
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem,  String.valueOf((custoTotalDoInvestimento)).replace(".","").replace(",", "."));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+1, String.valueOf((precoNegociadoPorKG.replace(".","").replace(",", "."))));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+2, String.valueOf((prazoContratualMeses)));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+3,String.valueOf(((int)consumoPrevistoEmKG)));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+4, String.valueOf((condicaoPagamento)));		
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+5, String.valueOf((calculaPrevConsumoAtehFimContrato((int)consumoPrevistoEmKG, prazoContratualMeses))).replace(".","").replace(",", "."));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+6, String.valueOf((taxaServico.replace(".","").replace(",", "."))));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+7, String.valueOf((taxaReligacao.replace(".","").replace(",", "."))));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+8, String.valueOf(valorOS.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+9, String.valueOf(d1.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+10, String.valueOf(d2.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+11, String.valueOf(d3.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+12, String.valueOf(d4.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+13, String.valueOf(d5.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+14, String.valueOf(d6.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+15, String.valueOf(nomeEquipamentosEspeciais+";"+valorEquipamentosEspeciais.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+16, String.valueOf(comodato.replace(".","").replace(",", ".")));
-		preencheNoObjetoOcampoInformacao(mov_simulador, nr_ordem+17, String.valueOf(rede.replace(".","").replace(",", ".")));
-		
-		insereMovimento(dao, mov_simulador);	
-		insereMovimento(dao2, mov_equipamentosSimulados);
-		insereMovimento(dao3, mov_dadosDatasul);		
+		insereMovimento(dao, mov_simuladorANA);	
+		insereMovimento(dao, mov_simuladosFER);
+		insereMovimento(dao, mov_equipamentos);		
 	}
 		
 	private int calculaPrevConsumoAtehFimContrato(int consumoPrevistoPorMes, int prazoVigencia){
@@ -441,29 +413,17 @@ public class ActivitySimulador extends Activity{
 	}
 		
 	private Movimento preencheNoObjetoOcampoInformacao(Object objeto, int nrOrdem, String conteudo) {
-
 		try {
-
 			Class<?> classe = objeto.getClass();
-
 			for (Field atributo : classe.getDeclaredFields()) {
-
 				atributo.setAccessible(true);
-
 				if (atributo.getName().contains("informacao_")) {
-
 					int tamanhoTotal = atributo.getName().length();
-
 					String stringCapturada = atributo.getName().substring(11, tamanhoTotal);
-
 					int inteiroCapturado = Integer.parseInt(stringCapturada);
-
 					if (inteiroCapturado == nrOrdem) {
-						
 						if(!conteudo.isEmpty()){
-										
 							atributo.set(objeto, conteudo);
-							
 							break;
 						}
 					}
@@ -499,18 +459,18 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 		dao2.insereObjeto_final(item_layout2);				
 	}
 	
-private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apelido){
+	private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apelido){
 	
-	Item_layout item_layout3 = new Item_layout();
-			    item_layout3.setNr_layout(nrLayout);
-				item_layout3.setNr_ordem(nr_ordem);
-				item_layout3.setDescricao(apelido);
-				item_layout3.setInd_tip_dado(TipoView.CAMPO_TEXTO.getValor());
-				item_layout3.setInd_tip_visualiz(TipoView.VISUALIZACAO_NORMAL.getValor());
-					   
-	dao3.insereObjeto_final(item_layout3);				
+		Item_layout item_layout3 = new Item_layout();
+				    item_layout3.setNr_layout(nrLayout);
+					item_layout3.setNr_ordem(nr_ordem);
+					item_layout3.setDescricao(apelido);
+					item_layout3.setInd_tip_dado(TipoView.CAMPO_TEXTO.getValor());
+					item_layout3.setInd_tip_visualiz(TipoView.VISUALIZACAO_NORMAL.getValor());
+						   
+		dao3.insereObjeto_final(item_layout3);				
 
-}
+	}
 	
 	private void insereMovimento(Dao dao, Movimento mov){
 	
@@ -559,32 +519,23 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
  		final EditText et_custoadd2  = new EditText(context);
 		et_custoadd2.setTag("et_custoadd");
 		et_custoadd2.setHint("Digite adicional");
-		et_custoadd2.setLayoutParams(new LinearLayout.LayoutParams(200, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));		
+		et_custoadd2.setLayoutParams(new LinearLayout.LayoutParams(300, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));		
 		et_custoadd2.addTextChangedListener(new TextWatcher() {
-			
 		private boolean estaAtualizando = false;
-		
 		int k = 1;
-
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {     
-        	
 	        if (k == 1){
-	        	
 	        	// Evita que o método seja executado varias vezes.
 				if (estaAtualizando) {
-					
 					estaAtualizando = false;
 					return;
 				}else{
-					
 				estaAtualizando = true;
 				}
 				// Se tirar ele entra em loop
-				
-				nomeEquipamentosEspeciais=String.valueOf(et_custoadd2.getText());	
+				NOME_EquipamentosEspeciais=String.valueOf(et_custoadd2.getText());	
 	        }
-	        
         }
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {  	
@@ -592,78 +543,60 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
         @Override
         public void afterTextChanged(Editable s) {
         	
-    		nomeEquipamentosEspeciais=String.valueOf(et_custoadd2.getText());      								
+    		NOME_EquipamentosEspeciais = String.valueOf(et_custoadd2.getText());      								
         }
 		
     });
  		ll8.addView(et_custoadd2);
 		
+ 		
 		final EditText et_valorEquipamentosEspeciais  = new EditText(context);
 		et_valorEquipamentosEspeciais.setTag("et_custoadd");
 		et_valorEquipamentosEspeciais.setText("0");
 		et_valorEquipamentosEspeciais.setInputType(InputType.TYPE_CLASS_NUMBER );	
-		et_valorEquipamentosEspeciais.setLayoutParams(new LinearLayout.LayoutParams(200, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));		
+		et_valorEquipamentosEspeciais.setLayoutParams(new LinearLayout.LayoutParams(300, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));		
 		et_valorEquipamentosEspeciais.addTextChangedListener(new TextWatcher() {
-			
 				private boolean estaAtualizando = false;
-		
 		int k = 1;
-
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {     
-        	
         if (k == 1){
-        	
         	// Evita que o método seja executado varias vezes.
 			if (estaAtualizando) {
-				
 				estaAtualizando = false;
-				
 				return;
-				
 			}else{
 				estaAtualizando = true;
-			}
-			
-			// Se tirar ele entra em loop
-		//	DecimalFormat df = new DecimalFormat("#0.0000");
-			//String d =	df.format(devolveZero_double_CasoEstejaVazia2(editText.getText().toString));
-			
-			//tv_valorUnitario.setText(""+d.replace(",","."));
-		//	editText.setText(""+d.replace(",","."));
-			
+			}			
 			et_valorEquipamentosEspeciais.setText(devolveZeroStringCasoEstejaVazia(et_valorEquipamentosEspeciais.getText().toString().replace(".",",")));
 			et_valorEquipamentosEspeciais.setSelection(et_valorEquipamentosEspeciais.getText().length());
-		
-
         }
-        
         }
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {  	
-         
-         	
         }
         @Override
-        public void afterTextChanged(Editable s) {
+        public void afterTextChanged(Editable sss) {
+        	
+        	Log.i("tag","tamanho: "+sss.length());
         	
         	double custoTotalDoInvestimento = Double.parseDouble(String.valueOf(tv_custoTotalDoInvestimento.getText())); 
-        	
          	double valorEquipamentosEspeciaisSohComPonto = Double.parseDouble(String.valueOf(et_valorEquipamentosEspeciais.getText()).replace(".","").replace(",", "."));
-         	
-         	//double subTotal = custoTotalDoInvestimento;
-         	//subTotal = subTotal + valorEquipamentosEspeciaisSohComPonto;
-             		
          	double subTotal = custoTotalDoInvestimento + valorEquipamentosEspeciaisSohComPonto;
-        	
-    		valorEquipamentosEspeciais = String.valueOf(et_valorEquipamentosEspeciais.getText());
     		
-			informaCustoTotalDoInvestimento2(subTotal);
-        								
+         	VALOR_EquipamentosEspeciais = String.valueOf(et_valorEquipamentosEspeciais.getText());
+							
+			TextView tv_custoTotalDoInvestimento = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_custoTotalDoInvestimento");
+			if(tv_custoTotalDoInvestimento != null){	
+				tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(subTotal));			
+			}	
+
         }
 		
     });
+		
 		et_valorEquipamentosEspeciais.setFilters(new InputFilter[] { new InputFilter.LengthFilter(14) });
+		et_valorEquipamentosEspeciais.setVisibility(View.INVISIBLE);
  		ll8.addView(et_valorEquipamentosEspeciais);
  		
 		LinearLayout ll3 = criaLLOcupaLinhaInteira();
@@ -707,27 +640,33 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		
 		TextView tv_precoLucroZero_oficial = criaTvConteudoComTamanhoMaior("ainda nao tem resultado");
 				 tv_precoLucroZero_oficial.setTag("tv_precoLucroZero_oficial");
-				 //tv_precoLucroZero_oficial.setTextColor(Color.BLUE);
-		
+				 //tv_precoLucroZero_oficial.setTextColor(Color.WHITE);
+				 tv_precoLucroZero_oficial.setVisibility(View.GONE);
+				
 		TextView tv_paybackMeses_oficial = criaTvConteudoComTamanhoMaior("ainda nao tem resultado");
 				 tv_paybackMeses_oficial.setTag("tv_paybackMeses_oficial");
-				 //tv_paybackMeses_oficial.setTextColor(Color.CYAN);
+				 tv_paybackMeses_oficial.setVisibility(View.GONE);
+				 //tv_paybackMeses_oficial.setTextColor(Color.WHITE);
 				 
 		TextView tv_valorFuturo_oficial = criaTvConteudoComTamanhoMaior("ainda nao tem resultado");
 				 tv_valorFuturo_oficial.setTag("tv_valorFuturo_oficial");
-				//tv_valorFuturo_oficial.setTextColor(Color.DKGRAY);
+				 tv_valorFuturo_oficial.setVisibility(View.GONE);
+				 //tv_valorFuturo_oficial.setTextColor(Color.WHITE);
 				 
 		TextView tv_precoLucroZero_gerencial = criaTvConteudoComTamanhoMaior("ainda nao tem resultado");
 				 tv_precoLucroZero_gerencial.setTag("tv_precoLucroZero_gerencial");
-				 //tv_precoLucroZero_gerencial.setTextColor(Color.GRAY);
-
+				 //tv_precoLucroZero_gerencial.setTextColor(Color.WHITE);
+				 tv_precoLucroZero_gerencial.setVisibility(View.GONE);
+					
 		TextView tv_paybackMeses_gerencial = criaTvConteudoComTamanhoMaior("ainda nao tem resultado");
 				 tv_paybackMeses_gerencial.setTag("tv_paybackMeses_gerencial");
-				 //tv_paybackMeses_gerencial.setTextColor(Color.GREEN);
+				 tv_paybackMeses_gerencial.setTextColor(Color.WHITE);
+				 //tv_paybackMeses_gerencial.setVisibility(View.GONE);
 				 
 		TextView tv_valorFuturo_gerencial = criaTvConteudoComTamanhoMaior("ainda nao tem resultado");
 				 tv_valorFuturo_gerencial.setTag("tv_valorFuturo_gerencial");
-				//tv_valorFuturo_gerencial.setTextColor(Color.LTGRAY);
+				 tv_valorFuturo_gerencial.setVisibility(View.GONE);
+				 //tv_valorFuturo_gerencial.setTextColor(Color.WHITE);
 
 		ll_custoTotalDoInvestimento.addView(ll1);
 		ll_custoTotalDoInvestimento.addView(ll2);
@@ -837,9 +776,6 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		TextView tv_paybackMeses_oficial = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_paybackMeses_oficial");
 		TextView tv_valorFuturo_oficial = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_valorFuturo_oficial");
 
-		tv_precoLucroZero_oficial.setVisibility(View.GONE);
-		tv_paybackMeses_oficial.setVisibility(View.GONE);
-		tv_valorFuturo_oficial.setVisibility(View.GONE);
 	
 		//AnaliseOficial
 		tv_precoLucroZero_oficial.setText("OFICIAL PGTO: "+ analiseOficial.devolvePGTOpersonalizado(nper, vp, consumoPrevistoKg));
@@ -859,10 +795,6 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		TextView tv_precoLucroZero_gerencial = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_precoLucroZero_gerencial");
 		TextView tv_paybackMeses_gerencial = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_paybackMeses_gerencial");
 		TextView tv_valorFuturo_gerencial = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_valorFuturo_gerencial");
-		
-		tv_precoLucroZero_gerencial.setVisibility(View.GONE);
-		tv_paybackMeses_gerencial.setVisibility(View.GONE);
-		tv_valorFuturo_gerencial.setVisibility(View.GONE);
 		
 		//AnaliseGerencial
 		tv_precoLucroZero_gerencial.setText("GERENCIAL PGTO: "+ analiseGerencial.devolvePGTOpersonalizado(nper, vp, consumoPrevistoKg));
@@ -911,9 +843,14 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		LinearLayout ll_tituloEconteudoHolder = new LinearLayout(context);
 			 	     ll_tituloEconteudoHolder.setOrientation(LinearLayout.VERTICAL);		
 			 	     ll_tituloEconteudoHolder.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+			 	   				  
+			 	     ll_tituloEconteudoHolder.addView(criaLLTitulo(titulo, ll_tituloEconteudoHolder, lista, item));
 			 	     
-			 	   				  ll_tituloEconteudoHolder.addView(criaLLTitulo(titulo, ll_tituloEconteudoHolder, lista, item));
-				   				  ll_tituloEconteudoHolder.addView(criaLLConteudo(ll_tituloEconteudoHolder, lista, item, titulo));	
+			 	     for(Produto produto : lista) {
+			 	    	 
+			 	    ll_tituloEconteudoHolder.addView(criaLLConteudo(ll_tituloEconteudoHolder, item, titulo, produto));	
+			 	     }
+				   	 
 			   scrollView.addView(ll_tituloEconteudoHolder);    
 		return scrollView;		   		    
 	} 	
@@ -927,10 +864,12 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 
 			String espaco = "            ";
 			
-	 			  TextView tv_titulo = criaTvTitulo(titulo+espaco+"Quantidade"+espaco+"Valor Unitário"+espaco+"Valor Total"+espaco);
+	 			  //TextView tv_titulo = criaTvTitulo(titulo+espaco+"Quantidade"+espaco+"Valor Unitário"+espaco+"Valor Total"+espaco);
+	 			  TextView tv_titulo = criaTvTitulo(titulo);
 	 			  		   tv_titulo.setMinWidth(300);
 		 ll_titulo.addView(tv_titulo);
 
+		 			/*
 	     			Button b_adicionar = new Button(context);
 	     				   b_adicionar.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 			  			   b_adicionar.setText("Adicionar");
@@ -942,13 +881,14 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 								ll_tituloEconteudoHolder.addView(criaLLConteudo(ll_tituloEconteudoHolder, lista, item, titulo));
 							}
 						});
-			  			   
-		 ll_titulo.addView(b_adicionar);
+			  		*/	   
+		 //ll_titulo.addView(b_adicionar);
 		 
 		return ll_titulo;
 	}
 		
-	private LinearLayout criaLLConteudo(final LinearLayout ll_tituloEconteudoHolder, final ArrayList<Produto> lista, final Item item, final String apelido){
+	private LinearLayout criaLLConteudo(final LinearLayout ll_tituloEconteudoHolder, 
+			final Item item, final String apelido, final Produto produto){
 					
 					int left = 0;
 					int top = 0;
@@ -962,13 +902,14 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 					LinearLayout.LayoutParams ll = new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 											  ll.setMargins(left, top, right, bottom);
 
-					final TextView tv_valorUnitario = criaTvConteudo3("");
+					final TextView tv_valorUnitario = criaTvConteudo3(""+produto.getValorUnitario());
 					tv_valorUnitario.setLayoutParams(ll);
 
 					final TextView tv_valorTotal = criaTvConteudo3("");
 					tv_valorTotal.setLayoutParams(ll);
 					tv_valorTotal.setTag("tv_valorTotal");
 					
+					/*
 					Button b_remover = new Button(context);
 						   b_remover.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 						   //b_remover.setText("Remover");
@@ -988,10 +929,11 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 								ll_tituloEconteudoHolder.removeView(ll_conteudo1);
 							}
 						});
-
+					 */
+					
 		final EditText et_quantidade = new EditText(context);
-		et_quantidade.setMinWidth(200);
-		LinearLayout.LayoutParams ll2 = new LinearLayout.LayoutParams(100, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		//et_quantidade.setMinWidth(200);
+		LinearLayout.LayoutParams ll2 = new LinearLayout.LayoutParams(200, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		 							ll2.setMargins(left, top, right, bottom);
 		et_quantidade.setLayoutParams(ll2);
 		et_quantidade.setTag("et_quantidade");
@@ -1007,10 +949,11 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 	        @Override
 	        public void afterTextChanged(Editable s) {
 	        	
-	        	acaoAposCliqueEtQuantidade(ll_conteudo1, item, et_quantidade, tv_valorUnitario, tv_valorTotal, apelido);
+	        acaoAposCliqueEtQuantidade(ll_conteudo1, item, et_quantidade, tv_valorUnitario, tv_valorTotal, apelido, produto.getNome());
 	        }
 	    });
 		
+		/*
 		final Spinner spinner = new Spinner(context);
 		spinner.setMinimumWidth(220);
 		
@@ -1029,34 +972,20 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 			public void onNothingSelected(AdapterView<?> arg0) {		
 			}
 		});
-			
-			   ll_conteudo1.addView(spinner);
+		*/
+		
+		
+			   ll_conteudo1.addView(telaBuilder.cria_TV_titulo(produto.getNome()));
 			   ll_conteudo1.addView(et_quantidade);
 			   ll_conteudo1.addView(tv_valorUnitario);
 			   ll_conteudo1.addView(tv_valorTotal);
-			   ll_conteudo1.addView(b_remover);
+			   //ll_conteudo1.addView(b_remover);
 			   
 	return ll_conteudo1;
 	}
 	
-	private void acaoAposCliqueEtQuantidade(LinearLayout ll_conteudo1, Item item, EditText et_quantidade, TextView tv_valorUnitario, TextView tv_valorTotal, String apelido){
-		
-    	double valorTot = procuraValorTotalNoLLConteudo1(ll_conteudo1);
-    	
-    	removeTvTemp(ll_conteudo1, valorTot);
-		
-    	double valorTotal = calculaValorTotal(et_quantidade, tv_valorUnitario);
-    	
-		//tv_valorUnitario.setText(""+d.replace(",","."));
-    	
-		tv_valorTotal.setText(formataParaDuasCasasDecimais(valorTotal));
-
-		setEscolhidoNomeCilindroEquantidade(ll_conteudo1, item, et_quantidade);
-		
-		adicionaTvConteudoAuxiliar(ll_conteudo1, item, valorTotal, apelido);
-	}
-
-	private void acaoAposCliqueSpinner(LinearLayout ll_conteudo1, ArrayList<Produto> lista, Item item, int posicaoSelecionada, EditText et_quantidade, TextView tv_valorUnitario, TextView tv_valorTotal, String apelido){
+	private void acaoAposCliqueSpinner(LinearLayout ll_conteudo1, ArrayList<Produto> lista, Item item, int posicaoSelecionada, 
+			EditText et_quantidade, TextView tv_valorUnitario, TextView tv_valorTotal, String apelido, String nomeDaOpcaoEscolhida){
 		
 		double valorTot = procuraValorTotalNoLLConteudo1(ll_conteudo1);
 		
@@ -1068,7 +997,25 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		
 		tv_valorTotal.setText(formataParaDuasCasasDecimais(valorTotal));
 		
-		setEscolhidoNomeCilindroEquantidade(ll_conteudo1, item, et_quantidade);
+		setEscolhidoNomeCilindroEquantidade(ll_conteudo1, item, et_quantidade, nomeDaOpcaoEscolhida);
+		
+		adicionaTvConteudoAuxiliar(ll_conteudo1, item, valorTotal, apelido);
+	}
+
+	private void acaoAposCliqueEtQuantidade(LinearLayout ll_conteudo1, Item item, EditText et_quantidade, TextView tv_valorUnitario, 
+														TextView tv_valorTotal, String apelido, String nomeDaOpcaoEscolhida){
+		
+    	double valorTot = procuraValorTotalNoLLConteudo1(ll_conteudo1);
+    	
+    	removeTvTemp(ll_conteudo1, valorTot);
+		
+    	double valorTotal = calculaValorTotal(et_quantidade, tv_valorUnitario);
+    	
+		//tv_valorUnitario.setText(""+d.replace(",","."));
+    	
+		tv_valorTotal.setText(formataParaDuasCasasDecimais(valorTotal));
+
+		setEscolhidoNomeCilindroEquantidade(ll_conteudo1, item, et_quantidade, nomeDaOpcaoEscolhida);
 		
 		adicionaTvConteudoAuxiliar(ll_conteudo1, item, valorTotal, apelido);
 	}
@@ -1086,11 +1033,12 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		return valorTotal;
 	}
 	
-	private Item setEscolhidoNomeCilindroEquantidade(LinearLayout ll_conteudo1, Item item, EditText et_quantidade){
+	private Item setEscolhidoNomeCilindroEquantidade(LinearLayout ll_conteudo1, Item item, EditText et_quantidade, 
+																							 String nomeDaOpcaoEscolhida){
 	
-    	Spinner spinner = (Spinner) ll_conteudo1.findViewWithTag("spinnerConteudo");
+    	//Spinner spinner = (Spinner) ll_conteudo1.findViewWithTag("spinnerConteudo");
     	
-    	String nomeDaOpcaoEscolhida = ""+spinner.getSelectedItem();
+    	//String nomeDaOpcaoEscolhida = ""+spinner.getSelectedItem();
     	
     	item.setItemEscolhido(nomeDaOpcaoEscolhida);
     	
@@ -1658,7 +1606,7 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		informaValorCustoDaCentral();
 		
 		
-		tv_temp.setVisibility(View.GONE);
+		//tv_temp.setVisibility(View.GONE);
 		
 	ll_conteudo1.addView(tv_temp);
 	}
@@ -1670,18 +1618,6 @@ private void insereItemLayout3(Dao dao3, int nrLayout, int nr_ordem, String apel
 		if(tv_custoTotalDoInvestimento != null){	
 			
 			tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(carrinho.devolveCustoTotal()));		   
-		}		
-	}
-	private void informaCustoTotalDoInvestimento2(double valor){
-
-		TextView tv_custoTotalDoInvestimento = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_custoTotalDoInvestimento");
-
-		if(tv_custoTotalDoInvestimento != null){	
-			
-		  //tv_custoTotalDoInvestimento.setText(""+custoTotalDoInvestimento.devolveCustoTotal());
-			tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(valor));
-		  //tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(carrinho.devolveCustoTotal()));		   
-			
 		}		
 	}
 	
