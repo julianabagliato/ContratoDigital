@@ -4,14 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.util.List;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -25,6 +30,7 @@ import mobile.contratodigital.R;
 import mobile.contratodigital.dao.Dao;
 import mobile.contratodigital.model.ContratoUtil;
 import mobile.contratodigital.model.ItemPeca;
+import mobile.contratodigital.util.PermissaoActivity;
 import mobile.contratodigital.util.TelaBuilder;
 import mobile.contratodigital.util.TrabalhaComArquivos;
 import sharedlib.contratodigital.model.*;
@@ -39,6 +45,9 @@ public class ActivityListaClientes extends Activity {
 	private Dao dao;
 	private ArrayAdapterCliente adapterCliente;
 	private Layout layout;
+	//private PermissaoActivity permissaoActivity;
+	private static final int REQUISICAO_PERMISSAO_ESCRITA = 333;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,7 @@ public class ActivityListaClientes extends Activity {
 		
 	 	adapterCliente = new ArrayAdapterCliente(context, R.layout.adapter_cliente, listaComMovimentos);
 
+	 	//permissaoActivity = new PermissaoActivity();
 	 	
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(getString(R.color.azul_consigaz))));
@@ -148,7 +158,17 @@ public class ActivityListaClientes extends Activity {
 				public void onClick(DialogInterface arg0, int arg1) {
 					
 					ContratoUtil contratoUtil = new ContratoUtil(dao, context);
-								 contratoUtil.deletaCliente(movimento, listaComMovimentos, adapterCliente);
+
+					if (Build.VERSION.SDK_INT >= 23) {						
+						if (permitiuEscrever()){
+							
+							contratoUtil.deletaCliente(movimento, listaComMovimentos, adapterCliente);
+						}		
+				    } 
+					else {
+						contratoUtil.deletaCliente(movimento, listaComMovimentos, adapterCliente);
+				    }
+					
 				}
 			});
 	        alertDialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -159,6 +179,18 @@ public class ActivityListaClientes extends Activity {
 	        alertDialog.show();
 	}
 	
+	@SuppressLint("NewApi")
+	public boolean permitiuEscrever(){
+        
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            
+        	requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUISICAO_PERMISSAO_ESCRITA);		      
+ 		
+            return false;
+        }
+        return true;
+    }
+
 	private void acaoAposCliqueNoBotaoCadastrarNovoCliente(){
 	
 		Movimento movimento = new Movimento();

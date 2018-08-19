@@ -517,7 +517,7 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
  		ll8.addView(criaTvTitulo("Custo Adicional:"));	
  		
  		final EditText et_custoadd2  = new EditText(context);
-		et_custoadd2.setTag("et_custoadd");
+		//et_custoadd2.setTag("et_custoadd");
 		et_custoadd2.setHint("Digite adicional");
 		et_custoadd2.setLayoutParams(new LinearLayout.LayoutParams(300, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));		
 		et_custoadd2.addTextChangedListener(new TextWatcher() {
@@ -549,54 +549,50 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
     });
  		ll8.addView(et_custoadd2);
 		
- 		
 		final EditText et_valorEquipamentosEspeciais  = new EditText(context);
 		et_valorEquipamentosEspeciais.setTag("et_custoadd");
-		et_valorEquipamentosEspeciais.setText("0");
-		et_valorEquipamentosEspeciais.setInputType(InputType.TYPE_CLASS_NUMBER );	
+		//et_valorEquipamentosEspeciais.setText("0");
+		et_valorEquipamentosEspeciais.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);	
 		et_valorEquipamentosEspeciais.setLayoutParams(new LinearLayout.LayoutParams(300, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));		
 		et_valorEquipamentosEspeciais.addTextChangedListener(new TextWatcher() {
-				private boolean estaAtualizando = false;
-		int k = 1;
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {     
-        if (k == 1){
-        	// Evita que o método seja executado varias vezes.
-			if (estaAtualizando) {
-				estaAtualizando = false;
-				return;
-			}else{
-				estaAtualizando = true;
-			}			
-			et_valorEquipamentosEspeciais.setText(devolveZeroStringCasoEstejaVazia(et_valorEquipamentosEspeciais.getText().toString().replace(".",",")));
-			et_valorEquipamentosEspeciais.setSelection(et_valorEquipamentosEspeciais.getText().length());
-        }
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {     
+
+        	double custoAdicional = devolveCustoAdicional(charSequence);
+    					
+		TextView tv_custoTotalDoInvestimento = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_custoTotalDoInvestimento");
+			if(tv_custoTotalDoInvestimento != null){	
+				
+				double custoTotalDoInvestimento = Double.parseDouble(tv_custoTotalDoInvestimento.getText().toString()); 
+				double totalGeral = custoTotalDoInvestimento + custoAdicional;
+				
+				tv_custoTotalDoInvestimento.setText(""+totalGeral);			
+			}	
+		
         }
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {  	
+        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {  
+        	
+        	double custoAdicional = devolveCustoAdicional(charSequence);
+            
+		TextView tv_custoTotalDoInvestimento = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_custoTotalDoInvestimento");
+			if(tv_custoTotalDoInvestimento != null){	
+				
+				double custoTotalDoInvestimento = Double.parseDouble(tv_custoTotalDoInvestimento.getText().toString()); 
+				double totalGeral = custoTotalDoInvestimento - custoAdicional;
+				
+				tv_custoTotalDoInvestimento.setText(""+totalGeral);			
+			}	
+
+            
         }
         @Override
         public void afterTextChanged(Editable sss) {
-        	
-        	Log.i("tag","tamanho: "+sss.length());
-        	
-        	double custoTotalDoInvestimento = Double.parseDouble(String.valueOf(tv_custoTotalDoInvestimento.getText())); 
-         	double valorEquipamentosEspeciaisSohComPonto = Double.parseDouble(String.valueOf(et_valorEquipamentosEspeciais.getText()).replace(".","").replace(",", "."));
-         	double subTotal = custoTotalDoInvestimento + valorEquipamentosEspeciaisSohComPonto;
-    		
-         	VALOR_EquipamentosEspeciais = String.valueOf(et_valorEquipamentosEspeciais.getText());
-							
-			TextView tv_custoTotalDoInvestimento = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_custoTotalDoInvestimento");
-			if(tv_custoTotalDoInvestimento != null){	
-				tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(subTotal));			
-			}	
-
         }
-		
     });
 		
 		et_valorEquipamentosEspeciais.setFilters(new InputFilter[] { new InputFilter.LengthFilter(14) });
-		et_valorEquipamentosEspeciais.setVisibility(View.INVISIBLE);
+		//et_valorEquipamentosEspeciais.setVisibility(View.INVISIBLE);
  		ll8.addView(et_valorEquipamentosEspeciais);
  		
 		LinearLayout ll3 = criaLLOcupaLinhaInteira();
@@ -689,6 +685,26 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 		return ll_custoTotalDoInvestimento;
 	}
 	
+	private double devolveCustoAdicional(CharSequence charSequence) {
+
+		double custoAdicional = 0;
+
+		if (!charSequence.toString().equals("")) {
+
+			String char0 = String.valueOf(charSequence.charAt(0));
+
+			if (!char0.equals(".")){
+				
+				custoAdicional = Double.parseDouble(charSequence.toString());
+			}
+		} 
+		else {
+			return 0;
+		}
+
+		return custoAdicional;
+	}
+
 	private EditText criaEtComListenerDeAcaoAposClick(final int k){
 		
 		final EditText editText  = new EditText(context);
@@ -756,7 +772,7 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 		
 		String precoNegociadoPorKGstringComPonto = precoNegociadoPorKGstring.replace(",", ".");
 		
-		Log.i("tag","precoNegociadoPorKG: "+precoNegociadoPorKGstringComPonto);
+		//Log.i("tag","precoNegociadoPorKG: "+precoNegociadoPorKGstringComPonto);
 		
 		double precoNegociadoPorKG = Double.parseDouble(precoNegociadoPorKGstringComPonto);
 		
@@ -868,21 +884,6 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 	 			  TextView tv_titulo = criaTvTitulo(titulo);
 	 			  		   tv_titulo.setMinWidth(300);
 		 ll_titulo.addView(tv_titulo);
-
-		 			/*
-	     			Button b_adicionar = new Button(context);
-	     				   b_adicionar.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-			  			   b_adicionar.setText("Adicionar");
-			  			   b_adicionar.setMinWidth(200);
-			  			   b_adicionar.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								
-								ll_tituloEconteudoHolder.addView(criaLLConteudo(ll_tituloEconteudoHolder, lista, item, titulo));
-							}
-						});
-			  		*/	   
-		 //ll_titulo.addView(b_adicionar);
 		 
 		return ll_titulo;
 	}
@@ -905,32 +906,10 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 					final TextView tv_valorUnitario = criaTvConteudo3(""+produto.getValorUnitario());
 					tv_valorUnitario.setLayoutParams(ll);
 
-					final TextView tv_valorTotal = criaTvConteudo3("");
-					tv_valorTotal.setLayoutParams(ll);
-					tv_valorTotal.setTag("tv_valorTotal");
-					
-					/*
-					Button b_remover = new Button(context);
-						   b_remover.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-						   //b_remover.setText("Remover");
-						   b_remover.setBackground(getResources().getDrawable(R.drawable.trash));
-						   b_remover.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-						
-								double valorTot = procuraValorTotalNoLLConteudo1(ll_conteudo1);
-								
-								removeTvTemp(ll_conteudo1, valorTot);
-								
-								informaValorDaMaoDeObra();
-								informaValorDoMaterial();
-								informaValorCustoDaCentral();
-
-								ll_tituloEconteudoHolder.removeView(ll_conteudo1);
-							}
-						});
-					 */
-					
+					final TextView tv_valorTotalDeUmProduto = criaTvConteudo3("");
+					tv_valorTotalDeUmProduto.setLayoutParams(ll);
+					tv_valorTotalDeUmProduto.setTag("tv_valorTotal");
+									
 		final EditText et_quantidade = new EditText(context);
 		//et_quantidade.setMinWidth(200);
 		LinearLayout.LayoutParams ll2 = new LinearLayout.LayoutParams(200, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -949,88 +928,55 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 	        @Override
 	        public void afterTextChanged(Editable s) {
 	        	
-	        acaoAposCliqueEtQuantidade(ll_conteudo1, item, et_quantidade, tv_valorUnitario, tv_valorTotal, apelido, produto.getNome());
+	        acaoAposCliqueEtQuantidade(ll_conteudo1, item, et_quantidade, tv_valorUnitario, tv_valorTotalDeUmProduto, apelido, produto.getNome());
 	        }
 	    });
-		
-		/*
-		final Spinner spinner = new Spinner(context);
-		spinner.setMinimumWidth(220);
-		
-		LinearLayout.LayoutParams ll3 = new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-								 ll3.setMargins(left, top, right, bottom);
-		spinner.setLayoutParams(ll3);
-		spinner.setTag("spinnerConteudo");
-		spinner.setAdapter(new ArrayAdapter(context, R.layout.item_menu_geral, lista));
-		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int posicaoSelecionada, long id) {
-	
-				acaoAposCliqueSpinner(ll_conteudo1, lista, item, posicaoSelecionada, et_quantidade, tv_valorUnitario, tv_valorTotal, apelido);	
-			}
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {		
-			}
-		});
-		*/
-		
 		
 			   ll_conteudo1.addView(telaBuilder.cria_TV_titulo(produto.getNome()));
 			   ll_conteudo1.addView(et_quantidade);
 			   ll_conteudo1.addView(tv_valorUnitario);
-			   ll_conteudo1.addView(tv_valorTotal);
+			   ll_conteudo1.addView(tv_valorTotalDeUmProduto);
 			   //ll_conteudo1.addView(b_remover);
 			   
 	return ll_conteudo1;
 	}
 	
-	private void acaoAposCliqueSpinner(LinearLayout ll_conteudo1, ArrayList<Produto> lista, Item item, int posicaoSelecionada, 
-			EditText et_quantidade, TextView tv_valorUnitario, TextView tv_valorTotal, String apelido, String nomeDaOpcaoEscolhida){
-		
-		double valorTot = procuraValorTotalNoLLConteudo1(ll_conteudo1);
-		
-		removeTvTemp(ll_conteudo1, valorTot);
-		
-		double valorTotal = procuraItemSelecionadoEfazAlgo(lista, posicaoSelecionada, et_quantidade, tv_valorUnitario, item);	
-		
-		//tv_valorUnitario.setText(""+d.replace(",","."));
-		
-		tv_valorTotal.setText(formataParaDuasCasasDecimais(valorTotal));
-		
-		setEscolhidoNomeCilindroEquantidade(ll_conteudo1, item, et_quantidade, nomeDaOpcaoEscolhida);
-		
-		adicionaTvConteudoAuxiliar(ll_conteudo1, item, valorTotal, apelido);
-	}
-
 	private void acaoAposCliqueEtQuantidade(LinearLayout ll_conteudo1, Item item, EditText et_quantidade, TextView tv_valorUnitario, 
-														TextView tv_valorTotal, String apelido, String nomeDaOpcaoEscolhida){
+														TextView tv_valorTotalDeUmProduto, String apelido, String nomeDaOpcaoEscolhida){
 		
-    	double valorTot = procuraValorTotalNoLLConteudo1(ll_conteudo1);
+    	double valorTot = procuraValorTotalDeUmProdutoNoLLConteudo(ll_conteudo1);
     	
     	removeTvTemp(ll_conteudo1, valorTot);
 		
-    	double valorTotal = calculaValorTotal(et_quantidade, tv_valorUnitario);
+    	double valorTotalDeUmProduto = calculaValorTotalDeUmProduto(et_quantidade, tv_valorUnitario);
+    	    	
+    	tv_valorTotalDeUmProduto.setText(formataParaDuasCasasDecimais(valorTotalDeUmProduto));
     	
-		//tv_valorUnitario.setText(""+d.replace(",","."));
-    	
-		tv_valorTotal.setText(formataParaDuasCasasDecimais(valorTotal));
+    	zeraOCampoCustoAdicional();
 
 		setEscolhidoNomeCilindroEquantidade(ll_conteudo1, item, et_quantidade, nomeDaOpcaoEscolhida);
 		
-		adicionaTvConteudoAuxiliar(ll_conteudo1, item, valorTotal, apelido);
+		adicionaTvConteudoAuxiliar(ll_conteudo1, item, valorTotalDeUmProduto, apelido);
+	}
+	
+	private void zeraOCampoCustoAdicional() {
+		EditText et_custoadd = (EditText) ll_custoTotalDoInvestimento.findViewWithTag("et_custoadd");
+		if(et_custoadd != null){	
+			et_custoadd.setText("");
+		}   		
 	}
 		
-	private double procuraValorTotalNoLLConteudo1(LinearLayout ll_conteudo1){
+	private double procuraValorTotalDeUmProdutoNoLLConteudo(LinearLayout ll_conteudo1){
 		
-		TextView tv_valorTotal = (TextView) ll_conteudo1.findViewWithTag("tv_valorTotal");
+		TextView tv_valorTotalDeUmProduto = (TextView) ll_conteudo1.findViewWithTag("tv_valorTotal");
 		
-		double valorTotal = 0;		
+		double valorTotalDeUmProduto = 0;		
 		
-		if(tv_valorTotal != null){
+		if(tv_valorTotalDeUmProduto != null){
 			
-			valorTotal = devolveZeroDoubleCasoEstejaVazia(tv_valorTotal.getText().toString());
+			valorTotalDeUmProduto = devolveZeroDoubleCasoEstejaVazia(tv_valorTotalDeUmProduto.getText().toString());
 		}
-		return valorTotal;
+		return valorTotalDeUmProduto;
 	}
 	
 	private Item setEscolhidoNomeCilindroEquantidade(LinearLayout ll_conteudo1, Item item, EditText et_quantidade, 
@@ -1075,13 +1021,13 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 				}
 				item.setQuantidadeEscolhida(quantidade);
 		
-				valorTotal = calculaValorTotal(et_quantidade, tv_valorUnitario);		
+				valorTotal = calculaValorTotalDeUmProduto(et_quantidade, tv_valorUnitario);		
 			}	
 		}
 		return valorTotal;
 	}
 	
-	private double calculaValorTotal(EditText et_quantidade, TextView tv_valorUnitario){
+	private double calculaValorTotalDeUmProduto(EditText et_quantidade, TextView tv_valorUnitario){
 		
 		int quantidade = 0;
 		
@@ -1531,7 +1477,7 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 		
 		double custoRede = procuraCustoRedeNoLLConteudoRedeComodato(ll_conteudoRedeComodato);		
 
-	  	Log.i("tag","ultimo item escolhido ANTES: "+ultimoDiametroEscolhido);
+	  	//Log.i("tag","ultimo item escolhido ANTES: "+ultimoDiametroEscolhido);
 
     					String chave1 = ultimoDiametroEscolhido+custoRede;			  		   
 	  	carrinho.removeProduto(chave1);
@@ -1551,13 +1497,13 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 	  	carrinho.adicionaProduto(chave2, produto2);
 		
 	  	ultimoDiametroEscolhido = nomeDaOpcaoEscolhida;
-	  	Log.i("tag","ultimo item escolhido DEPOIS: "+ultimoDiametroEscolhido);
+	  	//Log.i("tag","ultimo item escolhido DEPOIS: "+ultimoDiametroEscolhido);
 	  	
 	  	
 		informaValorCustoDaCentral();
 	}
 
-	private void adicionaTvConteudoAuxiliar(LinearLayout ll_conteudo1, Item item, double custoTotal, String apelido){
+	private void adicionaTvConteudoAuxiliar(LinearLayout ll_conteudo1, Item item, double valorTotalDeUmProduto, String apelido){
 		
 		TextView tv_temp = criaTvConteudo(item.getItemEscolhido() + 
 									    ";"+item.getQuantidadeEscolhida() +
@@ -1571,7 +1517,7 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 										);
 		
 		tv_temp.setTag("tv_temp");
-		//tv_temp.setTextColor(Color.GREEN);
+		tv_temp.setTextColor(Color.GREEN);
 		
 		String temp = tv_temp.getText().toString();
 
@@ -1581,23 +1527,18 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 		double maoDeObraTotalAdicional = devolveZeroDoubleCasoEstejaVazia(listaComValores[5]);
 		double materialCustoUmaQTD = devolveZeroDoubleCasoEstejaVazia(listaComValores[6]);		
 		double materialTotalAdicional = devolveZeroDoubleCasoEstejaVazia(listaComValores[8]);
-		
-		//if (valort == 0){	
-			//maoDeObra.adicionaSubTotalCusto1(MAO_DE_OBRA_SUBTOTAL_CUSTO1);
-			//material.adicionaSubTotalCusto1(MATERIAL_SUBTOTAL_CUSTO1);
-			//valort = 1;
-		//}
+				
 		maoDeObra.adicionaSubTotalCusto1(maoDeObraCustoUmaQTD);
 		maoDeObra.adicionaSubTotalCustoAdicional(maoDeObraTotalAdicional);
 
 		material.adicionaSubTotalCusto1(materialCustoUmaQTD);
 		material.adicionaSubTotalCustoAdicional(materialTotalAdicional);
 		
-			String chave = listaComValores[0]+custoTotal;
+			String chave = listaComValores[0]+valorTotalDeUmProduto;
 			
 								Produto produto = ListaComTodosOsProdutos.devolveProdutoOndeNomeEh(listaComValores[0], context);
 										produto.setQuantidade(devolveZeroIntCasoEstejaVazia(listaComValores[1]));
-										produto.setValorTotal(custoTotal);
+										produto.setValorTotal(valorTotalDeUmProduto);
 									    produto.setApelido(apelido);	 	
 		carrinho.adicionaProduto(chave, produto);
 		
@@ -1612,12 +1553,12 @@ private void insereItemLayout2(Dao dao2, int nrLayout, int nr_ordem, String apel
 	}
 
 	private void informaCustoTotalDoInvestimento(){
-
 		TextView tv_custoTotalDoInvestimento = (TextView) ll_custoTotalDoInvestimento.findViewWithTag("tv_custoTotalDoInvestimento");
-
 		if(tv_custoTotalDoInvestimento != null){	
 			
-			tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(carrinho.devolveCustoTotal()));		   
+	    	zeraOCampoCustoAdicional();
+			
+			tv_custoTotalDoInvestimento.setText(formataParaDuasCasasDecimais(carrinho.devolveCustoTotal()));	
 		}		
 	}
 	

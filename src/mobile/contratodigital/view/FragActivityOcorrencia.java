@@ -53,6 +53,7 @@ import mobile.contratodigital.util.ChamaAplicativo;
 import mobile.contratodigital.util.Diminui_MB_imagens;
 import mobile.contratodigital.util.GetChildCount;
 import mobile.contratodigital.util.MeuAlerta;
+import mobile.contratodigital.util.PermissaoActivity;
 import mobile.contratodigital.util.TelaBuilder;
 import mobile.contratodigital.util.TrabalhaComFotos;
 import sharedlib.contratodigital.model.Layout;
@@ -108,12 +109,11 @@ public class FragActivityOcorrencia extends FragmentActivity {
 	private ContratoUtil contratoUtil;
 	private static final String ADICIONOU_LAYOUT_REPRESENTACAO = "SIM";
 	//private static final String NOME_DO_ARQUIVO = "nomeDoArquivo";
-	
+	//private PermissaoActivity permissaoActivity;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		Log.i("tag","oncreate foi chamado");
 		
 		Bundle bundle = getIntent().getExtras();
 
@@ -150,6 +150,9 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		}
 		
 		contratoUtil = new ContratoUtil(dao, context);
+		
+	 	//permissaoActivity = new PermissaoActivity();
+
 		
 		setContentView(constroiTela());
 		
@@ -201,10 +204,10 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		case SimularPrecos:	verificaSeNaoTemNumeroDeContratoEFazAlgumaAcao(SimularPrecos);	
 			return true;
 
-		case ConsultarCNPJ:	verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(ConsultarCNPJ);
+		case ConsultarCNPJ:	verificaPermissaoEscritaEFazAlgumaAcao(ConsultarCNPJ);
 			return true;
 
-		case ConsultarInscricaoEstadual: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(ConsultarInscricaoEstadual);
+		case ConsultarInscricaoEstadual: verificaPermissaoEscritaEFazAlgumaAcao(ConsultarInscricaoEstadual);
 			return true;
 						
 		case InformarPecas: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(InformarPecas);	
@@ -231,7 +234,7 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		case SimularInstalacao: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(SimularInstalacao);
 			return true;
 
-		case AnexarPDF: verificaSeLayoutsObrigatoriosForamPreenchidosEFazAlgumaAcao(AnexarPDF);		
+		case AnexarPDF: verificaPermissaoLeituraEFazAlgumaAcao(AnexarPDF);		
 			return true;
 
 		case VISUALIZAR_ARQUIVOS_GERADOS: verificaPermissaoLeituraEFazAlgumaAcao(VISUALIZAR_ARQUIVOS_GERADOS);
@@ -262,6 +265,18 @@ public class FragActivityOcorrencia extends FragmentActivity {
 		   
 	}
 	
+	@SuppressLint("NewApi")
+	public boolean permitiuEscrever(){
+        
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            
+        	requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUISICAO_PERMISSAO_ESCRITA);		      
+ 		
+            return false;
+        }
+        return true;
+    }
+
 	private void verificaPermissaoLeituraEFazAlgumaAcao(int acao){
 
 		if (Build.VERSION.SDK_INT >= 23) {
@@ -289,41 +304,6 @@ public class FragActivityOcorrencia extends FragmentActivity {
         return true;
     }
 	
-	@SuppressLint("NewApi")
-	private boolean permitiuEscrever(){
-        
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUISICAO_PERMISSAO_ESCRITA);		      
- 		
-            return false;
-        }
-        return true;
-    }
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-		
-      if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {	
-	    	  
-    	  if (requestCode == REQUISICAO_PERMISSAO_TIRAR_FOTO) {
-	    	  
-    		  //tirarFoto();  	  	    	
-	      }
-    	  
-    	  if (requestCode == REQUISICAO_PERMISSAO_ESCRITA) {
-   
-    		  //salvarFoto();
-    	  }
-    	  
-    	  if (requestCode == REQUISICAO_PERMISSAO_LEITURA) {
-    			  
-    		  //buscarFoto();		  
-    	  }
-    	  
-	  }	 
-	}
-
 	private void verificaSeNaoTemNumeroDeContratoEFazAlgumaAcao(int acao) {
 					
 			if (contratoUtil.naoTemNumeroDeContrato(movimento1.getNr_visita())) {
